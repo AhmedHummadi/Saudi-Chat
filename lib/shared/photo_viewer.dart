@@ -10,6 +10,7 @@ class DetailScreen extends StatefulWidget {
   final bool isVideo;
   final Duration? videoPosition;
 
+  //  jrfhasrklgbrhjkbdfrshjbgshjkdg
   // ignore: prefer_const_constructors_in_immutables
   const DetailScreen({
     Key? key,
