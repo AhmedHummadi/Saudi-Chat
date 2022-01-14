@@ -10,7 +10,6 @@ class DetailScreen extends StatefulWidget {
   final bool isVideo;
   final Duration? videoPosition;
 
-  //  jrfhasrklgbrhjkbdfrshjbgshjkdg
   // ignore: prefer_const_constructors_in_immutables
   const DetailScreen({
     Key? key,
@@ -59,6 +58,8 @@ class _DetailScreenState extends State<DetailScreen> {
 }
 
 class _PhotoViewControlBars extends StatelessWidget {
+  // this is the controll bar of the photo viewer
+
   const _PhotoViewControlBars({Key? key}) : super(key: key);
 
   @override
