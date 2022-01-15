@@ -102,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                       Text(
                         snapshot.data!.get("nadi_data")["name"].toString(),
-                        style: TextStyle(fontSize: 22),
+                        style: const TextStyle(fontSize: 22),
                       ),
                     ],
                   ),
@@ -124,24 +124,30 @@ class _ChatPageState extends State<ChatPage> {
                 BottomFieldBar(
                     streamedUser: streamedUser,
                     businessStream: bussinessStream,
+                    onLoadingStart: () {
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
+                    },
+                    onLoadingEnd: () {
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    },
                     groupDocument: widget.groupDocument,
                     groupId: widget.groupId),
-                Visibility(
-                  visible: isLoading,
-                  child: Column(
-                    children: [
-                      AnimatedContainer(
-                        width: MediaQuery.of(context).size.width,
-                        height: 14,
-                        duration: const Duration(milliseconds: 500),
-                        child: PendingBar(strokeWidth: 5, radius: 10, colors: [
-                          Colors.grey.shade200,
-                          Theme.of(context).colorScheme.secondaryVariant,
-                        ]),
-                      ),
+                PendingBar(
+                    visible: isLoading,
+                    strokeWidth: 4,
+                    colors: [
+                      Colors.grey.shade200,
+                      Theme.of(context).colorScheme.secondaryVariant
                     ],
-                  ),
-                )
+                    radius: 10)
               ]),
             );
           } else {
@@ -337,11 +343,7 @@ class _ChatPageState extends State<ChatPage> {
                                         )
                                       ])
                                 : isAudio
-                                    ? Container(
-                                        constraints: BoxConstraints.tight(
-                                            const Size(180, 40)),
-                                        child: image,
-                                      )
+                                    ? image
                                     : GestureDetector(
                                         child: Stack(
                                             alignment: Alignment.topRight,
@@ -490,11 +492,15 @@ class _ChatPageState extends State<ChatPage> {
 class BottomFieldBar extends StatefulWidget {
   final String? groupId;
   final DocumentReference? groupDocument;
+  final Function onLoadingStart;
+  final Function onLoadingEnd;
   final dynamic streamedUser;
   final Stream<NadiData> businessStream;
   const BottomFieldBar(
       {Key? key,
       this.groupId,
+      required this.onLoadingStart,
+      required this.onLoadingEnd,
       this.groupDocument,
       required this.streamedUser,
       required this.businessStream})
@@ -645,9 +651,10 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
               ),
             ),
             MicrophoneButton(
-              groupId: widget.groupId ?? widget.groupDocument!.id,
-              streamedUser: streamedUser,
-            ),
+                groupId: widget.groupId ?? widget.groupDocument!.id,
+                streamedUser: streamedUser,
+                onLoadingStart: widget.onLoadingStart,
+                onLoadingEnd: widget.onLoadingEnd),
           ],
         ),
       ),

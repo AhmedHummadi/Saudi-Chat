@@ -4,7 +4,6 @@ import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
 import 'package:video_player/video_player.dart';
 

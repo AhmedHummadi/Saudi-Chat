@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:saudi_chat/models/news_form.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/news/news_details_page.dart';
@@ -70,6 +67,7 @@ class _NewsListState extends State<NewsList> {
       displacement: 30,
       onRefresh: () async => await findNews(),
       child: SingleChildScrollView(
+        physics: const PageScrollPhysics(),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [

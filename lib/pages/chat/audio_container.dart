@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saudi_chat/pages/chat/chat_page.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class AudioContainer extends StatefulWidget {
   final String audioUrl;
@@ -147,7 +147,11 @@ class _AudioContainerState extends State<AudioContainer>
         });
       }
     } catch (e) {
-      rethrow; // Todo: Test
+      // Todo: Test
+      if (e.toString() != "Null check operator used on a null value") {
+        Fluttertoast.showToast(
+            msg: "An unknown error has occured, Please try again");
+      }
     }
   }
 
@@ -190,52 +194,50 @@ class _AudioContainerState extends State<AudioContainer>
 
   @override
   Widget build(BuildContext context) {
-    if (isInitialized) {
-      // create the container that the player will play in
-      return Row(
-        children: [
-          SeekBarSlider(
-              onEnd: () {
-                setState(() {
-                  pauseAudio();
-                });
-              },
-              timerStyle: const TextStyle(fontSize: 10),
-              total: _audio.duration!,
-              progress: currentAudioPosition,
-              onChanged: (duration) {
-                setState(() {
-                  _audio.seek(duration);
-                });
-              },
-              timerColor: Colors.white),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: GestureDetector(
-              onTap: () {
-                if (_audio.playing) {
-                  pauseAudio();
-                } else {
-                  playAudio();
-                }
-              },
-              child: AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: _animationController,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      // create loading bar for awaiting the audio to load
-      return const SpinKitWave(
-        size: 30,
-        color: Colors.white,
-        itemCount: 10,
-      );
-    }
+    return Container(
+      constraints: BoxConstraints.tight(const Size(240, 50)),
+      child: isInitialized
+          ? Row(
+              children: [
+                SeekBarSlider(
+                    onEnd: () {
+                      setState(() {
+                        pauseAudio();
+                      });
+                    },
+                    timerStyle: const TextStyle(fontSize: 12),
+                    total: _audio.duration,
+                    progress: currentAudioPosition,
+                    onChanged: (duration) {
+                      setState(() {
+                        _audio.seek(duration);
+                      });
+                    },
+                    timerColor: Colors.white),
+                GestureDetector(
+                  onTap: () {
+                    if (_audio.playing) {
+                      pauseAudio();
+                    } else {
+                      playAudio();
+                    }
+                  },
+                  child: AnimatedIcon(
+                    icon: AnimatedIcons.play_pause,
+                    size: 34,
+                    progress: _animationController,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            )
+          : PendingOutlinedScreen(
+              visible: !isInitialized,
+              height: 50,
+              strokeWidth: 2,
+              colors: [Colors.white, Theme.of(context).colorScheme.surface],
+              radius: 10),
+    );
   }
 
   Stream<Duration>? get seekBarStreamPosition {
@@ -244,7 +246,7 @@ class _AudioContainerState extends State<AudioContainer>
 }
 
 class SeekBarSlider extends StatefulWidget {
-  final Duration total;
+  final Duration? total;
   final Duration progress;
   final Function(Duration) onChanged;
   final Color timerColor;
@@ -267,49 +269,58 @@ class SeekBarSlider extends StatefulWidget {
 class _SeekBarSliderState extends State<SeekBarSlider> {
   @override
   Widget build(BuildContext context) {
-    assert(widget.total.inMilliseconds >= 100);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(
-          height: 10,
-        ),
-        ConstrainedBox(
-          constraints: BoxConstraints.tight(const Size(134, 13)),
-          child: Slider(
-            thumbColor: Colors.white,
-            activeColor: Colors.white,
-            min: 0.0,
-            max: widget.total.inMilliseconds.toDouble() + 1,
-            onChanged: (duration) {
-              widget.onChanged(Duration(milliseconds: duration.toInt()));
-            },
-            value: widget.progress.inMilliseconds.toDouble() >
-                    widget.total.inMilliseconds.toDouble()
-                ? widget.total.inMilliseconds.toDouble()
-                : widget.progress.inMilliseconds.toDouble(),
+    if (widget.total != null) {
+      assert(widget.total!.inMilliseconds >= 100);
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 10,
           ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "${widget.progress.inMinutes.remainder(Duration.minutesPerHour)}:${widget.progress.inSeconds.remainder(Duration.secondsPerMinute) < 10 ? "0${widget.progress.inSeconds.remainder(Duration.secondsPerMinute)}" : widget.progress.inSeconds.remainder(Duration.secondsPerMinute)}",
-              style: widget.timerStyle.copyWith(color: widget.timerColor),
+          ConstrainedBox(
+            constraints: BoxConstraints.loose(const Size(180, 20)),
+            child: Slider(
+              thumbColor: Colors.white,
+              inactiveColor: Colors.white.withOpacity(0.5),
+              activeColor: Colors.white,
+              min: 0.0,
+              max: widget.total!.inMilliseconds.toDouble() + 1,
+              onChanged: (duration) {
+                widget.onChanged(Duration(milliseconds: duration.toInt()));
+              },
+              value: widget.progress.inMilliseconds.toDouble() >
+                      widget.total!.inMilliseconds.toDouble()
+                  ? widget.total!.inMilliseconds.toDouble()
+                  : widget.progress.inMilliseconds.toDouble(),
             ),
-            const SizedBox(
-              width: 70,
-            ),
-            Text(
-              "${widget.total.inMinutes.remainder(Duration.minutesPerHour)}:${widget.total.inSeconds.remainder(Duration.secondsPerMinute) < 10 ? "0${widget.total.inSeconds.remainder(Duration.secondsPerMinute)}" : widget.total.inSeconds.remainder(Duration.secondsPerMinute)}",
-              style: widget.timerStyle.copyWith(color: widget.timerColor),
-            )
-          ],
-        )
-      ],
-    );
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "${widget.progress.inMinutes.remainder(Duration.minutesPerHour)}:${widget.progress.inSeconds.remainder(Duration.secondsPerMinute) < 10 ? "0${widget.progress.inSeconds.remainder(Duration.secondsPerMinute)}" : widget.progress.inSeconds.remainder(Duration.secondsPerMinute)}",
+                style: widget.timerStyle.copyWith(color: widget.timerColor),
+              ),
+              const SizedBox(
+                width: 70,
+              ),
+              Text(
+                "${widget.total!.inMinutes.remainder(Duration.minutesPerHour)}:${widget.total!.inSeconds.remainder(Duration.secondsPerMinute) < 10 ? "0${widget.total!.inSeconds.remainder(Duration.secondsPerMinute)}" : widget.total!.inSeconds.remainder(Duration.secondsPerMinute)}",
+                style: widget.timerStyle.copyWith(color: widget.timerColor),
+              )
+            ],
+          )
+        ],
+      );
+    } else {
+      return const SpinKitWave(
+        size: 30,
+        color: Colors.white,
+        itemCount: 10,
+      );
+    }
   }
 }

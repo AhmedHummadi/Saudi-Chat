@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:saudi_chat/models/news_form.dart';
-
 class NadiData {
   late final String? id;
   late final String? location;

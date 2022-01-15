@@ -55,7 +55,7 @@ dependencies:
 
   #flowder: ^0.2.0
   record: ^3.0.0
-  just_audio: ^0.9.13
+  just_audio: ^0.9.18
   better_player: ^0.0.79
 
   # Data Transering and Sharing

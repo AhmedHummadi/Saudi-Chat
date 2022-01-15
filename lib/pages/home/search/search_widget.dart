@@ -4,8 +4,6 @@ import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/services/chat.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:saudi_chat/services/location_service.dart';
-import 'package:saudi_chat/shared/constants.dart';
-import 'package:saudi_chat/shared/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:flutter/material.dart';

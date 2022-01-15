@@ -12,8 +12,14 @@ import 'package:uuid/uuid.dart';
 class MicrophoneButton extends StatefulWidget {
   final String groupId;
   final dynamic streamedUser;
+  final Function onLoadingStart;
+  final Function onLoadingEnd;
   const MicrophoneButton(
-      {Key? key, required this.groupId, required this.streamedUser})
+      {Key? key,
+      required this.groupId,
+      required this.streamedUser,
+      required this.onLoadingStart,
+      required this.onLoadingEnd})
       : super(key: key);
 
   @override
@@ -130,7 +136,6 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                 }
               },
               onLongPressEnd: (details) async {
-                await Future.delayed(const Duration(milliseconds: 100));
                 if (animatedHeight != 48) {
                   if (dragContainerForCancelPositioBottomPadding + 48 ==
                       animatedHeight) {
@@ -138,17 +143,22 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                     await deleteRecording();
                   } else {
                     // send recording
+                    widget.onLoadingStart();
                     final recordPath = await stopRecording();
                     if (recordPath is String) {
                       final File audioFile = File(recordPath);
                       if (await audioFile.exists()) {
-                        MessageDatabase().adddVoiceMessage(
-                            audioFile,
-                            widget.groupId,
-                            Message(
-                                userName: widget.streamedUser.displayName,
-                                documentId: widget.streamedUser.uid));
+                        MessageDatabase()
+                            .adddVoiceMessage(
+                                audioFile,
+                                widget.groupId,
+                                Message(
+                                    userName: widget.streamedUser.displayName,
+                                    documentId: widget.streamedUser.uid))
+                            .then((value) => widget.onLoadingEnd());
                       }
+                    } else {
+                      widget.onLoadingEnd();
                     }
                   }
                   setState(() {

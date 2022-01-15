@@ -53,7 +53,7 @@ class _NadiDetailsState extends State<NadiDetails> {
             height: 30,
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
             height: screenSize.height / 1.9089,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -62,7 +62,7 @@ class _NadiDetailsState extends State<NadiDetails> {
                   color: Colors.grey.shade500,
                   blurRadius: 2.0,
                   spreadRadius: 1.0,
-                  offset: Offset(0, -1),
+                  offset: const Offset(0, -1),
                 )
               ],
             ),
@@ -105,7 +105,7 @@ class _NadiDetailsState extends State<NadiDetails> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(

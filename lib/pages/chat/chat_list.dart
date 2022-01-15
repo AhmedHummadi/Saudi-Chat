@@ -7,7 +7,6 @@ import 'package:saudi_chat/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saudi_chat/shared/constants.dart';
 
 class ChatList extends StatefulWidget {
   final dynamic streamedUser;

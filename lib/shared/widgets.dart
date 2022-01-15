@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:saudi_chat/shared/constants.dart';
@@ -207,36 +205,46 @@ class CancelElevatedButton extends StatelessWidget {
 class PendingOutlinedScreen extends StatelessWidget {
   final double strokeWidth;
   final double radius;
+  bool visible;
+  final double? height;
   final List<Color> colors;
 
   PendingOutlinedScreen({
     Key? key,
+    required this.visible,
     required this.strokeWidth,
+    this.height,
     required this.colors,
     required this.radius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return PlayAnimation<double?>(
-      tween: Tween(begin: 0, end: 720),
-      duration: const Duration(seconds: 60),
-      fps: 60,
-      curve: Curves.linear,
-      builder: (context, child, value) => CustomPaint(
-        painter: _GradientPainter(
-            strokeWidth: strokeWidth,
-            radius: radius,
-            gradient: LinearGradient(
-                colors: colors,
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                transform: GradientRotation(value ?? 0))),
-        child: Container(
-          constraints: const BoxConstraints(minWidth: 88, minHeight: 48),
-        ),
-      ),
-    );
+    return Visibility(
+        visible: visible,
+        child: Column(children: [
+          AnimatedContainer(
+              width: MediaQuery.of(context).size.width,
+              duration: const Duration(milliseconds: 500),
+              height: height,
+              child: PlayAnimation<double?>(
+                tween: Tween(begin: 240, end: 700),
+                duration: const Duration(seconds: 60),
+                fps: 60,
+                curve: Curves.linear,
+                builder: (context, child, value) => CustomPaint(
+                  painter: _GradientPainter(
+                      strokeWidth: strokeWidth,
+                      radius: radius,
+                      gradient: LinearGradient(
+                          colors: colors,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          transform: GradientRotation(value ?? 0))),
+                  child: Container(),
+                ),
+              ))
+        ]));
   }
 }
 
@@ -268,8 +276,8 @@ class _GradientPainter extends CustomPainter {
     _paint.shader = gradient.createShader(outerRect);
 
     // create difference between outer and inner paths and draw it
-    Path path1 = Path()..addRect(outerRect);
-    Path path2 = Path()..addRect(innerRect);
+    Path path1 = Path()..addRRect(outerRRect);
+    Path path2 = Path()..addRRect(innerRRect);
     var path = Path.combine(PathOperation.difference, path1, path2);
     canvas.drawPath(path, _paint);
   }
@@ -281,32 +289,49 @@ class _GradientPainter extends CustomPainter {
 class PendingBar extends StatelessWidget {
   final double strokeWidth;
   final double radius;
-  final List<Color> colors;
+  final List<Color>? colors;
+  bool visible;
 
   PendingBar({
     Key? key,
+    required this.visible,
     required this.strokeWidth,
-    required this.colors,
+    this.colors,
     required this.radius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return PlayAnimation<double?>(
-      tween: Tween(begin: 50, end: 240),
-      duration: const Duration(seconds: 60),
-      fps: 60,
-      curve: Curves.linear,
-      builder: (context, child, value) => CustomPaint(
-        painter: _GradientPainter(
-            strokeWidth: strokeWidth,
-            radius: radius,
-            gradient: LinearGradient(
-                colors: colors,
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                transform: GradientRotation(value ?? 0))),
-        // ignore: sized_box_for_whitespace
+    return Visibility(
+      visible: visible,
+      child: Column(
+        children: [
+          AnimatedContainer(
+              width: MediaQuery.of(context).size.width,
+              height: 14,
+              duration: const Duration(milliseconds: 500),
+              child: PlayAnimation<double?>(
+                tween: Tween(begin: 50, end: 240),
+                duration: const Duration(seconds: 60),
+                fps: 60,
+                curve: Curves.linear,
+                builder: (context, child, value) => CustomPaint(
+                  painter: _GradientPainter(
+                      strokeWidth: strokeWidth,
+                      radius: radius,
+                      gradient: LinearGradient(
+                          colors: colors ??
+                              [
+                                Colors.grey.shade200,
+                                Theme.of(context).colorScheme.secondaryVariant
+                              ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          transform: GradientRotation(value ?? 0))),
+                  // ignore: sized_box_for_whitespace
+                ),
+              )),
+        ],
       ),
     );
   }
