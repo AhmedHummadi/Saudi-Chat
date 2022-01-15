@@ -267,7 +267,7 @@ class SeekBarSlider extends StatefulWidget {
 class _SeekBarSliderState extends State<SeekBarSlider> {
   @override
   Widget build(BuildContext context) {
-    assert(widget.total.inMilliseconds >= 300);
+    assert(widget.total.inMilliseconds >= 100);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

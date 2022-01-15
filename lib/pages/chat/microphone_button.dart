@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/services/chat.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 import 'package:uuid/uuid.dart';
 
 class MicrophoneButton extends StatefulWidget {
@@ -39,54 +40,53 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 5, 2.5),
-      child: Tooltip(
-        message: "Hold to record and release to send",
-        triggerMode: TooltipTriggerMode.tap,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Material(
-                  borderRadius: BorderRadius.circular(25),
-                  elevation: animatedHeight != 48 ? 2 : 0,
-                  child: AnimatedContainer(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.surface),
-                        borderRadius: BorderRadius.circular(25),
-                        color: Colors.transparent),
-                    constraints: BoxConstraints.loose(Size(48, animatedHeight)),
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 200),
-                  ),
-                ),
-                Container(
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Material(
+                borderRadius: BorderRadius.circular(25),
+                elevation: animatedHeight != 48 ? 2 : 0,
+                child: AnimatedContainer(
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.surface),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Icon(Icons.delete_outline,
-                        size: 28, color: Colors.white),
-                  ),
+                      border: Border.all(
+                          color: Theme.of(context).colorScheme.surface),
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.transparent),
+                  constraints: BoxConstraints.loose(Size(48, animatedHeight)),
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 200),
                 ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  0, 0, 0, dragContainerForCancelPositioBottomPadding),
-              child: Container(
-                height: 48,
-                width: 48,
-                decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: longPressed ? Border.all(color: Colors.red) : null,
-                    shape: BoxShape.circle),
               ),
+              Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.surface),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child:
+                      Icon(Icons.delete_outline, size: 28, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+                0, 0, 0, dragContainerForCancelPositioBottomPadding),
+            child: Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: longPressed ? Border.all(color: Colors.red) : null,
+                  shape: BoxShape.circle),
             ),
-            GestureDetector(
+          ),
+          MyTooltip(
+            message: "Hold to record and release to send",
+            child: GestureDetector(
               onLongPressMoveUpdate: (details) {
                 setState(() {
                   dragContainerForCancelPositioBottomPadding = details
@@ -102,6 +102,8 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
               },
               onLongPressStart: (details) async {
                 // start recording
+                final PermissionStatus oldStatus =
+                    await Permission.microphone.status;
                 final recordStatus = await recordAudio().catchError((error) {
                   if (error is PermissionStatus) {
                     if ((error).isDenied) {
@@ -116,7 +118,7 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                   }
                 });
 
-                if (recordStatus is! bool) {
+                if (recordStatus is! bool && oldStatus.isGranted) {
                   setState(() {
                     longPressed = true;
                     animatedHeight = animatedHeight == 48
@@ -128,32 +130,33 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                 }
               },
               onLongPressEnd: (details) async {
-                await Future.delayed(const Duration(milliseconds: 200));
-
-                if (dragContainerForCancelPositioBottomPadding + 48 ==
-                    animatedHeight) {
-                  // delete recording
-                  await deleteRecording();
-                } else {
-                  // send recording
-                  final recordPath = await stopRecording();
-                  if (recordPath is String) {
-                    final File audioFile = File(recordPath);
-                    if (await audioFile.exists()) {
-                      MessageDatabase().adddVoiceMessage(
-                          audioFile,
-                          widget.groupId,
-                          Message(
-                              userName: widget.streamedUser.displayName,
-                              documentId: widget.streamedUser.uid));
+                await Future.delayed(const Duration(milliseconds: 100));
+                if (animatedHeight != 48) {
+                  if (dragContainerForCancelPositioBottomPadding + 48 ==
+                      animatedHeight) {
+                    // delete recording
+                    await deleteRecording();
+                  } else {
+                    // send recording
+                    final recordPath = await stopRecording();
+                    if (recordPath is String) {
+                      final File audioFile = File(recordPath);
+                      if (await audioFile.exists()) {
+                        MessageDatabase().adddVoiceMessage(
+                            audioFile,
+                            widget.groupId,
+                            Message(
+                                userName: widget.streamedUser.displayName,
+                                documentId: widget.streamedUser.uid));
+                      }
                     }
                   }
+                  setState(() {
+                    animatedHeight = 48;
+                    animatedBorderColor = null;
+                    longPressed = false;
+                  });
                 }
-                setState(() {
-                  animatedHeight = 48;
-                  animatedBorderColor = null;
-                  longPressed = false;
-                });
               },
               child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
@@ -175,8 +178,8 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                     size: 26,
                   )),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

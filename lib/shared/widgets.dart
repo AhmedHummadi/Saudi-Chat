@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:saudi_chat/shared/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -306,5 +309,27 @@ class PendingBar extends StatelessWidget {
         // ignore: sized_box_for_whitespace
       ),
     );
+  }
+}
+
+class MyTooltip extends StatelessWidget {
+  final Widget child;
+  final String message;
+
+  const MyTooltip({Key? key, required this.message, required this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final key = GlobalKey<State<Tooltip>>();
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _onTap(key),
+      child: child,
+    );
+  }
+
+  void _onTap(GlobalKey key) {
+    Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_SHORT);
   }
 }
