@@ -49,15 +49,14 @@ class _NewsListState extends State<NewsList> {
       _news.removeWhere((element) => element.description == _new.description);
     }
 
-    _news.sort(
-        (a, b) => b.dateCreated!.toDate().compareTo(a.dateCreated!.toDate()));
-
     if (mounted) {
       setState(() {
         news.addAll(_news);
+        news.sort((a, b) => b.dateCreated!.compareTo(a.dateCreated!));
       });
     } else {
       news.addAll(_news);
+      news.sort((a, b) => b.dateCreated!.compareTo(a.dateCreated!));
     }
   }
 
@@ -275,9 +274,11 @@ class NewsCardPreview extends StatelessWidget {
                 ?
                 // more than an hour ago
                 "${differenceDatetime.inHours} hours ago"
-                :
-                // less than an hour ago
-                "${differenceDatetime.inMinutes} minutes ago";
+                : differenceDatetime.inMinutes == 0
+                    ? "now"
+                    :
+                    // less than an hour ago
+                    "${differenceDatetime.inMinutes} minutes ago";
   }
 
   @override

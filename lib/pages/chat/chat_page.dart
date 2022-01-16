@@ -50,12 +50,15 @@ class _ChatPageState extends State<ChatPage> {
         stream: documentStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            buildWidgets(
-                streamedUser: streamedUser,
-                document: snapshot.data!,
-                function: (text) {
-                  columnChildren = text;
-                });
+            if (columnChildren.length !=
+                (snapshot.data!.get("messages") as List).length) {
+              buildWidgets(
+                  streamedUser: streamedUser,
+                  document: snapshot.data!,
+                  function: (text) {
+                    columnChildren = text;
+                  });
+            }
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: 60,
@@ -227,8 +230,7 @@ class _ChatPageState extends State<ChatPage> {
 
         // this is the widget that will be used if
         // the message is an image or video
-        late Widget? image;
-        image = isImage
+        final Widget? image = isImage
             ? !isVideo
                 ? isAudio
                     ? AudioContainer(
@@ -312,78 +314,24 @@ class _ChatPageState extends State<ChatPage> {
                             : const EdgeInsets.all(8.0),
                         child: isImage
                             ? isVideo
-                                ? Stack(
-                                    alignment: Alignment.topRight,
-                                    children: [
-                                        Hero(
-                                          tag: (image! as ViewVideo).url,
+                                ? Hero(
+                                    tag: (image! as ViewVideo).url,
+                                    child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        child: image),
+                                  )
+                                : isAudio
+                                    ? image
+                                    : GestureDetector(
+                                        child: Hero(
+                                          tag: (image! as CachedNetworkImage)
+                                              .imageUrl,
                                           child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
                                               child: image),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(3.0),
-                                          child: Container(
-                                              padding: const EdgeInsets.all(2),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(5)),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  onDownloadTapped(messages[i]);
-                                                },
-                                                child: Icon(Icons.download,
-                                                    size: 20,
-                                                    color: Colors.white
-                                                        .withOpacity(0.5)),
-                                              )),
-                                        )
-                                      ])
-                                : isAudio
-                                    ? image
-                                    : GestureDetector(
-                                        child: Stack(
-                                            alignment: Alignment.topRight,
-                                            children: [
-                                              Hero(
-                                                tag: (image!
-                                                        as CachedNetworkImage)
-                                                    .imageUrl,
-                                                child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                    child: image),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
-                                                child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(2),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black
-                                                            .withOpacity(0.5),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5)),
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        onDownloadTapped(
-                                                            messages[i]);
-                                                      },
-                                                      child: Icon(
-                                                          Icons.download,
-                                                          size: 20,
-                                                          color: Colors.white
-                                                              .withOpacity(
-                                                                  0.5)),
-                                                    )),
-                                              )
-                                            ]),
                                         onTap: () async {
                                           await Navigator.push(
                                               context,
@@ -402,14 +350,13 @@ class _ChatPageState extends State<ChatPage> {
                                                       )));
                                         },
                                       )
-                            : Text(
+                            : SelectableText(
                                 messages.elementAt(i),
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 16),
                                 textAlign: elementCheck
                                     ? myTextAlignment
                                     : theirTextAlignment,
-                                maxLines: 200,
                               ),
                       ),
                     ),
@@ -456,36 +403,8 @@ class _ChatPageState extends State<ChatPage> {
         );
       },
       imageUrl: messages.elementAt(i)["url"].toString(),
-      filterQuality: FilterQuality.high,
+      filterQuality: FilterQuality.medium,
     );
-  }
-
-  Future<void> onDownloadTapped(Map imageMessage) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      // ignore: unused_local_variable
-      bool downloaded = await FireStorage.saveImage(
-          imageMessage["storage_path"], imageMessage["url"]);
-      if (downloaded) {
-        Fluttertoast.showToast(
-            msg: imageMessage["storage_path"].toString().endsWith(".mp4")
-                ? "Video saved"
-                : "Image saved");
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print(e.toString()); // TODO: Test
-      Fluttertoast.showToast(
-          msg: "Could not download File, an error has occured");
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 }
 
@@ -516,25 +435,29 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
   Future<void> pickFile(streamedUser) async {
     try {
       final List<Media>? insertedFiles = await ImagesPicker.pick(
-          maxSize: 500000000, // 500 MB / 1/2 GB
+          maxSize: 100000000, // 100 MB
           pickType: PickType.all);
 
       if (insertedFiles != null && insertedFiles.isNotEmpty) {
+        widget.onLoadingStart();
+
         final Media pickerFile = insertedFiles.single;
 
         final File storedImage = File(pickerFile.path);
 
         final XFile insertedImage =
             XFile.fromData(await storedImage.readAsBytes());
-        MessageDatabase().addImageOrVideoToGroup(
-            storedImage,
-            widget.groupId ?? widget.groupDocument!.id,
-            (isVideo(pickerFile.path)
-                ? "${insertedImage.name}.mp4"
-                : "${insertedImage.name}.jpg"),
-            Message(
-                userName: streamedUser.displayName,
-                documentId: streamedUser.uid));
+        MessageDatabase()
+            .addImageOrVideoToGroup(
+                storedImage,
+                widget.groupId ?? widget.groupDocument!.id,
+                (isVideo(pickerFile.path)
+                    ? "${insertedImage.name}.mp4"
+                    : "${insertedImage.name}.jpg"),
+                Message(
+                    userName: streamedUser.displayName,
+                    documentId: streamedUser.uid))
+            .whenComplete(() => widget.onLoadingEnd());
       }
     } catch (e) {
       Fluttertoast.showToast(

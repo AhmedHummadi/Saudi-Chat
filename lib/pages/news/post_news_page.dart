@@ -10,6 +10,7 @@ import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/news/news_list.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:saudi_chat/services/storage.dart';
+import 'package:saudi_chat/shared/loadingWidget.dart';
 import 'package:saudi_chat/shared/widgets.dart';
 
 class AddNewsPage extends StatefulWidget {
@@ -175,7 +176,9 @@ class _AddNewsPageState extends State<AddNewsPage> {
                     GestureDetector(
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
+                          createLoadingOverlay(context);
                           await onPostTapped(widget.streamedUser);
+                          removeOverlayEntry(context);
                           Navigator.of(context).pop();
                           Fluttertoast.showToast(msg: "Successfully Posted");
                         }

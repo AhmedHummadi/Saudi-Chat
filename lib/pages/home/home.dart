@@ -52,11 +52,13 @@ class _HomeState extends State<Home> {
               ?
               // he is admin
               FloatingActionButton(
-                  child: const Icon(
+                  tooltip: "Post a story",
+                  child: Icon(
                     Icons.post_add_rounded,
+                    color: Theme.of(context).colorScheme.surface,
                     size: 30,
                   ),
-                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  backgroundColor: Colors.white,
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
                           AddNewsPage(streamedUser: streamedUser))),

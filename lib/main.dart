@@ -50,7 +50,10 @@ class MyApp extends StatelessWidget {
                   headline1:
                       TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
                   bodyText1: TextStyle(fontSize: 26),
-                  button: TextStyle(color: Color(0xff0A6F65)))),
+                  button: TextStyle(color: Color(0xff0A6F65))),
+              textSelectionTheme: TextSelectionThemeData(
+                  selectionColor: Colors.white.withOpacity(0.4),
+                  selectionHandleColor: Colors.teal.shade200)),
           home: const Wrapper()),
     );
   }

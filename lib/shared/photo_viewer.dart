@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:saudi_chat/pages/chat/view_video.dart';
+import 'package:saudi_chat/services/storage.dart';
 
 class DetailScreen extends StatefulWidget {
   final String? imageUrl;
@@ -28,6 +30,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (!widget.isVideo) {
+      print(widget.imageUrl);
       return Scaffold(
         body: Stack(children: <Widget>[
           Center(
@@ -39,7 +42,10 @@ class _DetailScreenState extends State<DetailScreen> {
               imageProvider: CachedNetworkImageProvider(widget.imageUrl!),
             ),
           ),
-          const _PhotoViewControlBars(),
+          _PhotoViewControlBars(
+            imageUrl: widget.imageUrl,
+            storagePath: widget.storagePath,
+          ),
         ]),
       );
     } else {
@@ -57,20 +63,42 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 }
 
-class _PhotoViewControlBars extends StatelessWidget {
+class _PhotoViewControlBars extends StatefulWidget {
   // this is the controll bar of the photo viewer
+  final dynamic storagePath;
+  final dynamic imageUrl;
+  const _PhotoViewControlBars(
+      {Key? key, required this.imageUrl, required this.storagePath})
+      : super(key: key);
 
-  const _PhotoViewControlBars({Key? key}) : super(key: key);
+  @override
+  State<_PhotoViewControlBars> createState() => _PhotoViewControlBarsState();
+}
+
+class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    print(widget.imageUrl);
     return SizedBox(
         height: 50 + MediaQuery.of(context).padding.top,
         child: AppBar(
+          bottom: isLoading
+              ? const PreferredSize(
+                  child: LinearProgressIndicator(
+                    backgroundColor: Colors.transparent,
+                  ),
+                  preferredSize: Size(double.infinity, 0.5))
+              : null,
           actions: [
             IconButton(
+                splashRadius: 12,
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
-                onPressed: () {},
+                onPressed: () => onDownloadTapped(<dynamic, dynamic>{
+                      "storage_path": widget.storagePath,
+                      "url": widget.imageUrl
+                    }),
                 icon: const Icon(
                   Icons.download_sharp,
                   size: 24,
@@ -85,5 +113,33 @@ class _PhotoViewControlBars extends StatelessWidget {
           ],
           backgroundColor: Colors.black.withOpacity(0.6),
         ));
+  }
+
+  Future<void> onDownloadTapped(Map imageMessage) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // ignore: unused_local_variable
+      bool downloaded = await FireStorage.saveImage(
+          imageMessage["storage_path"], imageMessage["url"]);
+      if (downloaded) {
+        Fluttertoast.showToast(
+            msg: imageMessage["storage_path"].toString().endsWith(".mp4")
+                ? "Video saved"
+                : "Image saved");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print(e.toString()); // TODO: Test
+      Fluttertoast.showToast(
+          msg: "Could not download File, an error has occured");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

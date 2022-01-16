@@ -36,7 +36,7 @@ class FireStorage {
   }
 
   static Future saveImage(String path, String url) async {
-    if (path.endsWith(".mp4")) {
+    if (path.endsWith(".mp4") || url.contains(".mp4")) {
       try {
         final String cache = (await getTemporaryDirectory()).path;
         final String fullPath = "$cache/$path";

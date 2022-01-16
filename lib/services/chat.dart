@@ -114,7 +114,7 @@ class MessageDatabase {
     }
   }
 
-  Future adddVoiceMessage(
+  Future addVoiceMessage(
       File audioFile, String groupId, Message message) async {
     try {
       firebase_storage.Reference _storage = firestorage

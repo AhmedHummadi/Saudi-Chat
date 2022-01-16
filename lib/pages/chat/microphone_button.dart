@@ -149,7 +149,7 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                       final File audioFile = File(recordPath);
                       if (await audioFile.exists()) {
                         MessageDatabase()
-                            .adddVoiceMessage(
+                            .addVoiceMessage(
                                 audioFile,
                                 widget.groupId,
                                 Message(
