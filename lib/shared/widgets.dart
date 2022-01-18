@@ -26,7 +26,7 @@ class MyTextField extends StatelessWidget {
       : super(key: key);
 
   final String? labelText;
-  final OutlineInputBorder? border;
+  final InputBorder? border;
   final OutlineInputBorder? focusedBorder;
   final String validatorText;
   final TextStyle? labelStyle;
@@ -73,6 +73,7 @@ class MyDropdownField extends StatelessWidget {
       required this.itemsList,
       required this.onChanged,
       required this.labelText,
+      this.labelTextStyle,
       this.border,
       this.fillColor,
       this.validatorText})
@@ -80,6 +81,7 @@ class MyDropdownField extends StatelessWidget {
 
   final List itemsList;
   final OutlineInputBorder? border;
+  final TextStyle? labelTextStyle;
   final Function(Object? val) onChanged;
   final String labelText;
   final String? validatorText;
@@ -96,10 +98,10 @@ class MyDropdownField extends StatelessWidget {
               : null,
       decoration: textInputDecoration.copyWith(
           border: border,
-          filled: true,
+          filled: fillColor != null,
           fillColor: fillColor ?? Colors.white.withOpacity(0.8),
           labelText: labelText,
-          labelStyle:
+          labelStyle: labelTextStyle ??
               TextStyle(color: Theme.of(context).textTheme.bodyText2!.color)),
       items: itemsList.map((item) {
         return DropdownMenuItem(

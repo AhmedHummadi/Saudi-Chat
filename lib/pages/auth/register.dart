@@ -154,6 +154,8 @@ class _RegisterState extends State<Register> {
   MyTextField nameField() {
     return MyTextField(
       formKey: _formKey,
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white)),
       labelText: "Name",
       validatorText: "Enter a name",
       validateCondition: (val, errorText) =>
@@ -168,6 +170,8 @@ class _RegisterState extends State<Register> {
     return MyTextField(
       formKey: _formKey,
       labelText: "Email",
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white)),
       validatorText: "Enter an email",
       onChangedVal: (val) {
         setState(() {
@@ -183,6 +187,8 @@ class _RegisterState extends State<Register> {
 
   MyTextField passwordField() {
     return MyTextField(
+        border: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white)),
         formKey: _formKey,
         obscureText: obscureText,
         validatorText: "Enter a Password 5+ characters",
@@ -223,6 +229,7 @@ class _RegisterState extends State<Register> {
         MyDropdownField(
             validatorText: "Please choose a city",
             itemsList: cities,
+            fillColor: Colors.white.withOpacity(0.8),
             border: const OutlineInputBorder(borderSide: BorderSide.none),
             onChanged: (catagory) {
               if (!registerCities.contains(catagory.toString())) {
@@ -230,6 +237,7 @@ class _RegisterState extends State<Register> {
                   registerCities.add(catagory.toString());
                 });
               }
+              print(registerCities);
             },
             labelText: "Cities"),
         SingleChildScrollView(
@@ -266,7 +274,10 @@ class _RegisterState extends State<Register> {
                             ),
                             Text(e,
                                 style: TextStyle(
-                                    color: Theme.of(context).primaryColorDark))
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2!
+                                        .color))
                           ],
                         ),
                       ),
@@ -281,6 +292,8 @@ class _RegisterState extends State<Register> {
 
   MyTextField phoneNumberField() {
     return MyTextField(
+        border: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white)),
         formKey: _formKey,
         validatorText: "Enter a Phone number with your country code",
         labelText: "Phone Number",

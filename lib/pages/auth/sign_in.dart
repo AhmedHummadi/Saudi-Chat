@@ -138,6 +138,8 @@ class _SignInState extends State<SignIn> {
       formKey: _formKey,
       labelText: "Email",
       validatorText: "Enter an email",
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white)),
       onChangedVal: (val) {
         setState(() {
           signinEmail = val!;
@@ -154,6 +156,8 @@ class _SignInState extends State<SignIn> {
     return MyTextField(
         formKey: _formKey,
         obscureText: obscureText,
+        border: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white)),
         validatorText: "Enter a Password 5+ characters",
         labelText: "Password",
         validateCondition: (val, errorText) =>

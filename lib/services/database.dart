@@ -183,7 +183,9 @@ class DataBaseService {
   // update user auth data
   Future createUserAuthData({UserAuth? userAuth}) async {
     try {
-      await authUsersCollection.doc(userAuth!.uid ?? uid).set({
+      final DocumentReference userDoc =
+          authUsersCollection.doc(userAuth!.uid ?? uid);
+      await userDoc.set({
         "name": userAuth.displayName,
         "email": userAuth.email,
         "isAnonymous": userAuth.isAnonymous,
@@ -194,11 +196,15 @@ class DataBaseService {
         "creationTime": userAuth.creationTime,
         "lastSignInTime": userAuth.lastSignInTime
       });
-      return await messagesCollection.get().then((collection) {
-        collection.docs
-            .where((doc) => userAuth.cities!
-                .any((city) => doc.get("nadi_data")["location"] == city))
-            .forEach((group) async {
+      return await messagesCollection.get().then((collection) async {
+        print(userAuth.cities);
+        List<QueryDocumentSnapshot> filteredGorups = collection.docs
+            .where((groups) => userAuth.cities!
+                .any((city) => groups.get("nadi_data")["location"] == city))
+            .toList();
+        print(filteredGorups);
+        for (var group in filteredGorups) {
+          print(group);
           // for each message group that matches the users cities preferences
 
           Future addGroupToUserDoc() async {
@@ -242,7 +248,7 @@ class DataBaseService {
 
           await addGroupToUserDoc();
           await addUserToGroupMembers();
-        });
+        }
       });
     } catch (e) {
       print(e.toString());
