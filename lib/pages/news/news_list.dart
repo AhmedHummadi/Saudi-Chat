@@ -49,15 +49,10 @@ class _NewsListState extends State<NewsList> {
       _news.removeWhere((element) => element.description == _new.description);
     }
 
-    if (mounted) {
-      setState(() {
-        news.addAll(_news);
-        news.sort((a, b) => b.dateCreated!.compareTo(a.dateCreated!));
-      });
-    } else {
+    setState(() {
       news.addAll(_news);
       news.sort((a, b) => b.dateCreated!.compareTo(a.dateCreated!));
-    }
+    });
   }
 
   @override

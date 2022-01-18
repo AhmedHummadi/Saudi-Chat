@@ -514,13 +514,16 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                               // ignore: unnecessary_null_comparison
                               if (controller.text != null &&
                                   controller.text.isNotEmpty) {
-                                MessageDatabase().addMessageToGroup(
-                                    message: Message(
-                                        documentId: streamedUser.uid,
-                                        message: controller.text,
-                                        userName: streamedUser.displayName),
-                                    groupDocument: widget.groupDocument);
-                                controller.clear();
+                                if (streamedUser.displayName != null) {
+                                  MessageDatabase().addMessageToGroup(
+                                      message: Message(
+                                          documentId: streamedUser.uid,
+                                          message: controller.text,
+                                          userName: streamedUser.displayName),
+                                      groupDocument: widget.groupDocument);
+
+                                  controller.clear();
+                                }
                               }
                             },
                             style: const TextStyle(color: Colors.white),

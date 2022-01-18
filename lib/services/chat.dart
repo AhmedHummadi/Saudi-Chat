@@ -16,6 +16,7 @@ enum MessageException {
   add_voice_error,
   add_file_error,
   add_user_to_group_error,
+  null_user_name_error,
   remove_group_error,
 }
 
@@ -54,25 +55,32 @@ class MessageDatabase {
     if (groupId != null) {
       try {
         void addMessage() async {
-          if (message.message!.trim() != "") {
-            DocumentSnapshot doc = await messagesCollection.doc(groupId).get();
-            Map data = doc.data() as Map;
-            List messageData = data["messages"] as List;
-            List userNamesData = data["users_name"] as List;
-            List timeData = data["time_of_messages"] as List;
-            List docsData = data["users_doc_reference"] as List;
+          if (message.userName != null) {
+            if (message.message!.trim() != "") {
+              DocumentSnapshot doc =
+                  await messagesCollection.doc(groupId).get();
+              Map data = doc.data() as Map;
+              List messageData = data["messages"] as List;
+              List userNamesData = data["users_name"] as List;
+              List timeData = data["time_of_messages"] as List;
+              List docsData = data["users_doc_reference"] as List;
 
-            messageData.add(message.message);
-            userNamesData.add(message.userName);
-            timeData.add(message.time);
-            docsData.add(
-                DataBaseService().authUsersCollection.doc(message.documentId));
-            await messagesCollection.doc(groupId).update({
-              "messages": messageData,
-              "users_name": userNamesData,
-              "time_of_messages": timeData,
-              "users_doc_reference": docsData,
-            });
+              messageData.add(message.message);
+              userNamesData.add(message.userName);
+              print(message.userName);
+              timeData.add(message.time);
+              docsData.add(DataBaseService()
+                  .authUsersCollection
+                  .doc(message.documentId));
+              await messagesCollection.doc(groupId).update({
+                "messages": messageData,
+                "users_name": userNamesData,
+                "time_of_messages": timeData,
+                "users_doc_reference": docsData,
+              });
+            }
+          } else {
+            return Future.error(MessageException.null_user_name_error);
           }
         }
 
@@ -84,25 +92,31 @@ class MessageDatabase {
     } else if (groupDocument != null) {
       try {
         void addMessage() async {
-          if (message.message!.trim() != "") {
-            DocumentSnapshot doc = await groupDocument.get();
-            Map data = doc.data() as Map;
-            List messageData = data["messages"] as List;
-            List userNamesData = data["users_name"] as List;
-            List timeData = data["time_of_messages"] as List;
-            List docsData = data["users_doc_reference"] as List;
+          if (message.userName != null) {
+            if (message.message!.trim() != "") {
+              DocumentSnapshot doc = await groupDocument.get();
+              Map data = doc.data() as Map;
+              List messageData = data["messages"] as List;
+              List userNamesData = data["users_name"] as List;
+              List timeData = data["time_of_messages"] as List;
+              List docsData = data["users_doc_reference"] as List;
 
-            messageData.add(message.message);
-            userNamesData.add(message.userName);
-            timeData.add(message.time);
-            docsData.add(
-                DataBaseService().authUsersCollection.doc(message.documentId));
-            await groupDocument.update({
-              "messages": messageData,
-              "users_name": userNamesData,
-              "time_of_messages": timeData,
-              "users_doc_reference": docsData,
-            });
+              messageData.add(message.message);
+              userNamesData.add(message.userName);
+              print(message.userName);
+              timeData.add(message.time);
+              docsData.add(DataBaseService()
+                  .authUsersCollection
+                  .doc(message.documentId));
+              await groupDocument.update({
+                "messages": messageData,
+                "users_name": userNamesData,
+                "time_of_messages": timeData,
+                "users_doc_reference": docsData,
+              });
+            }
+          } else {
+            return Future.error(MessageException.null_user_name_error);
           }
         }
 

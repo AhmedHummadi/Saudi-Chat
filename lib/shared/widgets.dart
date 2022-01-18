@@ -102,7 +102,7 @@ class MyDropdownField extends StatelessWidget {
           fillColor: fillColor ?? Colors.white.withOpacity(0.8),
           labelText: labelText,
           labelStyle: labelTextStyle ??
-              TextStyle(color: Theme.of(context).textTheme.bodyText2!.color)),
+              TextStyle(color: Theme.of(context).textTheme.headline2!.color)),
       items: itemsList.map((item) {
         return DropdownMenuItem(
           child: Text(

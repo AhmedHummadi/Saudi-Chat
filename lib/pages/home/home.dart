@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   // ignore: unused_field, prefer_final_fields
   int _currentIndex = 0;
   // ignore: unused_field, prefer_const_constructors
-  final List<Widget> _pages = [const HomePage(), NewsPage()];
+  final List<Widget> _pages = [const HomePage(), const NewsPage()];
 
   @override
   Widget build(BuildContext context) {
