@@ -19,63 +19,73 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   // ignore: unused_field, prefer_const_constructors
   final List<Widget> _pages = [const HomePage(), const NewsPage()];
+  List<BottomNavigationBarItem> navigationBaritems = [
+    const BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
+    const BottomNavigationBarItem(
+      label: "News",
+      icon: Icon(
+        Icons.article_outlined,
+      ),
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
     final dynamic streamUser = Provider.of<UserAuth>(context);
     final UserAuth streamedUser = streamUser;
-
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: const [
-            BottomNavigationBarItem(
-                label: "Home", icon: Icon(Icons.home_filled)),
-            BottomNavigationBarItem(
-              label: "News",
-              icon: Icon(
-                Icons.article_outlined,
-              ),
-            )
-          ]),
-      drawer: buildDrawer(),
-      floatingActionButton: _currentIndex == 1
-          ?
-          // is on news page
-          // see if he is an Admin to show the post news page
-          streamedUser.nadiAdminDoc != null
-              ?
-              // he is admin
-              FloatingActionButton(
-                  tooltip: "Post a story",
-                  child: Icon(
-                    Icons.post_add_rounded,
-                    color: Theme.of(context).colorScheme.surface,
-                    size: 30,
-                  ),
-                  backgroundColor: Colors.white,
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          AddNewsPage(streamedUser: streamedUser))),
-                )
-              // he is not admin
-              : null
-          // is on home page
-          : null,
-      appBar: AppBar(
-        title: Text(_currentIndex == 1 ? "News" : "Home"),
-        centerTitle: true,
-      ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-    );
+    if (streamedUser.groups != null &&
+        streamedUser.groups!.isNotEmpty &&
+        streamUser.displayName! != null) {
+      return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            items: navigationBaritems),
+        drawer: buildDrawer(),
+        floatingActionButton: _currentIndex == 1
+            ?
+            // is on news page
+            // see if he is an Admin to show the post news page
+            streamedUser.nadiAdminDoc != null
+                ?
+                // he is admin
+                FloatingActionButton(
+                    tooltip: "Post a story",
+                    child: Icon(
+                      Icons.post_add_rounded,
+                      color: Theme.of(context).colorScheme.surface,
+                      size: 30,
+                    ),
+                    backgroundColor: Colors.white,
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AddNewsPage(streamedUser: streamedUser))),
+                  )
+                // he is not admin
+                : null
+            // is on home page
+            : null,
+        appBar: AppBar(
+          title: Text(_currentIndex == 1 ? "News" : "Home"),
+          centerTitle: true,
+        ),
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
+      );
+    } else {
+      return const Scaffold(
+        body: Center(
+          child: Text("Loading..."),
+        ),
+      );
+    }
   }
 
   Drawer buildDrawer() {
@@ -130,7 +140,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final dynamic streamedUser = Provider.of<UserAuth?>(context);
+    final dynamic streamedUser = Provider.of<UserAuth>(context);
 
     return Stack(fit: StackFit.loose, children: [
       Column(

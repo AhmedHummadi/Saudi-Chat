@@ -150,7 +150,10 @@ class _ChatListState extends State<ChatList> {
   Future onItemTap(dynamic streamedUser, DocumentReference doc,
       DocumentReference bussinessDoc) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ChatPage(groupDocument: doc, bussinessDoc: bussinessDoc);
+      return ChatPage(
+          groupDocument: doc,
+          bussinessDoc: bussinessDoc,
+          streamedUser: streamedUser);
     }));
   }
 

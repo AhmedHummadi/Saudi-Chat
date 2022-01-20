@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<UserAuth?>.value(
-      value: AuthService().streamedUser,
+      value: AuthService().authStream,
       initialData: null,
       catchError: (_, error) {
         print(error);
@@ -50,8 +50,9 @@ class MyApp extends StatelessWidget {
                   headline1: const TextStyle(
                       fontSize: 34, fontWeight: FontWeight.w500),
                   bodyText1: const TextStyle(fontSize: 26),
-                  bodyText2: const TextStyle(
-                      color: Colors.black), // for text message names and time
+                  bodyText2: TextStyle(
+                      color: Colors
+                          .grey.shade800), // for text message names and time
                   headline2: TextStyle(color: Colors.teal.shade700),
                   button: const TextStyle(color: Color(0xff0A6F65))),
               textSelectionTheme: TextSelectionThemeData(

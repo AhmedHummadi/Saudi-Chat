@@ -27,6 +27,7 @@ class _AudioContainerState extends State<AudioContainer>
   bool isInitialized = false;
 
   Duration currentAudioPosition = Duration.zero;
+  Duration audioDuration = Duration.zero;
 
   Future<void> initialize() async {
     try {
@@ -63,12 +64,20 @@ class _AudioContainerState extends State<AudioContainer>
           isInitialized = true;
         }
 
-        var duration = _audio.duration;
+        _audio.durationStream.listen((duration) {
+          if (mounted) {
+            setState(() {
+              audioDuration = duration!;
+            });
+          } else {
+            audioDuration = duration!;
+          }
+        });
         // used for seek bar purposes, like updating it
         // and stopping it when it stops
         _audio.positionStream.listen((event) {
-          if (duration != null) {
-            if (event.inMilliseconds >= duration.inMilliseconds) {
+          if (audioDuration != Duration.zero) {
+            if (event.inMilliseconds >= audioDuration.inMilliseconds) {
               // the audio has finished, restart the slider
               // and reverse the animation button
 
@@ -238,10 +247,6 @@ class _AudioContainerState extends State<AudioContainer>
               colors: [Colors.white, Theme.of(context).colorScheme.surface],
               radius: 10),
     );
-  }
-
-  Stream<Duration>? get seekBarStreamPosition {
-    return isInitialized ? _audio.positionStream : null;
   }
 }
 

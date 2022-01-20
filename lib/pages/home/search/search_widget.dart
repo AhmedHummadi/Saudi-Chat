@@ -97,7 +97,7 @@ class _SearchNadisState extends State<SearchNadis> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic streamedUser = Provider.of<UserAuth?>(context);
+    dynamic streamedUser = Provider.of<UserAuth>(context);
     final controller = FloatingSearchBarController();
 
     return Theme(

@@ -33,12 +33,13 @@ class DataBaseService {
   QuerySnapshot? nadiQuerySnapshot;
 
   // userdata from snapshot
-  UserAuth _userAuthFromDocSnapshot(DocumentSnapshot snapshot) {
+  UserAuth userAuthFromDocSnapshot(DocumentSnapshot snapshot) {
     return UserAuth(
         uid: uid ?? snapshot.id,
         cities: snapshot.get("cities"),
         groups: snapshot.get("groups"),
         nadiAdminDoc: snapshot.get("nadiAdminDoc"),
+        isModerator: snapshot.get("isModerator"),
         email: snapshot.get("email"),
         isAnonymous: snapshot.get("isAnonymous"),
 
@@ -76,7 +77,7 @@ class DataBaseService {
     return authUsersCollection
         .doc(uid)
         .snapshots()
-        .map(_userAuthFromDocSnapshot);
+        .map(userAuthFromDocSnapshot);
   }
 
   // stream of message collection
@@ -189,6 +190,7 @@ class DataBaseService {
         "name": userAuth.displayName,
         "email": userAuth.email,
         "isAnonymous": userAuth.isAnonymous,
+        "isModerator": false,
         "groups": [],
         "cities": userAuth.cities,
         "phoneNum": userAuth.phoneNum,

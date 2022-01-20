@@ -6,6 +6,7 @@ class UserAuth {
   late final DateTime? lastSignInTime;
   late String? displayName;
   late String? phoneNum;
+  bool? isModerator = false;
   late List? groups;
   late String? email;
   late DocumentReference? nadiAdminDoc;
@@ -18,6 +19,7 @@ class UserAuth {
       this.creationTime,
       this.lastSignInTime,
       this.isAnonymous,
+      this.isModerator,
       this.phoneNum,
       this.groups,
       this.cities,

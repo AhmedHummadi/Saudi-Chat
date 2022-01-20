@@ -11,7 +11,6 @@ import 'package:saudi_chat/pages/chat/nadi_details.dart';
 import 'package:saudi_chat/pages/chat/view_video.dart';
 import 'package:saudi_chat/services/chat.dart';
 import 'package:saudi_chat/services/database.dart';
-import 'package:saudi_chat/services/storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saudi_chat/shared/constants.dart';
@@ -28,10 +27,15 @@ import 'package:saudi_chat/shared/widgets.dart';
 class ChatPage extends StatefulWidget {
   final DocumentReference? groupDocument;
   final String? groupId;
+  final dynamic streamedUser;
   final DocumentReference bussinessDoc;
 
   const ChatPage(
-      {Key? key, this.groupDocument, this.groupId, required this.bussinessDoc})
+      {Key? key,
+      this.groupDocument,
+      this.groupId,
+      this.streamedUser,
+      required this.bussinessDoc})
       : super(key: key);
 
   @override
@@ -45,7 +49,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic streamedUser = Provider.of<UserAuth?>(context);
+    dynamic streamedUser =
+        widget.streamedUser ?? Provider.of<UserAuth>(context);
     return StreamBuilder<DocumentSnapshot>(
         stream: documentStream,
         builder: (context, snapshot) {
@@ -544,6 +549,9 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                         // ignore: unnecessary_null_comparison
                         if (controller.text != null &&
                             controller.text.isNotEmpty) {
+                          if (streamedUser.displayName == null) {
+                            setState(() {});
+                          }
                           MessageDatabase().addMessageToGroup(
                               message: Message(
                                   documentId: streamedUser.uid,
