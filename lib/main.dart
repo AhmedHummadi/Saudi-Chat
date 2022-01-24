@@ -47,8 +47,11 @@ class MyApp extends StatelessWidget {
                   onError: Color(0xffffffff),
                   brightness: Brightness.light),
               textTheme: TextTheme(
-                  headline1: const TextStyle(
-                      fontSize: 34, fontWeight: FontWeight.w500),
+                  headline1: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade900),
+                  caption: TextStyle(color: Colors.grey[700]),
                   bodyText1: const TextStyle(fontSize: 26),
                   bodyText2: TextStyle(
                       color: Colors

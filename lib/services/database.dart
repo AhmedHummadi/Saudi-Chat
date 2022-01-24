@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:saudi_chat/models/location.dart';
 import 'package:saudi_chat/models/nadi.dart';
@@ -33,13 +35,13 @@ class DataBaseService {
   QuerySnapshot? nadiQuerySnapshot;
 
   // userdata from snapshot
-  UserAuth userAuthFromDocSnapshot(DocumentSnapshot snapshot) {
+  UserAuth _userAuthFromDocSnapshot(DocumentSnapshot snapshot) {
     return UserAuth(
         uid: uid ?? snapshot.id,
         cities: snapshot.get("cities"),
         groups: snapshot.get("groups"),
-        nadiAdminDoc: snapshot.get("nadiAdminDoc"),
-        isModerator: snapshot.get("isModerator"),
+        groupsAdmin: snapshot.get("groupsAdmin"),
+        userClass: UserAuth.parseUserClass(snapshot.get("userClass")),
         email: snapshot.get("email"),
         isAnonymous: snapshot.get("isAnonymous"),
 
@@ -77,7 +79,7 @@ class DataBaseService {
     return authUsersCollection
         .doc(uid)
         .snapshots()
-        .map(userAuthFromDocSnapshot);
+        .map(_userAuthFromDocSnapshot);
   }
 
   // stream of message collection
@@ -100,34 +102,104 @@ class DataBaseService {
     }
   }
 
+  Future assignAdmin(
+      DocumentSnapshot userDoc, DocumentSnapshot groupDoc) async {
+    try {
+      // we will get first go into the groupDoc's Admin collection
+      // and add the userDoc there with any additional info
+      // then we will go to the usersDoc and then add the group
+      // document reference in the groupAdmins list
+
+      // add the doc into the admins collection
+      await groupDoc.reference.collection("admins").doc(userDoc.id).set(
+          userDoc.data() as Map<String, dynamic>
+            ..addAll({"doc_reference": userDoc.reference}));
+
+      // update the userClass in the user doc in the members collection
+      await groupDoc.reference
+          .collection("members")
+          .doc(userDoc.id)
+          .update({"userClass": "admin"});
+
+      List groupsAdmin = userDoc.get("groupsAdmin") as List;
+      groupsAdmin.add(groupDoc.reference);
+
+      userDoc.reference.update({"groupsAdmin": groupsAdmin});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future searchUsersByEmail(StreamController streamController, String input,
+      QuerySnapshot userDocuments) async {
+    try {
+      streamController.sink.add(ConnectionState.waiting);
+
+      List<QueryDocumentSnapshot> matchingDocs = userDocuments.docs
+          .where((doc) => checkForInputMatch(
+              input: input, name: doc.get("email").toString()))
+          .toList();
+      if (matchingDocs.isEmpty) {
+        streamController.sink.add([]);
+        return;
+      } else {
+        streamController.sink.add(matchingDocs);
+        return;
+      }
+    } catch (e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: "an unknown error has occured");
+    }
+  }
+
+  Future searchGroupsByName(StreamController streamController, String input,
+      QuerySnapshot groupDocuments) async {
+    try {
+      streamController.sink.add(ConnectionState.waiting);
+
+      List<QueryDocumentSnapshot> matchingDocs =
+          groupDocuments.docs.where((doc) {
+        return checkForInputMatch(
+            input: input, name: doc.get("nadi_data")["name"].toString());
+      }).toList();
+      if (matchingDocs.isEmpty) {
+        streamController.sink.add([]);
+        return;
+      } else {
+        streamController.sink.add(matchingDocs);
+        return;
+      }
+    } catch (e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: "an unknown error has occured");
+    }
+  }
+
   Future addUserToNadiGroup(user, groupId) async {
     // this function will add the user to the group
     // when he searches for a group from the search bar
     // and then presses it it will add him in the members
-    // list from the group and add the group to the groups
-    // list in the user document
+    // collection in the groups document by his id then add all
+    // the required data in it
     DocumentSnapshot groupDocument =
         await messagesCollection.doc(groupId).get();
 
     // first we add the user to the groups members data
 
     Future addUserToGroup() async {
-      // first will get the list
-      List membersData = groupDocument.get("members");
+      DocumentReference membersData =
+          groupDocument.reference.collection("members").doc(user.uid);
 
-      // then add what we want to it
-      membersData.add({
+      membersData.set({
         "name": user.displayName,
         "email": user.email,
         "cities": user.cities,
+        "userClass": "user",
         "phoneNum": user.phoneNum,
         "creationTime": user.creationTime,
         "lastSignInTime": user.lastSignInTime,
         "doc_reference": DataBaseService().authUsersCollection.doc(user.uid)
       });
-
-      // then update the existing list in the document with the updated list
-      await groupDocument.reference.update({"members": membersData});
     }
 
     // then we add the group to the users group list
@@ -190,11 +262,11 @@ class DataBaseService {
         "name": userAuth.displayName,
         "email": userAuth.email,
         "isAnonymous": userAuth.isAnonymous,
-        "isModerator": false,
+        "userClass": "user",
         "groups": [],
         "cities": userAuth.cities,
         "phoneNum": userAuth.phoneNum,
-        "nadiAdminDoc": null,
+        "groupsAdmin": null,
         "creationTime": userAuth.creationTime,
         "lastSignInTime": userAuth.lastSignInTime
       });
@@ -233,19 +305,20 @@ class DataBaseService {
           }
 
           Future addUserToGroupMembers() async {
-            List membersData = group["members"] as List;
+            DocumentReference membersData =
+                group.reference.collection("members").doc(userAuth.uid);
 
-            membersData.add({
+            membersData.set({
               "name": userAuth.displayName,
               "email": userAuth.email,
-              "isAdmin": userAuth.nadiAdminDoc != null,
               "cities": userAuth.cities,
+              "userClass": "user",
               "phoneNum": userAuth.phoneNum,
               "creationTime": userAuth.creationTime,
               "lastSignInTime": userAuth.lastSignInTime,
-              "doc_reference": authUsersCollection.doc(userAuth.uid)
+              "doc_reference":
+                  DataBaseService().authUsersCollection.doc(userAuth.uid)
             });
-            await group.reference.update({"members": membersData});
           }
 
           await addGroupToUserDoc();
@@ -278,10 +351,8 @@ class DataBaseService {
         name.contains(input.trim()) ||
         name.contains(input.trim().toLowerCase()) ||
         name.toLowerCase().contains(input.toLowerCase()) ||
-        name.endsWith(input) ||
         name.startsWith(input) ||
         input.contains(name) ||
-        input.endsWith(name) ||
         input.startsWith(name) ||
         input.toLowerCase() == name ||
         input.trim() == name ||

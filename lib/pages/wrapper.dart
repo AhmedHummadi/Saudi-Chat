@@ -4,6 +4,7 @@ import 'package:saudi_chat/pages/home/home.dart';
 import 'package:saudi_chat/pages/auth/authenticate.dart';
 import 'package:provider/provider.dart';
 import 'package:saudi_chat/services/auth.dart';
+import 'package:saudi_chat/services/database.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -17,10 +18,15 @@ class Wrapper extends StatelessWidget {
       return Authenticate();
     } else {
       // ignore: prefer_const_constructors
-      return StreamProvider.value(
-          value: AuthService().streamedUser,
-          initialData: UserAuth(),
-          catchError: (context, error) => UserAuth(),
+      return StreamProvider<UserAuth>.value(
+          value: DataBaseService(
+                  uid: streamedUser.uid ?? AuthService().auth.currentUser!.uid)
+              .userAuthStream,
+          initialData: streamedUser,
+          catchError: (context, error) {
+            print(error);
+            return streamedUser;
+          },
           child: const Home());
     }
   }

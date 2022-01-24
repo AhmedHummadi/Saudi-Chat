@@ -156,7 +156,7 @@ class NewsCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   style: TextStyle(
-                                      color: Colors.grey[300], fontSize: 12),
+                                      color: Colors.grey[300], fontSize: 13),
                                 ),
                               ],
                             ),
@@ -297,7 +297,7 @@ class NewsCardPreview extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            news.title!,
+                            news.title!.isEmpty ? "Preview" : news.title!,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: const TextStyle(
@@ -307,11 +307,13 @@ class NewsCardPreview extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
-                            news.description!,
+                            news.description!.isEmpty
+                                ? "This is what your post should look like"
+                                : news.description!,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(
-                                color: Colors.grey[300], fontSize: 12),
+                                color: Colors.grey[300], fontSize: 13),
                           ),
                         ],
                       ),
@@ -345,10 +347,13 @@ class NewsCardPreview extends StatelessWidget {
                       },
                       blendMode: BlendMode.dstIn,
                       child: news.previewImageP == null
-                          ? const Center(
-                              child: Icon(
-                                Icons.image,
-                                size: 30,
+                          ? Container(
+                              color: Colors.white.withOpacity(0.8),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.image,
+                                  size: 30,
+                                ),
                               ),
                             )
                           : Image(

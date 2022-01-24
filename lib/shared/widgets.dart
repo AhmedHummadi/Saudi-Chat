@@ -22,6 +22,7 @@ class MyTextField extends StatelessWidget {
       this.backgroundColor,
       this.maxLength,
       this.hintText,
+      this.controller,
       this.hintTextStyle})
       : super(key: key);
 
@@ -35,7 +36,7 @@ class MyTextField extends StatelessWidget {
   final int? maxLength;
   final Color? backgroundColor;
   final String? hintText;
-
+  final TextEditingController? controller;
   final TextStyle? hintTextStyle;
   final TextStyle? inputStyle;
   final Function(String? val) onChangedVal;
@@ -45,6 +46,8 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        controller: controller,
+        focusNode: FocusNode(canRequestFocus: false),
         obscureText: obscureText ?? false,
         maxLines: maxLines ?? 1,
         maxLength: maxLength,
@@ -83,7 +86,7 @@ class MyDropdownField extends StatelessWidget {
   final OutlineInputBorder? border;
   final TextStyle? labelTextStyle;
   final Function(Object? val) onChanged;
-  final String labelText;
+  final String? labelText;
   final String? validatorText;
   final Color? fillColor;
 
@@ -360,5 +363,35 @@ class MyTooltip extends StatelessWidget {
 
   void _onTap(GlobalKey key) {
     Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_SHORT);
+  }
+}
+
+class ScreenWidthCard extends StatelessWidget {
+  final Widget child;
+  final Function? onTap;
+  final double height;
+  const ScreenWidthCard(
+      {Key? key, required this.child, required this.height, this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap == null ? () {} : () => onTap!(),
+      child: Column(
+        children: [
+          SizedBox(
+            height: height,
+            width: MediaQuery.of(context).size.width,
+            child: child,
+          ),
+          Divider(
+            color: Colors.grey.shade900,
+            thickness: 0.6,
+            height: 0,
+          )
+        ],
+      ),
+    );
   }
 }

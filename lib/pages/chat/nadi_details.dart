@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NadiDetails extends StatefulWidget {
+  final DocumentReference groupDocument;
   final dynamic streamUser;
   final Map groupData;
-  const NadiDetails({Key? key, this.streamUser, required this.groupData})
+  final QuerySnapshot membersCollection;
+  const NadiDetails(
+      {Key? key,
+      this.streamUser,
+      required this.membersCollection,
+      required this.groupData,
+      required this.groupDocument})
       : super(key: key);
 
   @override
@@ -109,13 +117,14 @@ class _NadiDetailsState extends State<NadiDetails> {
                         height: 10,
                       ),
                       Text(
-                        "Members: ${groupData["members"].length.toString()}",
+                        "Members: ${widget.membersCollection.docs.length.toString()}",
                         style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       MembersList(
+                        membersCollection: widget.membersCollection,
                         groupData: groupData,
                         streamedUser: streamedUser,
                       )
@@ -167,8 +176,12 @@ class SpecificDetail extends StatelessWidget {
 class MembersList extends StatelessWidget {
   final dynamic streamedUser;
   final Map groupData;
+  final QuerySnapshot membersCollection;
   const MembersList(
-      {Key? key, required this.streamedUser, required this.groupData})
+      {Key? key,
+      required this.streamedUser,
+      required this.membersCollection,
+      required this.groupData})
       : super(key: key);
 
   @override
@@ -183,7 +196,7 @@ class MembersList extends StatelessWidget {
       width: screenSize.width / 2.2,
       child: SingleChildScrollView(
         child: Column(
-          children: (groupData["members"] as List).map((member) {
+          children: membersCollection.docs.map((member) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -196,7 +209,7 @@ class MembersList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        member["name"],
+                        member.get("name"),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 18,

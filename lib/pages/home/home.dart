@@ -1,4 +1,5 @@
 import 'package:saudi_chat/models/user.dart';
+import 'package:saudi_chat/pages/admin/control_panel.dart';
 import 'package:saudi_chat/pages/chat/chat_list.dart';
 import 'package:saudi_chat/pages/home/search/search_widget.dart';
 import 'package:saudi_chat/pages/news/post_news_page.dart';
@@ -18,7 +19,15 @@ class _HomeState extends State<Home> {
   // ignore: unused_field, prefer_final_fields
   int _currentIndex = 0;
   // ignore: unused_field, prefer_const_constructors
-  final List<Widget> _pages = [const HomePage(), const NewsPage()];
+  final List<Widget> _pages = [
+    const HomePage(),
+    const NewsPage(),
+  ];
+  final List<Widget> _moderatorPages = [
+    const HomePage(),
+    const NewsPage(),
+    const ControlPanelPage()
+  ];
   List<BottomNavigationBarItem> navigationBaritems = [
     const BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
     const BottomNavigationBarItem(
@@ -28,14 +37,23 @@ class _HomeState extends State<Home> {
       ),
     )
   ];
+  List<BottomNavigationBarItem> moderatorNavigationBarItems = [
+    const BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
+    const BottomNavigationBarItem(
+      label: "News",
+      icon: Icon(
+        Icons.article_outlined,
+      ),
+    ),
+    const BottomNavigationBarItem(
+        label: "Control Panel", icon: Icon(Icons.person_outline))
+  ];
 
   @override
   Widget build(BuildContext context) {
     final dynamic streamUser = Provider.of<UserAuth>(context);
     final UserAuth streamedUser = streamUser;
-    if (streamedUser.groups != null &&
-        streamedUser.groups!.isNotEmpty &&
-        streamUser.displayName! != null) {
+    if (streamedUser.groups != null && streamUser.displayName! != null) {
       return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
@@ -44,15 +62,17 @@ class _HomeState extends State<Home> {
                 _currentIndex = index;
               });
             },
-            items: navigationBaritems),
+            items: streamedUser.userClass == UserClass.moderator
+                ? moderatorNavigationBarItems
+                : navigationBaritems),
         drawer: buildDrawer(),
         floatingActionButton: _currentIndex == 1
             ?
             // is on news page
-            // see if he is an Admin to show the post news page
-            streamedUser.nadiAdminDoc != null
+            // see if he is an Admin/Co-Admin to show the post news page
+            streamedUser.groupsAdmin!.isNotEmpty
                 ?
-                // he is admin
+                // he is admin/co-admin
                 FloatingActionButton(
                     tooltip: "Post a story",
                     child: Icon(
@@ -76,7 +96,9 @@ class _HomeState extends State<Home> {
         ),
         body: IndexedStack(
           index: _currentIndex,
-          children: _pages,
+          children: streamedUser.userClass == UserClass.moderator
+              ? _moderatorPages
+              : _pages,
         ),
       );
     } else {

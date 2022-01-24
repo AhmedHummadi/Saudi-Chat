@@ -69,7 +69,10 @@ class _ChatPageState extends State<ChatPage> {
                 toolbarHeight: 60,
                 // ignore: prefer_const_constructors
                 title: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    QuerySnapshot membersCollection =
+                        await widget.groupDocument!.collection("members").get();
+
                     Navigator.push(context, MaterialPageRoute(
                         // needs PageRouteBuilder
                         /*transitionDuration: Duration(milliseconds: 200),
@@ -93,6 +96,8 @@ class _ChatPageState extends State<ChatPage> {
                         builder: (context) {
                       return NadiDetails(
                         streamUser: streamedUser,
+                        groupDocument: widget.groupDocument!,
+                        membersCollection: membersCollection,
                         groupData: snapshot.data!.data() as Map,
                       );
                     }));

@@ -27,6 +27,8 @@ class _AddNewsPageState extends State<AddNewsPage> {
   Image? postImage;
   String? postImagePath;
 
+  String? groupName;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -52,10 +54,46 @@ class _AddNewsPageState extends State<AddNewsPage> {
                   child: Form(
                     key: _formKey,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Visibility(
+                              visible:
+                                  widget.streamedUser.groupsAdmin.length > 1,
+                              child: Text(
+                                "Group :",
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.grey[200]),
+                              ),
+                            ),
+                            Visibility(
+                              visible:
+                                  widget.streamedUser.groupsAdmin.length > 1,
+                              child: const SizedBox(
+                                height: 10,
+                              ),
+                            ),
+                            Visibility(
+                              visible:
+                                  widget.streamedUser.groupsAdmin.length > 1,
+                              child: FutureBuilder(
+                                  future: getGroupsAdminNames(),
+                                  builder: (context, snapshot) {
+                                    return chooseGroupDropdown(
+                                        snapshot.hasData
+                                            ? snapshot.data as List<String>
+                                            : [],
+                                        widget.streamedUser);
+                                  }),
+                            ),
+                            Visibility(
+                              visible:
+                                  widget.streamedUser.groupsAdmin.length > 1,
+                              child: const SizedBox(
+                                height: 16,
+                              ),
+                            ),
                             Text(
                               "Title :",
                               style: TextStyle(
@@ -132,7 +170,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
         Visibility(
             visible: postTitle!.isNotEmpty &&
                 postImage != null &&
-                postDescription!.isNotEmpty,
+                postDescription!.isNotEmpty &&
+                (widget.streamedUser.groupsAdmin.length > 1
+                    ? groupName != null
+                    : true),
             child: Material(
               elevation: 5,
               color: Colors.transparent,
@@ -211,39 +252,109 @@ class _AddNewsPageState extends State<AddNewsPage> {
     );
   }
 
+  Future<List<String>> getGroupsAdminNames() async {
+    // ignore: avoid_single_cascade_in_expression_statements
+    List<String> names = [];
+    List groups = widget.streamedUser.groupsAdmin;
+    Future<String> getGroupName(DocumentReference ref) async {
+      var snapshot = await ref.get();
+      return snapshot.get("nadi_data")["name"];
+    }
+
+    for (var item in groups) {
+      names.add(await getGroupName(item));
+    }
+    return names.length != groups.length ? [] : names;
+  }
+
   Future<void> onPostTapped(UserAuth streamedUser) async {
     try {
       // upload the image into firebase storage and get the url then
       // gather all the details into a map and add them
       // to the news list in the nadis document
+      if (streamedUser.groupsAdmin!.length > 1) {
+        List<DocumentSnapshot> groups = [];
+        for (var groupDoc in streamedUser.groupsAdmin!) {
+          groups.add(await groupDoc.get());
+        }
 
-      // upload the image first then get the url
-      String url = await FireStorage()
-          .uploadImageForNews(File(postImagePath!), streamedUser.nadiAdminDoc!);
+        DocumentReference groupDoc = groups
+            .where((element) => element.get("nadi_data")["name"] == groupName)
+            .single
+            .reference;
 
-      // parse the nadi doc into a map for the details
+        // upload the image first then get the url
+        String url = await FireStorage()
+            .uploadImageForNews(File(postImagePath!), groupDoc);
 
-      DocumentReference nadiDoc =
-          DataBaseService().nadiCollection.doc(streamedUser.nadiAdminDoc!.id);
+        // parse the nadi doc into a map for the details
 
-      Map nadiData = (await nadiDoc.get()).data() as Map;
+        DocumentReference nadiDoc =
+            DataBaseService().nadiCollection.doc(groupDoc.id);
 
-      nadiData.remove("news");
+        Map nadiData = (await nadiDoc.get()).data() as Map;
 
-      // convert the details into a map then upload it to firestore
-      Map details = {
-        "dateCreated": Timestamp.now(),
-        "imageUrl": url,
-        "nadi": nadiData,
-        "nadiDoc": nadiDoc,
-        "description": postDescription,
-        "title": postTitle
-      };
+        nadiData.remove("news");
 
-      await DataBaseService().postNews(details);
+        // convert the details into a map then upload it to firestore
+        Map details = {
+          "dateCreated": Timestamp.now(),
+          "imageUrl": url,
+          "nadi": nadiData,
+          "nadiDoc": nadiDoc,
+          "description": postDescription,
+          "title": postTitle
+        };
+
+        await DataBaseService().postNews(details);
+        return;
+      } else {
+        // upload the image first then get the url
+        String url = await FireStorage().uploadImageForNews(
+            File(postImagePath!), streamedUser.groupsAdmin![0]);
+
+        // parse the nadi doc into a map for the details
+
+        DocumentReference nadiDoc = DataBaseService()
+            .nadiCollection
+            .doc(streamedUser.groupsAdmin![0].id);
+
+        Map nadiData = (await nadiDoc.get()).data() as Map;
+
+        nadiData.remove("news");
+
+        // convert the details into a map then upload it to firestore
+        Map details = {
+          "dateCreated": Timestamp.now(),
+          "imageUrl": url,
+          "nadi": nadiData,
+          "nadiDoc": nadiDoc,
+          "description": postDescription,
+          "title": postTitle
+        };
+
+        await DataBaseService().postNews(details);
+        return;
+      }
     } catch (e) {
       rethrow;
     }
+  }
+
+  Widget chooseGroupDropdown(List<String> itemList, UserAuth streamedUser) {
+    return MyDropdownField(
+        fillColor: Colors.white.withOpacity(0.8),
+        border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(10)),
+        itemsList: itemList,
+        onChanged: (val) {
+          setState(() {
+            groupName = val.toString();
+          });
+        },
+        validatorText: "Please choose a group",
+        labelText: null);
   }
 
   Widget imageContainerField() {

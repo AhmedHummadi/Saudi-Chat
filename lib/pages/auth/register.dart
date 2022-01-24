@@ -237,7 +237,6 @@ class _RegisterState extends State<Register> {
                   registerCities.add(catagory.toString());
                 });
               }
-              print(registerCities);
             },
             labelText: "Cities"),
         SingleChildScrollView(
@@ -274,10 +273,7 @@ class _RegisterState extends State<Register> {
                             ),
                             Text(e,
                                 style: TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2!
-                                        .color))
+                                    color: Theme.of(context).primaryColor))
                           ],
                         ),
                       ),

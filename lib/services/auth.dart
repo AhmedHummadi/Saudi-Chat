@@ -13,6 +13,7 @@ class AuthService {
         creationTime: user.metadata.creationTime,
         lastSignInTime: user.metadata.lastSignInTime,
         isAnonymous: user.isAnonymous,
+        userClass: UserClass.user,
         displayName: user.displayName,
         email: user.email);
   }
