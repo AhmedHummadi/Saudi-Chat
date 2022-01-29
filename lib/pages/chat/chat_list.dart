@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatList extends StatefulWidget {
-  final dynamic streamedUser;
-  const ChatList({Key? key, required this.streamedUser}) : super(key: key);
+  final bool? isHomeStyle;
+  const ChatList({Key? key, this.isHomeStyle}) : super(key: key);
 
   @override
   _ChatListState createState() => _ChatListState();
@@ -53,8 +53,17 @@ class _ChatListState extends State<ChatList> {
                   Column(mainAxisSize: MainAxisSize.max, children: widgetsList),
             );
           } else {
-            return const Center(
-              child: Text("Loading..."),
+            return const Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text(
+                  "Loading...",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
             );
           }
         });
@@ -78,25 +87,28 @@ class _ChatListState extends State<ChatList> {
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
               child: ListTile(
                 leading: CircleAvatar(
-                  radius: 30,
+                  radius: 28,
                   backgroundImage: Image.asset(
                     "assets/new_nadi_profile_pic.jpg",
                   ).image,
                 ),
                 title: Text(
                   data.nadiName!,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                      color: widget.isHomeStyle == true
+                          ? Colors.white
+                          : Colors.black),
                 ),
               ),
             ),
           ),
-          const Divider(
-            indent: 1,
-            endIndent: 1,
-            thickness: 0.8,
-            height: 0,
-            color: Colors.grey,
+          Visibility(
+            visible: widget.isHomeStyle == true ? false : true,
+            child: Divider(
+              color: Colors.grey[700],
+              thickness: 0.7,
+              height: 10,
+            ),
           )
         ],
       ),
@@ -140,6 +152,14 @@ class _ChatListState extends State<ChatList> {
               streamedUser: streamedUser,
               bussinessDoc: bussinessDoc,
               documentReference: nadiMessageDoc.reference));
+
+          if (widget.isHomeStyle == false) {
+            widgets.insert(
+                0,
+                const SizedBox(
+                  height: 10,
+                ));
+          }
 
           fun(widgets);
         }

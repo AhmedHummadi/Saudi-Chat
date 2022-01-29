@@ -7,6 +7,7 @@ import 'package:saudi_chat/pages/news/news_list.dart';
 import 'package:saudi_chat/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -19,34 +20,21 @@ class _HomeState extends State<Home> {
   // ignore: unused_field, prefer_final_fields
   int _currentIndex = 0;
   // ignore: unused_field, prefer_const_constructors
-  final List<Widget> _pages = [
-    const HomePage(),
-    const NewsPage(),
+  final List<Widget> _pages = const [
+    HomePage(),
+    ChatPage(),
+    NewsPage(),
   ];
-  final List<Widget> _moderatorPages = [
-    const HomePage(),
-    const NewsPage(),
-    const ControlPanelPage()
-  ];
-  List<BottomNavigationBarItem> navigationBaritems = [
-    const BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
-    const BottomNavigationBarItem(
+
+  List<BottomNavigationBarItem> navigationBaritems = const [
+    BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
+    BottomNavigationBarItem(label: "Chat", icon: Icon(Icons.chat)),
+    BottomNavigationBarItem(
       label: "News",
       icon: Icon(
         Icons.article_outlined,
       ),
     )
-  ];
-  List<BottomNavigationBarItem> moderatorNavigationBarItems = [
-    const BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
-    const BottomNavigationBarItem(
-      label: "News",
-      icon: Icon(
-        Icons.article_outlined,
-      ),
-    ),
-    const BottomNavigationBarItem(
-        label: "Control Panel", icon: Icon(Icons.person_outline))
   ];
 
   @override
@@ -56,6 +44,8 @@ class _HomeState extends State<Home> {
     if (streamedUser.groups != null && streamUser.displayName! != null) {
       return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
+            unselectedItemColor: Colors.grey[600],
+            type: BottomNavigationBarType.shifting,
             currentIndex: _currentIndex,
             onTap: (index) {
               setState(() {
@@ -63,10 +53,15 @@ class _HomeState extends State<Home> {
               });
             },
             items: streamedUser.userClass == UserClass.moderator
-                ? moderatorNavigationBarItems
+                ? navigationBaritems +
+                    [
+                      const BottomNavigationBarItem(
+                          label: "Control Panel",
+                          icon: Icon(Icons.person_outline))
+                    ]
                 : navigationBaritems),
         drawer: buildDrawer(),
-        floatingActionButton: _currentIndex == 1
+        floatingActionButton: _currentIndex == 2
             ?
             // is on news page
             // see if he is an Admin/Co-Admin to show the post news page
@@ -91,13 +86,19 @@ class _HomeState extends State<Home> {
             // is on home page
             : null,
         appBar: AppBar(
-          title: Text(_currentIndex == 1 ? "News" : "Home"),
+          title: Text(_currentIndex == 0
+              ? "Home"
+              : _currentIndex == 1
+                  ? "Chat"
+                  : _currentIndex == 2
+                      ? "News"
+                      : "Control Panel"),
           centerTitle: true,
         ),
         body: IndexedStack(
           index: _currentIndex,
           children: streamedUser.userClass == UserClass.moderator
-              ? _moderatorPages
+              ? _pages + [const ControlPanelPage()]
               : _pages,
         ),
       );
@@ -135,14 +136,9 @@ class _HomeState extends State<Home> {
   }
 }
 
-class NewsPage extends StatefulWidget {
+class NewsPage extends StatelessWidget {
   const NewsPage({Key? key}) : super(key: key);
 
-  @override
-  _NewsPageState createState() => _NewsPageState();
-}
-
-class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     final dynamic streamedUser = Provider.of<UserAuth>(context);
@@ -152,34 +148,83 @@ class _NewsPageState extends State<NewsPage> {
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class ChatPage extends StatelessWidget {
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  Widget build(BuildContext context) {
+    return const ChatList();
+  }
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final dynamic streamedUser = Provider.of<UserAuth>(context);
 
     return Stack(fit: StackFit.loose, children: [
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-            height: 70,
-          ),
-          const Divider(
-            thickness: 1,
-            color: Colors.grey,
-            height: 0,
-          ),
-          ChatList(
-            streamedUser: streamedUser,
-          ),
-        ],
+      SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(
+              height: 69,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                elevation: 2,
+                child: Container(
+                  constraints: BoxConstraints.loose(const Size.fromHeight(150)),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehaviour(),
+                    child: const SingleChildScrollView(
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4),
+                        child: ChatList(
+                          isHomeStyle: true,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  constraints: BoxConstraints.loose(const Size.fromHeight(360)),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: NewsList(
+                      streamedUser: streamedUser,
+                      isHomeStyle: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       const SizedBox(child: SearchNadis()),
     ]);

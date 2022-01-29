@@ -47,7 +47,6 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
         controller: controller,
-        focusNode: FocusNode(canRequestFocus: false),
         obscureText: obscureText ?? false,
         maxLines: maxLines ?? 1,
         maxLength: maxLength,
@@ -385,13 +384,162 @@ class ScreenWidthCard extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: child,
           ),
-          Divider(
-            color: Colors.grey.shade900,
-            thickness: 0.6,
-            height: 0,
-          )
         ],
       ),
     );
+  }
+}
+
+late OverlayEntry? _showCenterScreenMenuOverlayEntry;
+
+void showCenterScreenMenu(BuildContext context, CenterScreenOptionsMenu menu) {
+  _showCenterScreenMenuOverlayEntry = OverlayEntry(builder: (context) {
+    return Material(
+      color: Colors.transparent,
+      child: menu,
+    );
+  });
+  Overlay.of(context)!.insert(_showCenterScreenMenuOverlayEntry!);
+}
+
+class CenterScreenOptionsMenu extends StatelessWidget {
+  final List<CSOM> items;
+  final Function(dynamic) onSelected;
+  const CenterScreenOptionsMenu(
+      {Key? key, required this.items, required this.onSelected})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      GestureDetector(
+        onTap: () => _showCenterScreenMenuOverlayEntry!.remove(),
+        child: PlayAnimation<double>(
+          tween: Tween(begin: 0.0, end: 0.5),
+          duration: const Duration(milliseconds: 130),
+          builder: (context, child, value) => Container(
+            color: Colors.black.withOpacity(value),
+          ),
+        ),
+      ),
+      Center(
+        child: PlayAnimation<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: const Duration(milliseconds: 130),
+          builder: (context, child, value) => Container(
+            constraints: BoxConstraints.tightFor(
+                width: MediaQuery.of(context).size.width / 2.2,
+                height: items.length * items.first.height! + 28),
+            decoration: BoxDecoration(
+              color: Colors.grey[850]!.withOpacity(value),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(14),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items.map((csom) {
+                  if (csom.type == CenterScreenOptionsMenuItem) {
+                    var item = csom as CenterScreenOptionsMenuItem;
+                    return SizedBox(
+                      width: Size.infinite.width,
+                      height: item.height,
+                      child: InkWell(
+                        splashColor: Colors.white,
+                        onTap: () {
+                          onSelected(item.value);
+                          _showCenterScreenMenuOverlayEntry!.remove();
+                        },
+                        child: Padding(
+                          padding:
+                              EdgeInsets.fromLTRB(0, item.height! / 4, 0, 0),
+                          child: Text(
+                            item.text,
+                            style: Theme.of(context)
+                                .popupMenuTheme
+                                .textStyle!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    assert(csom.type == CenterScreenOptionsMenuDropDown);
+                    var item = csom as CenterScreenOptionsMenuDropDown;
+                    return SizedBox(
+                        width: Size.infinite.width,
+                        height: item.height,
+                        child: DropdownButton(
+                            items: item.items
+                                .map((e) => DropdownMenuItem(
+                                    value: e, child: Text(e.toString())))
+                                .toList(),
+                            onChanged: (index) {
+                              //
+                            }));
+                  }
+                }).toList()),
+          ),
+        ),
+      )
+    ]);
+  }
+}
+
+class CSOMKickBanAMember extends StatefulWidget {
+  const CSOMKickBanAMember({Key? key}) : super(key: key);
+
+  @override
+  _CSOMKickBanAMemberState createState() => _CSOMKickBanAMemberState();
+}
+
+class _CSOMKickBanAMemberState extends State<CSOMKickBanAMember> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class CenterScreenOptionsMenuItem extends CSOM {
+  final String text;
+  CenterScreenOptionsMenuItem(
+      {required this.text, dynamic value, double? height})
+      : super(value: value, height: height);
+
+  @override
+  Type get type => CenterScreenOptionsMenuItem;
+}
+
+class CenterScreenOptionsMenuDropDown extends CSOM {
+  final String title;
+  final List<String> items;
+  final Function(dynamic) onChanged;
+
+  CenterScreenOptionsMenuDropDown({
+    required this.onChanged,
+    required this.title,
+    required this.items,
+    dynamic value,
+  }) : super(value: value);
+
+  @override
+  Type get type => CenterScreenOptionsMenuDropDown;
+}
+
+abstract class CSOM {
+  final dynamic value;
+  double? height = 40;
+
+  CSOM({required this.value, this.height});
+
+  double get width => Size.infinite.width;
+
+  Type get type => CSOM;
+}
+
+class NoGlowScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }

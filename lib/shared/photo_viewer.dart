@@ -35,7 +35,7 @@ class _DetailScreenState extends State<DetailScreen> {
         body: Stack(children: <Widget>[
           Center(
             child: PhotoView(
-              filterQuality: FilterQuality.high,
+              filterQuality: FilterQuality.medium,
               heroAttributes: PhotoViewHeroAttributes(tag: widget.tag!),
               maxScale: PhotoViewComputedScale.contained * 2,
               minScale: PhotoViewComputedScale.contained,
@@ -122,19 +122,16 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
 
     try {
       // ignore: unused_local_variable
-      bool downloaded = await FireStorage.saveImage(
-          imageMessage["storage_path"], imageMessage["url"]);
+      bool downloaded = await FireStorage.saveImage(imageMessage["url"]);
       if (downloaded) {
-        Fluttertoast.showToast(
-            msg: imageMessage["storage_path"].toString().endsWith(".mp4")
-                ? "Video saved"
-                : "Image saved");
+        Fluttertoast.showToast(msg: "Image saved");
         setState(() {
           isLoading = false;
         });
       }
-    } catch (e) {
-      print(e.toString()); // TODO: Test
+    } catch (e, stackTrace) {
+      print(e.toString());
+      print(stackTrace); // TODO: Test
       Fluttertoast.showToast(
           msg: "Could not download File, an error has occured");
       setState(() {

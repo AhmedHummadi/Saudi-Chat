@@ -244,7 +244,7 @@ class _AudioContainerState extends State<AudioContainer>
               visible: !isInitialized,
               height: 50,
               strokeWidth: 2,
-              colors: [Colors.white, Theme.of(context).colorScheme.surface],
+              colors: const [Colors.white, Colors.black],
               radius: 10),
     );
   }

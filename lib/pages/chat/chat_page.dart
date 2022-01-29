@@ -68,6 +68,37 @@ class _ChatPageState extends State<ChatPage> {
               appBar: AppBar(
                 toolbarHeight: 60,
                 // ignore: prefer_const_constructors
+                actions: [
+                  IconButton(
+                      onPressed: () => showCenterScreenMenu(
+                          context,
+                          CenterScreenOptionsMenu(
+                            items: [
+                              CenterScreenOptionsMenuItem(
+                                  text: "Delete a message",
+                                  value: 0,
+                                  height: 50),
+                              CenterScreenOptionsMenuItem(
+                                  text: "Kick/Ban a member",
+                                  value: 1,
+                                  height: 50),
+                            ],
+                            onSelected: (index) {
+                              switch (index) {
+                                case 0:
+                                  // Delete a message
+                                  break;
+                                case 1:
+                                  // Kick/Ban a member
+                                  break;
+                              }
+                            },
+                          )),
+                      icon: const Icon(
+                        Icons.admin_panel_settings,
+                        size: 30,
+                      ))
+                ],
                 title: GestureDetector(
                   onTap: () async {
                     QuerySnapshot membersCollection =
@@ -282,7 +313,7 @@ class _ChatPageState extends State<ChatPage> {
                   items: [PopupMenuItem(child: Text("Hi"))]);
             },*/
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 13, 16, 13),
+              padding: const EdgeInsets.fromLTRB(16.0, 10, 16, 10),
               child: Column(
                 crossAxisAlignment: elementCheck ? myAlignment : theirAlignment,
                 children: [

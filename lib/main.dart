@@ -14,7 +14,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  // This widget is the root of your application.~
   @override
   Widget build(BuildContext context) {
     return StreamProvider<UserAuth?>.value(
@@ -26,12 +26,18 @@ class MyApp extends StatelessWidget {
       },
       child: MaterialApp(
           title: 'Saudi Chat',
+          themeMode: ThemeMode.system,
           theme: ThemeData(
               fontFamily: "Roboto",
               primaryColor: const Color(0xff009688),
               backgroundColor: Colors.white.withOpacity(0.7),
               primaryColorDark: const Color(0xff004d40),
               primaryColorLight: const Color(0xffB2DFDB),
+              popupMenuTheme: PopupMenuThemeData(
+                textStyle: const TextStyle(fontSize: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(9)),
+              ),
               colorScheme: const ColorScheme(
                   primary: Color(0xff009688),
                   primaryVariant: Color(0xff00695C),
@@ -57,8 +63,12 @@ class MyApp extends StatelessWidget {
                       color: Colors
                           .grey.shade800), // for text message names and time
                   headline2: TextStyle(color: Colors.teal.shade700),
+                  headline3: const TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w500), // for chat list text
                   button: const TextStyle(color: Color(0xff0A6F65))),
               textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: Colors.grey,
                   selectionColor: Colors.white.withOpacity(0.4),
                   selectionHandleColor: Colors.teal.shade200)),
           home: const Wrapper()),

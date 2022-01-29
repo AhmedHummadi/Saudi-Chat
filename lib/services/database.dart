@@ -124,7 +124,16 @@ class DataBaseService {
       List groupsAdmin = userDoc.get("groupsAdmin") as List;
       groupsAdmin.add(groupDoc.reference);
 
-      userDoc.reference.update({"groupsAdmin": groupsAdmin});
+      userDoc.reference
+          .update({"groupsAdmin": groupsAdmin, "userClass": "admin"});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future assignModerator(DocumentSnapshot userDoc) async {
+    try {
+      userDoc.reference.update({"userClass": "moderator"});
     } catch (e) {
       rethrow;
     }
@@ -266,7 +275,7 @@ class DataBaseService {
         "groups": [],
         "cities": userAuth.cities,
         "phoneNum": userAuth.phoneNum,
-        "groupsAdmin": null,
+        "groupsAdmin": [],
         "creationTime": userAuth.creationTime,
         "lastSignInTime": userAuth.lastSignInTime
       });

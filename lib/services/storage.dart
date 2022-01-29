@@ -35,31 +35,26 @@ class FireStorage {
     }
   }
 
-  static Future saveImage(String path, String url) async {
-    if (path.endsWith(".mp4") || url.contains(".mp4")) {
-      try {
-        final String cache = (await getTemporaryDirectory()).path;
-        final String fullPath = "$cache/$path";
-        bool? isSaved = await GallerySaver.saveVideo(fullPath);
-        return isSaved;
-      } catch (e) {
-        print(e.toString()); // TODO: Test
-      }
-    } else {
-      try {
-        final String dir = (await getTemporaryDirectory()).path;
-        final String fullPath = '$dir/${DateTime.now().millisecond}.jpg';
-        final File capturedFile = await File(fullPath).create();
-        final response = await get(Uri.parse(url));
-        final finalFile = await capturedFile.writeAsBytes(response.bodyBytes);
-        /*final imagebytes = await imageFile.readAsBytes();
-    final finalFile = await capturedFile.writeAsBytes(imagebytes);*/
-        bool? isSaved = await GallerySaver.saveImage(finalFile.absolute.path);
+  static Future saveImage(String url) async {
+    try {
+      final String fileId = const Uuid().v4();
+      final String dir = (await getTemporaryDirectory()).path;
+      final String fullPath = '$dir/$fileId.jpg';
+      final File capturedFile = await File(fullPath).create();
+      final response = await get(Uri.parse(url));
+      final finalFile = await capturedFile.writeAsBytes(response.bodyBytes);
 
-        return isSaved;
-      } catch (e) {
-        print(e.toString()); // TODO: Test
+      bool? isSaved = await GallerySaver.saveImage(finalFile.absolute.path,
+          albumName: "Downloads");
+
+      // remove the image from the cache
+      if (isSaved!) {
+        await capturedFile.delete();
       }
+
+      return isSaved;
+    } catch (e) {
+      print(e.toString()); // TODO: Test
     }
   }
 }

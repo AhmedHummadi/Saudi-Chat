@@ -75,6 +75,7 @@ class NewsDetailsPage extends StatelessWidget {
                             BoxConstraints.loose(const Size.fromHeight(300)),
                         child: CachedNetworkImage(
                           imageUrl: news.imageUrl!,
+                          filterQuality: FilterQuality.low,
                           width: MediaQuery.of(context).size.width,
                           fit: BoxFit.fitWidth,
                           placeholder: (context, url) => Container(
