@@ -239,7 +239,7 @@ class PendingOutlinedScreen extends StatelessWidget {
                 fps: 60,
                 curve: Curves.linear,
                 builder: (context, child, value) => CustomPaint(
-                  painter: _GradientPainter(
+                  painter: GradientPainter(
                       strokeWidth: strokeWidth,
                       radius: radius,
                       gradient: LinearGradient(
@@ -254,13 +254,13 @@ class PendingOutlinedScreen extends StatelessWidget {
   }
 }
 
-class _GradientPainter extends CustomPainter {
+class GradientPainter extends CustomPainter {
   final Paint _paint = Paint();
   final double radius;
   final double strokeWidth;
   final Gradient gradient;
 
-  _GradientPainter(
+  GradientPainter(
       {required this.strokeWidth,
       required this.radius,
       required this.gradient});
@@ -322,7 +322,7 @@ class PendingBar extends StatelessWidget {
                 fps: 60,
                 curve: Curves.linear,
                 builder: (context, child, value) => CustomPaint(
-                  painter: _GradientPainter(
+                  painter: GradientPainter(
                       strokeWidth: strokeWidth,
                       radius: radius,
                       gradient: LinearGradient(

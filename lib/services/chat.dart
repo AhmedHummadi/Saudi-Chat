@@ -2,12 +2,12 @@
 
 import 'dart:io';
 import 'package:saudi_chat/models/message.dart';
+import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:gallery_saver/files.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 enum MessageException {
@@ -29,23 +29,6 @@ class MessageDatabase {
 
   final Future<Directory> cache = getTemporaryDirectory();
 
-  Future createMessageData(
-      {required String fromId, required String toId}) async {
-    try {
-      String groupChatId = "$fromId-$toId";
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      _prefs.setString("groupChatId", groupChatId);
-      DocumentReference groupDocument = messagesCollection.doc(groupChatId);
-      groupDocument
-          .set({"messages": [], "users_name": [], "time_of_messages": []});
-      return groupDocument;
-    } catch (e) {
-      print(e.toString());
-      // return null;
-      return Future.error(MessageException.create_message_error);
-    }
-  }
-
   // add message to group chat
   Future addMessageToGroup({
     String? groupId,
@@ -60,10 +43,12 @@ class MessageDatabase {
               DocumentSnapshot doc =
                   await messagesCollection.doc(groupId).get();
               Map data = doc.data() as Map;
-              List messageData = data["messages"] as List;
-              List userNamesData = data["users_name"] as List;
-              List timeData = data["time_of_messages"] as List;
-              List docsData = data["users_doc_reference"] as List;
+              GroupData groupData = GroupData.parse(data);
+
+              List messageData = groupData.messages as List;
+              List userNamesData = groupData.users_name as List;
+              List timeData = groupData.time_of_messages as List;
+              List docsData = groupData.users_doc_references as List;
 
               messageData.add(message.message);
               userNamesData.add(message.userName);
@@ -96,10 +81,13 @@ class MessageDatabase {
             if (message.message!.trim() != "") {
               DocumentSnapshot doc = await groupDocument.get();
               Map data = doc.data() as Map;
-              List messageData = data["messages"] as List;
-              List userNamesData = data["users_name"] as List;
-              List timeData = data["time_of_messages"] as List;
-              List docsData = data["users_doc_reference"] as List;
+
+              GroupData groupData = GroupData.parse(data);
+
+              List messageData = groupData.messages as List;
+              List userNamesData = groupData.users_name as List;
+              List timeData = groupData.time_of_messages as List;
+              List docsData = groupData.users_doc_references as List;
 
               messageData.add(message.message);
               userNamesData.add(message.userName);
@@ -141,10 +129,12 @@ class MessageDatabase {
 
       DocumentSnapshot doc = await groupDocument.get();
       Map data = doc.data() as Map;
-      List messageData = data["messages"] as List;
-      List userNamesData = data["users_name"] as List;
-      List timeData = data["time_of_messages"] as List;
-      List docsData = data["users_doc_reference"] as List;
+      GroupData groupData = GroupData.parse(data);
+
+      List messageData = groupData.messages as List;
+      List userNamesData = groupData.users_name as List;
+      List timeData = groupData.time_of_messages as List;
+      List docsData = groupData.users_doc_references as List;
 
       messageData.add({"url": url, "storage_path": uploadTask.ref.fullPath});
       userNamesData.add(message.userName);
@@ -180,10 +170,12 @@ class MessageDatabase {
 
       DocumentSnapshot doc = await groupDocument.get();
       Map data = doc.data() as Map;
-      List messageData = data["messages"] as List;
-      List userNamesData = data["users_name"] as List;
-      List timeData = data["time_of_messages"] as List;
-      List docsData = data["users_doc_reference"] as List;
+      GroupData groupData = GroupData.parse(data);
+
+      List messageData = groupData.messages as List;
+      List userNamesData = groupData.users_name as List;
+      List timeData = groupData.time_of_messages as List;
+      List docsData = groupData.users_doc_references as List;
 
       messageData.add({"url": url, "storage_path": uploadTask.ref.fullPath});
       userNamesData.add(message.userName);

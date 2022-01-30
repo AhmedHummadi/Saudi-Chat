@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
                       fontWeight: FontWeight.w500), // for chat list text
                   button: const TextStyle(color: Color(0xff0A6F65))),
               textSelectionTheme: TextSelectionThemeData(
-                  cursorColor: Colors.grey,
+                  cursorColor: Colors.white,
                   selectionColor: Colors.white.withOpacity(0.4),
                   selectionHandleColor: Colors.teal.shade200)),
           home: const Wrapper()),

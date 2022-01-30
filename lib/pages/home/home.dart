@@ -23,16 +23,16 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = const [
     HomePage(),
     ChatPage(),
-    NewsPage(),
+    GroupsPage(),
   ];
 
   List<BottomNavigationBarItem> navigationBaritems = const [
     BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
     BottomNavigationBarItem(label: "Chat", icon: Icon(Icons.chat)),
     BottomNavigationBarItem(
-      label: "News",
+      label: "Groups",
       icon: Icon(
-        Icons.article_outlined,
+        Icons.groups_rounded,
       ),
     )
   ];
@@ -91,7 +91,7 @@ class _HomeState extends State<Home> {
               : _currentIndex == 1
                   ? "Chat"
                   : _currentIndex == 2
-                      ? "News"
+                      ? "Groups"
                       : "Control Panel"),
           centerTitle: true,
         ),
@@ -136,8 +136,8 @@ class _HomeState extends State<Home> {
   }
 }
 
-class NewsPage extends StatelessWidget {
-  const NewsPage({Key? key}) : super(key: key);
+class GroupsPage extends StatelessWidget {
+  const GroupsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -168,38 +168,32 @@ class HomePage extends StatelessWidget {
       SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
-              height: 69,
+              height: 60,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                elevation: 2,
-                child: Container(
-                  constraints: BoxConstraints.loose(const Size.fromHeight(150)),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehaviour(),
-                    child: const SingleChildScrollView(
-                      clipBehavior: Clip.antiAlias,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4),
-                        child: ChatList(
-                          isHomeStyle: true,
-                        ),
-                      ),
-                    ),
+            ScrollConfiguration(
+              behavior: NoGlowScrollBehaviour(),
+              child: const SingleChildScrollView(
+                clipBehavior: Clip.antiAlias,
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: ChatList(
+                    isHomeStyle: true,
                   ),
                 ),
               ),
             ),
+            Divider(
+              height: 10,
+              indent: 20,
+              endIndent: 20,
+              color: Colors.grey[600],
+            ),
             const SizedBox(
-              height: 16,
+              height: 12,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),

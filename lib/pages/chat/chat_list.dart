@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
@@ -7,6 +8,7 @@ import 'package:saudi_chat/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saudi_chat/services/device_storage.dart';
 
 class ChatList extends StatefulWidget {
   final bool? isHomeStyle;
@@ -32,15 +34,17 @@ class _ChatListState extends State<ChatList> {
               //buildNadiData(snapshot.data!, streamedUser);
               // condition helps to not redo finddocuments() and
               // build the tree multiple times
-              if (snapshot.data!.docs.where((element) {
-                    // Map data = element.data() as Map;
-                    List groups = (streamedUser.groups as List).map((group) {
-                      return group["nadi_id"];
-                    }).toList();
-                    return groups.contains(element.id);
-                  }).length !=
-                  widgetsList.length) {
-                findDocuments(snapshot.data, streamedUser, (widgets) {
+
+              List<DocumentSnapshot> docs =
+                  snapshot.data!.docs.where((element) {
+                // Map data = element.data() as Map;
+                List groups = (streamedUser.groups as List).map((group) {
+                  return group["nadi_id"];
+                }).toList();
+                return groups.contains(element.id);
+              }).toList();
+              if (docs.length != widgetsList.length) {
+                findDocuments(docs, snapshot.data, streamedUser, (widgets) {
                   setState(() {
                     widgetsList = widgets;
                   });
@@ -48,10 +52,18 @@ class _ChatListState extends State<ChatList> {
               }
             }
 
-            return SingleChildScrollView(
-              child:
-                  Column(mainAxisSize: MainAxisSize.max, children: widgetsList),
-            );
+            return widget.isHomeStyle == true
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: widgetsList),
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max, children: widgetsList),
+                  );
           } else {
             return const Padding(
               padding: EdgeInsets.all(24),
@@ -94,43 +106,101 @@ class _ChatListState extends State<ChatList> {
                 ),
                 title: Text(
                   data.nadiName!,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                      color: widget.isHomeStyle == true
-                          ? Colors.white
-                          : Colors.black),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3!
+                      .copyWith(color: Colors.black),
                 ),
               ),
             ),
           ),
-          Visibility(
-            visible: widget.isHomeStyle == true ? false : true,
-            child: Divider(
-              color: Colors.grey[700],
-              thickness: 0.7,
-              height: 10,
-            ),
+          Divider(
+            color: Colors.grey[700],
+            thickness: 0.7,
+            height: 10,
           )
         ],
       ),
     );
   }
 
-  /*void buildNadiData(QuerySnapshot<Object?> nadiData, streamedUser) async {
-    print("In Build Nadi Data");
-    List<NadiData> nadisThatDontExist = nadis;
-    nadiData.docs.map((messageDoc) {
-      nadisThatDontExist.removeWhere(
-          ((nadi) => !(nadi.nadiName == messageDoc["nadi_data"]["name"])));
-    });
-    for (var element in nadisThatDontExist) {
-      print(element.nadiName);
-      await DataBaseService().createNadiData(element);
-    }
-  }*/
+  // this is the function that will build all the widgets
+  // that will be used to view the groups in the home page
+  // Horizontal style
+  Widget buildHomeItem(
+      {required BuildContext context,
+      required NadiData data,
+      required bool unreadMessages,
+      required DocumentReference groupDoc,
+      required dynamic streamedUser,
+      required DocumentReference documentReference}) {
+    List<Color> gradientColors = unreadMessages == true
+        ? [
+            Theme.of(context).colorScheme.secondary,
+            Theme.of(context).colorScheme.surface
+          ]
+        : [Colors.grey.shade200, Colors.grey.shade400];
 
-  void findDocuments(QuerySnapshot<Object?>? nadiMessageData, streamedUser,
+    const double kContainerRadius = 82;
+
+    const double kBorderThickness = 2;
+
+    final kGradientBoxDecoration = BoxDecoration(
+        gradient: LinearGradient(colors: gradientColors),
+        shape: BoxShape.circle);
+
+    return GestureDetector(
+      onTap: () async {
+        await onItemTap(streamedUser, documentReference, groupDoc);
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 0, 0, 4),
+        child: Column(
+          children: [
+            Container(
+              decoration: kGradientBoxDecoration,
+              height: kContainerRadius,
+              padding: const EdgeInsets.all(kBorderThickness),
+              child: Container(
+                height: kContainerRadius - (kBorderThickness + 2),
+                padding: const EdgeInsets.all(3),
+                decoration: const BoxDecoration(
+                    color: Colors.white, shape: BoxShape.circle),
+                child: CircleAvatar(
+                  radius: 32,
+                  backgroundImage: Image.asset(
+                    "assets/new_nadi_profile_pic.jpg",
+                  ).image,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: kContainerRadius,
+              height: 14,
+              child: Center(
+                child: Text(
+                  data.nadiName!,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontSize: 12, fontWeight: FontWeight.normal),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void findDocuments(
+      List<DocumentSnapshot> docs,
+      QuerySnapshot<Object?>? nadiMessageData,
+      streamedUser,
       Function(List<Widget> widgets) fun) async {
     List<Widget> widgets = [];
+
     if (nadiMessageData != null && nadiMessageData.docs.isNotEmpty) {
       widgets = [];
       List<QueryDocumentSnapshot> documentsList = nadiMessageData.docs;
@@ -146,12 +216,22 @@ class _ChatListState extends State<ChatList> {
 
           NadiData docData =
               DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
-          widgets.add(buildItem(
-              context: context,
-              data: docData,
-              streamedUser: streamedUser,
-              bussinessDoc: bussinessDoc,
-              documentReference: nadiMessageDoc.reference));
+
+          widgets.add(widget.isHomeStyle == true
+              ? buildHomeItem(
+                  context: context,
+                  data: docData,
+                  unreadMessages: await DeviceStorage()
+                      .isLastMessageUnread(bussinessDoc.id),
+                  streamedUser: streamedUser,
+                  groupDoc: bussinessDoc,
+                  documentReference: nadiMessageDoc.reference)
+              : buildItem(
+                  context: context,
+                  data: docData,
+                  streamedUser: streamedUser,
+                  bussinessDoc: bussinessDoc,
+                  documentReference: nadiMessageDoc.reference));
 
           if (widget.isHomeStyle == false) {
             widgets.insert(

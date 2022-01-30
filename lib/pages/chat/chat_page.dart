@@ -48,6 +48,12 @@ class _ChatPageState extends State<ChatPage> {
   bool isLoading = false;
 
   @override
+  void dispose() {
+    print("FI");
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     dynamic streamedUser =
         widget.streamedUser ?? Provider.of<UserAuth>(context);
@@ -230,9 +236,11 @@ class _ChatPageState extends State<ChatPage> {
     // group document data
 
     Map data = document.data() as Map;
-    List messages = data["messages"];
-    List userNames = data["users_name"];
-    List times = data["time_of_messages"];
+    GroupData groupData = GroupData.parse(data);
+
+    List messages = groupData.messages as List;
+    List userNames = groupData.users_name as List;
+    List times = groupData.time_of_messages as List;
 
     // messages for displaying
     List<Widget> widgets = [];

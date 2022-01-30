@@ -1,3 +1,7 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NadiData {
   late final String? id;
   late final String? location;
@@ -22,5 +26,31 @@ class NadiData {
         news: map["news"],
         phoneNum: map["phoneNum"],
         email: map["email"]);
+  }
+}
+
+class GroupData {
+  late final Map? nadiData;
+  late final List? messages;
+  late final List? time_of_messages;
+  late final List? users_doc_references;
+  late final List? users_name;
+  late final DocumentReference? reference;
+
+  GroupData(
+      {this.messages,
+      this.nadiData,
+      this.reference,
+      this.time_of_messages,
+      this.users_doc_references,
+      this.users_name});
+
+  static GroupData parse(Map map) {
+    return GroupData(
+        messages: map["messages"],
+        time_of_messages: map["time_of_messages"],
+        users_doc_references: map["users_doc_reference"],
+        users_name: map["users_name"],
+        nadiData: map["nadiData"]);
   }
 }
