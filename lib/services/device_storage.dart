@@ -26,7 +26,6 @@ class DeviceStorage {
       // 2 - userDocId
 
       List<String> values = preferences.getStringList(key)!;
-
       return Message(
           message: values[0], userName: values[1], documentId: values[2]);
     } else {
@@ -55,7 +54,8 @@ class DeviceStorage {
     return await preferences.setStringList(key, [message, userName, userDocId]);
   }
 
-  Future<bool> isLastMessageUnread(String groupDocId) async {
+  Future<bool> isLastMessageUnread(
+      String groupDocId, Message latestMessage) async {
     // this function will see if the latest message from the group is the last message read by the user
     // if yes then it will return true so that the chat list then show the gradient outline circle
     // to represent that there are unread messages
@@ -69,14 +69,15 @@ class DeviceStorage {
         await getLastReadMessageFromGroup(data, groupDocId);
 
     if (lastReadMessage != null) {
-      Message latestMessage = Message(
-          message: groupDoc.get("messages").last,
-          userName: groupDoc.get("users_name").last,
-          documentId: groupDoc.get("users_doc_reference").last.id);
-
-      return latestMessage == lastReadMessage;
+      return !(latestMessage.message == lastReadMessage.message &&
+          latestMessage.userName == lastReadMessage.userName &&
+          lastReadMessage.documentId == latestMessage.documentId);
     } else {
-      return false;
+      if (groupDoc.get("messages").isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }

@@ -23,11 +23,16 @@ class _ChatListState extends State<ChatList> {
   List<String> listOfPopUpItems = ["End Chat"];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // the auth data about the user
     dynamic streamedUser = Provider.of<UserAuth>(context);
-    return StreamBuilder<QuerySnapshot>(
-        stream: DataBaseService().messageStream,
+    return FutureBuilder(
+        future: DataBaseService().messagesCollection.get(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (streamedUser.cities != null) {
@@ -35,16 +40,20 @@ class _ChatListState extends State<ChatList> {
               // condition helps to not redo finddocuments() and
               // build the tree multiple times
 
+              // get all the docs for the chat list
               List<DocumentSnapshot> docs =
-                  snapshot.data!.docs.where((element) {
+                  (snapshot.data! as QuerySnapshot).docs.where((element) {
                 // Map data = element.data() as Map;
                 List groups = (streamedUser.groups as List).map((group) {
                   return group["nadi_id"];
                 }).toList();
                 return groups.contains(element.id);
               }).toList();
+
               if (docs.length != widgetsList.length) {
-                findDocuments(docs, snapshot.data, streamedUser, (widgets) {
+                findDocuments(
+                    docs, (snapshot.data as QuerySnapshot), streamedUser,
+                    (widgets) {
                   setState(() {
                     widgetsList = widgets;
                   });
@@ -89,7 +98,7 @@ class _ChatListState extends State<ChatList> {
       required DocumentReference documentReference}) {
     return GestureDetector(
       onTap: () async {
-        await onItemTap(streamedUser, documentReference, bussinessDoc);
+        await onItemTap(context, streamedUser, documentReference, bussinessDoc);
       },
       child: Column(
         children: [
@@ -124,76 +133,6 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  // this is the function that will build all the widgets
-  // that will be used to view the groups in the home page
-  // Horizontal style
-  Widget buildHomeItem(
-      {required BuildContext context,
-      required NadiData data,
-      required bool unreadMessages,
-      required DocumentReference groupDoc,
-      required dynamic streamedUser,
-      required DocumentReference documentReference}) {
-    List<Color> gradientColors = unreadMessages == true
-        ? [
-            Theme.of(context).colorScheme.secondary,
-            Theme.of(context).colorScheme.surface
-          ]
-        : [Colors.grey.shade200, Colors.grey.shade400];
-
-    const double kContainerRadius = 82;
-
-    const double kBorderThickness = 2;
-
-    final kGradientBoxDecoration = BoxDecoration(
-        gradient: LinearGradient(colors: gradientColors),
-        shape: BoxShape.circle);
-
-    return GestureDetector(
-      onTap: () async {
-        await onItemTap(streamedUser, documentReference, groupDoc);
-      },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 0, 4),
-        child: Column(
-          children: [
-            Container(
-              decoration: kGradientBoxDecoration,
-              height: kContainerRadius,
-              padding: const EdgeInsets.all(kBorderThickness),
-              child: Container(
-                height: kContainerRadius - (kBorderThickness + 2),
-                padding: const EdgeInsets.all(3),
-                decoration: const BoxDecoration(
-                    color: Colors.white, shape: BoxShape.circle),
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundImage: Image.asset(
-                    "assets/new_nadi_profile_pic.jpg",
-                  ).image,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: kContainerRadius,
-              height: 14,
-              child: Center(
-                child: Text(
-                  data.nadiName!,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .copyWith(fontSize: 12, fontWeight: FontWeight.normal),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   void findDocuments(
       List<DocumentSnapshot> docs,
       QuerySnapshot<Object?>? nadiMessageData,
@@ -218,14 +157,13 @@ class _ChatListState extends State<ChatList> {
               DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
 
           widgets.add(widget.isHomeStyle == true
-              ? buildHomeItem(
+              ? _BuildHomeItem(
                   context: context,
                   data: docData,
-                  unreadMessages: await DeviceStorage()
-                      .isLastMessageUnread(bussinessDoc.id),
                   streamedUser: streamedUser,
-                  groupDoc: bussinessDoc,
-                  documentReference: nadiMessageDoc.reference)
+                  nadiDoc: bussinessDoc,
+                  groupDoc: nadiMessageDoc.reference,
+                )
               : buildItem(
                   context: context,
                   data: docData,
@@ -247,20 +185,138 @@ class _ChatListState extends State<ChatList> {
     }
   }
 
-  Future onItemTap(dynamic streamedUser, DocumentReference doc,
-      DocumentReference bussinessDoc) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ChatPage(
-          groupDocument: doc,
-          bussinessDoc: bussinessDoc,
-          streamedUser: streamedUser);
-    }));
-  }
-
   Widget buildNoOpenChatBoxes(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
       child: Text("No Open Chat Boxes"),
     );
   }
+}
+
+// ignore: unused_element
+
+class _BuildHomeItem extends StatelessWidget {
+  final BuildContext context;
+  final NadiData data;
+  final DocumentReference nadiDoc;
+  final dynamic streamedUser;
+  final DocumentReference groupDoc;
+
+  _BuildHomeItem({
+    Key? key,
+    required this.context,
+    required this.data,
+    required this.nadiDoc,
+    required this.streamedUser,
+    required this.groupDoc,
+  }) : super(key: key);
+
+  final StreamController unreadMessageBoolsController = StreamController();
+
+  @override
+  Widget build(BuildContext context) {
+    const double kContainerRadius = 82;
+
+    const double kBorderThickness = 2;
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: groupDoc.snapshots(),
+      builder: (context, snapshot) {
+        // this subscription will keep getting the latest message
+        // from the group snapshots stream, if the latest message is not the last read message
+        // then it will send the data down the unreadMessage sink and update what the user sees
+
+        if (snapshot.hasData) {
+          final GroupData groupData =
+              GroupData.parse(snapshot.data!.data() as Map);
+
+          final Message latestMessage = Message(
+              message: groupData.messages!.last,
+              userName: groupData.users_name!.last,
+              documentId: groupData.users_doc_references!.last.id);
+
+          DeviceStorage()
+              .isLastMessageUnread(nadiDoc.id, latestMessage)
+              .then((isUnread) {
+            unreadMessageBoolsController.sink.add(isUnread);
+          });
+        }
+
+        return StreamBuilder(
+            stream: unreadMessageBoolsController.stream,
+            builder: (context, snapshot) {
+              return GestureDetector(
+                onTap: () async {
+                  await onItemTap(context, streamedUser, groupDoc, nadiDoc);
+                  unreadMessageBoolsController.sink.add(false);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 0, 0, 4),
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        curve: Curves.easeIn,
+                        duration: const Duration(milliseconds: 500),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: snapshot.data != null &&
+                                        snapshot.data == true
+                                    ? [
+                                        Theme.of(context).colorScheme.secondary,
+                                        Theme.of(context).primaryColor
+                                      ]
+                                    : [
+                                        Colors.grey.shade200,
+                                        Colors.grey.shade400
+                                      ]),
+                            shape: BoxShape.circle),
+                        height: kContainerRadius,
+                        padding: const EdgeInsets.all(kBorderThickness),
+                        child: Container(
+                          height: kContainerRadius - (kBorderThickness + 2),
+                          padding: const EdgeInsets.all(3),
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          child: CircleAvatar(
+                            radius: 32,
+                            backgroundImage: Image.asset(
+                              "assets/new_nadi_profile_pic.jpg",
+                            ).image,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: kContainerRadius,
+                        height: 14,
+                        child: Center(
+                          child: Text(
+                            data.nadiName!,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            });
+      },
+    );
+  }
+}
+
+Future onItemTap(BuildContext context, dynamic streamedUser,
+    DocumentReference doc, DocumentReference bussinessDoc) async {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return ChatPage(
+        groupDocument: doc,
+        bussinessDoc: bussinessDoc,
+        streamedUser: streamedUser);
+  }));
 }

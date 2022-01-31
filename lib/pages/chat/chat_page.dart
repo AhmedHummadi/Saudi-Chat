@@ -6,6 +6,7 @@ import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/audio_container.dart';
+import 'package:saudi_chat/pages/chat/chat_list.dart';
 import 'package:saudi_chat/pages/chat/microphone_button.dart';
 import 'package:saudi_chat/pages/chat/nadi_details.dart';
 import 'package:saudi_chat/pages/chat/view_video.dart';
@@ -13,6 +14,7 @@ import 'package:saudi_chat/services/chat.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:saudi_chat/services/device_storage.dart';
 import 'package:saudi_chat/shared/constants.dart';
 import 'package:gallery_saver/files.dart';
 import 'package:just_audio/just_audio.dart';
@@ -47,9 +49,17 @@ class _ChatPageState extends State<ChatPage> {
 
   bool isLoading = false;
 
+  Message? lastMessage;
+
   @override
   void dispose() {
-    print("FI");
+    if (lastMessage != null) {
+      DeviceStorage().setLastReadMessageFromGroup(
+          message: lastMessage!.message!,
+          userName: lastMessage!.userName!,
+          userDocId: lastMessage!.documentId!,
+          groupDocId: widget.groupId ?? widget.groupDocument!.id);
+    }
     super.dispose();
   }
 
@@ -241,9 +251,15 @@ class _ChatPageState extends State<ChatPage> {
     List messages = groupData.messages as List;
     List userNames = groupData.users_name as List;
     List times = groupData.time_of_messages as List;
+    List userDocs = groupData.users_doc_references as List;
 
     // messages for displaying
     List<Widget> widgets = [];
+
+    lastMessage = Message(
+        message: messages.last,
+        userName: userNames.last,
+        documentId: userDocs.last.id);
 
     // view of messages for different sides A-B
     var myAlign = Alignment.centerRight;
