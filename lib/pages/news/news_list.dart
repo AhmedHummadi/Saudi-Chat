@@ -123,7 +123,7 @@ class NewsCard extends StatelessWidget {
         child: SizedBox(
           width: MediaQuery.of(context).size.width -
               (MediaQuery.of(context).size.width / 20),
-          height: MediaQuery.of(context).size.height / 2.2,
+          height: MediaQuery.of(context).size.height / 2.2 + 4,
           child: Card(
             elevation: 2,
             color: Theme.of(context).brightness == Brightness.light
@@ -203,7 +203,7 @@ class NewsCard extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 40,
                           imageUrl: news.imageUrl!,
                           filterQuality: FilterQuality.low,
-                          fit: BoxFit.fitWidth,
+                          fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
                             color: Colors.grey[300],
                             child: const Center(
@@ -243,6 +243,9 @@ class NewsCard extends StatelessWidget {
                               decoration: TextDecoration.underline),
                         )
                       ],
+                    ),
+                    SizedBox(
+                      height: 4,
                     )
                   ],
                 ),
