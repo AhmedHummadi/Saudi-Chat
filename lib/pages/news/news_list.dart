@@ -8,9 +8,7 @@ import 'package:saudi_chat/shared/widgets.dart';
 
 class NewsList extends StatefulWidget {
   final dynamic streamedUser;
-  bool? isHomeStyle = false;
-  NewsList({Key? key, required this.streamedUser, this.isHomeStyle})
-      : super(key: key);
+  const NewsList({Key? key, required this.streamedUser}) : super(key: key);
 
   @override
   _NewsListState createState() => _NewsListState();
@@ -64,32 +62,16 @@ class _NewsListState extends State<NewsList> {
       displacement: 30,
       onRefresh: () async => await findNews(),
       child: ScrollConfiguration(
-        behavior: widget.isHomeStyle == true
-            ? NoGlowScrollBehaviour()
-            : const ScrollBehavior(),
+        behavior: NoGlowScrollBehaviour(),
         child: SingleChildScrollView(
-          scrollDirection:
-              widget.isHomeStyle == true ? Axis.horizontal : Axis.vertical,
-          child: widget.isHomeStyle == true
-              ? Row(
-                  children: news.isEmpty
-                      ? []
-                      : news
-                          .sublist(0, 4)
-                          .map((e) => NewsCard(
-                                news: e,
-                                isHomeStyle: widget.isHomeStyle,
-                              ))
-                          .toList(),
-                )
-              : Column(
-                  children: news
-                      .map((e) => NewsCard(
-                            news: e,
-                            isHomeStyle: widget.isHomeStyle,
-                          ))
-                      .toList(),
-                ),
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: news
+                .map((e) => NewsCard(
+                      news: e,
+                    ))
+                .toList(),
+          ),
         ),
       ),
     );
@@ -98,9 +80,7 @@ class _NewsListState extends State<NewsList> {
 
 class NewsCard extends StatelessWidget {
   final NewsForm news;
-  final bool? isHomeStyle;
-  const NewsCard({required this.news, this.isHomeStyle, Key? key})
-      : super(key: key);
+  const NewsCard({required this.news, Key? key}) : super(key: key);
 
   String dateCreated() {
     DateTime now = DateTime.now();
@@ -135,23 +115,20 @@ class NewsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      SizedBox(
-        height: isHomeStyle == true ? 0 : 14,
-        width: isHomeStyle == true ? 6 : 0,
+    return Column(children: [
+      const SizedBox(
+        height: 10,
       ),
       Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width -
-              (isHomeStyle == true ? 30 : 16),
-          height: 330,
+              (MediaQuery.of(context).size.width / 20),
+          height: MediaQuery.of(context).size.height / 2.2,
           child: Card(
             elevation: 2,
-            color: isHomeStyle == true
-                ? (Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey[200]
-                    : Colors.grey[800])
-                : Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).brightness == Brightness.light
+                ? const Color(0xffECF0F0)
+                : Colors.grey[800],
             child: InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -167,6 +144,7 @@ class NewsCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
+                          flex: 5,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -178,7 +156,8 @@ class NewsCard extends StatelessWidget {
                                   maxLines: 1,
                                   style: TextStyle(
                                       fontSize: 22,
-                                      color: isHomeStyle == true
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
                                           ? Colors.grey[900]
                                           : Colors.white),
                                 ),
@@ -191,17 +170,22 @@ class NewsCard extends StatelessWidget {
                                   maxLines: 1,
                                   style: TextStyle(
                                       fontSize: 13,
-                                      color: isHomeStyle == true
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
                                           ? Colors.grey[600]
                                           : Colors.white)),
                             ],
                           ),
                         ),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundImage: Image.asset(
-                            "assets/new_nadi_profile_pic.jpg",
-                          ).image,
+                        Flexible(
+                          flex: 1,
+                          child: CircleAvatar(
+                            radius:
+                                (MediaQuery.of(context).size.height / 2.2) / 14,
+                            backgroundImage: Image.asset(
+                              "assets/new_nadi_profile_pic.jpg",
+                            ).image,
+                          ),
                         ),
                       ],
                     ),
@@ -212,31 +196,20 @@ class NewsCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      height: 200,
+                      height: (MediaQuery.of(context).size.height / 2.2) - 126,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6),
-                        child: ShaderMask(
-                          shaderCallback: (rect) {
-                            return const LinearGradient(
-                              begin: Alignment.center,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.black, Colors.transparent],
-                            ).createShader(Rect.fromLTRB(
-                                0, 0, rect.width, rect.height + 10));
-                          },
-                          blendMode: BlendMode.dstIn,
-                          child: CachedNetworkImage(
-                            width: MediaQuery.of(context).size.width - 40,
-                            imageUrl: news.imageUrl!,
-                            filterQuality: FilterQuality.low,
-                            fit: BoxFit.fitWidth,
-                            placeholder: (context, url) => Container(
-                              color: Colors.grey[300],
-                              child: const Center(
-                                child: Icon(
-                                  Icons.image,
-                                  size: 30,
-                                ),
+                        child: CachedNetworkImage(
+                          width: MediaQuery.of(context).size.width - 40,
+                          imageUrl: news.imageUrl!,
+                          filterQuality: FilterQuality.low,
+                          fit: BoxFit.fitWidth,
+                          placeholder: (context, url) => Container(
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: Icon(
+                                Icons.image,
+                                size: 30,
                               ),
                             ),
                           ),
@@ -255,14 +228,16 @@ class NewsCard extends StatelessWidget {
                             // if yes it will show either "Yesterday" or "* Days ago"
                             dateCreated(),
                             style: TextStyle(
-                              color: isHomeStyle == true
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
                                   ? Colors.grey[800]
                                   : Colors.white,
                             )),
                         Text(
                           "Show Details",
                           style: TextStyle(
-                              color: isHomeStyle == true
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
                                   ? Colors.grey[800]
                                   : Colors.white,
                               decoration: TextDecoration.underline),
@@ -275,14 +250,8 @@ class NewsCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    ];
-
-    return isHomeStyle == true
-        ? Row(
-            children: children,
-          )
-        : Column(children: children);
+      )
+    ]);
   }
 }
 

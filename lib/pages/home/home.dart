@@ -164,14 +164,15 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final dynamic streamedUser = Provider.of<UserAuth>(context);
 
-    return Stack(fit: StackFit.loose, children: [
-      SingleChildScrollView(
+    return ScrollConfiguration(
+      behavior: NoGlowScrollBehaviour(),
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
-              height: 60,
+              height: 6,
             ),
             ScrollConfiguration(
               behavior: NoGlowScrollBehaviour(),
@@ -186,41 +187,28 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 4,
+            ),
             Divider(
               height: 10,
               indent: 20,
+              thickness: 0.5,
               endIndent: 20,
-              color: Colors.grey[600],
+              color: Colors.grey[500],
             ),
             const SizedBox(
-              height: 12,
+              height: 4,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  constraints: BoxConstraints.loose(const Size.fromHeight(360)),
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: NewsList(
-                      streamedUser: streamedUser,
-                      isHomeStyle: true,
-                    ),
-                  ),
-                ),
+              child: NewsList(
+                streamedUser: streamedUser,
               ),
             ),
           ],
         ),
       ),
-      const SizedBox(child: SearchNadis()),
-    ]);
+    );
   }
 }
