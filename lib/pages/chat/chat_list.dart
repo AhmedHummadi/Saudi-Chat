@@ -236,9 +236,13 @@ class _BuildHomeItem extends StatelessWidget {
               documentId: groupData.users_doc_references!.last.id);
 
           DeviceStorage()
-              .isLastMessageUnread(nadiDoc.id, latestMessage)
+              .isLastMessageUnread(nadiDoc.id, latestMessage, streamedUser)
               .then((isUnread) {
-            unreadMessageBoolsController.sink.add(isUnread);
+            if (Navigator.canPop(context)) {
+              unreadMessageBoolsController.sink.add(false);
+            } else {
+              unreadMessageBoolsController.sink.add(isUnread);
+            }
           });
         }
 

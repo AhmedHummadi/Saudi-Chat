@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/nadi.dart';
+import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,11 +53,13 @@ class DeviceStorage {
     // 1 - userName
     // 2 - userDocId
 
+    print(message);
+
     return await preferences.setStringList(key, [message, userName, userDocId]);
   }
 
   Future<bool> isLastMessageUnread(
-      String groupDocId, Message latestMessage) async {
+      String groupDocId, Message latestMessage, UserAuth streamedUser) async {
     // this function will see if the latest message from the group is the last message read by the user
     // if yes then it will return true so that the chat list then show the gradient outline circle
     // to represent that there are unread messages
@@ -69,9 +73,11 @@ class DeviceStorage {
         await getLastReadMessageFromGroup(data, groupDocId);
 
     if (lastReadMessage != null) {
-      return !(latestMessage.message == lastReadMessage.message &&
-          latestMessage.userName == lastReadMessage.userName &&
-          lastReadMessage.documentId == latestMessage.documentId);
+      return latestMessage.userName == streamedUser.displayName
+          ? false
+          : !(latestMessage.message == lastReadMessage.message &&
+              latestMessage.userName == lastReadMessage.userName &&
+              lastReadMessage.documentId == latestMessage.documentId);
     } else {
       if (groupDoc.get("messages").isNotEmpty) {
         return true;

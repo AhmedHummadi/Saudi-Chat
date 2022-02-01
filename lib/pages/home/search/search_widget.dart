@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:saudi_chat/models/location.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
@@ -20,7 +22,9 @@ class SearchNadis extends StatefulWidget {
 }
 
 class _SearchNadisState extends State<SearchNadis> {
-  List<DocumentSnapshot>? _currentQuerySearchResults = [];
+  final StreamController<List<DocumentSnapshot>?> _currentQuerySearchResults =
+      StreamController();
+
   bool searching = false;
   List<String> filterCatagories = filters.isNotEmpty
       ? filters.entries
@@ -114,9 +118,7 @@ class _SearchNadisState extends State<SearchNadis> {
           hint: "Search by Nadi name...",
           onQueryChanged: (input) async {
             if (input.length <= 2) {
-              setState(() {
-                _currentQuerySearchResults = null;
-              });
+              _currentQuerySearchResults.sink.add(null);
             } else {
               setState(() {
                 searching = true;
@@ -124,10 +126,10 @@ class _SearchNadisState extends State<SearchNadis> {
               List<DocumentSnapshot>? searchResults = await DataBaseService()
                   .getSearchResultsFromBusinesses(
                       userLocation: deviceLocation, queryText: input);
+              _currentQuerySearchResults.sink.add(searchResults!.length > 4
+                  ? searchResults.getRange(0, 3).toList()
+                  : searchResults);
               setState(() {
-                _currentQuerySearchResults = searchResults!.length > 4
-                    ? searchResults.getRange(0, 3).toList()
-                    : searchResults;
                 searching = false;
               });
             }
@@ -142,70 +144,73 @@ class _SearchNadisState extends State<SearchNadis> {
 
   Widget buildItem(BuildContext context, dynamic streamedUser,
       FloatingSearchBarController controller) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Material(
-        type: MaterialType.canvas,
-        color: Colors.white,
-        elevation: 4.0,
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _currentQuerySearchResults != null
-                ? _currentQuerySearchResults!.isNotEmpty
-                    ? _currentQuerySearchResults!.map((search) {
-                        Map data = search.data() as Map;
-                        return Column(
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                controller.close();
-                                await onItemTap(streamedUser, search);
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+    return StreamBuilder<List<DocumentSnapshot>?>(
+        stream: _currentQuerySearchResults.stream,
+        builder: (context, snapshot) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Material(
+              type: MaterialType.canvas,
+              color: Colors.white,
+              elevation: 4.0,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: snapshot.hasData
+                      ? snapshot.data!.isNotEmpty
+                          ? snapshot.data!.map((search) {
+                              Map data = search.data() as Map;
+                              return Column(
                                 children: [
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(data["name"]),
-                                      subtitle: Text(data["location"]),
+                                  InkWell(
+                                    onTap: () async {
+                                      controller.close();
+                                      await onItemTap(streamedUser, search);
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text(data["name"]),
+                                            subtitle: Text(data["location"]),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  8,
+                                              child: const Text(
+                                                "Tap to chat",
+                                                textAlign: TextAlign.center,
+                                              )),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                8,
-                                        child: const Text(
-                                          "Tap to chat",
-                                          textAlign: TextAlign.center,
-                                        )),
+                                  Divider(
+                                    height: 0,
+                                    thickness:
+                                        snapshot.data!.last != search ? 0.5 : 0,
+                                    color: Colors.grey,
                                   )
                                 ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness:
-                                  _currentQuerySearchResults!.last != search
-                                      ? 0.5
-                                      : 0,
-                              color: Colors.grey,
-                            )
-                          ],
-                        );
-                      }).toList()
-                    : [
-                        const Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: Text(
-                              "No results found",
-                              style: TextStyle(fontSize: 24),
-                            ))
-                      ]
-                : []),
-      ),
-    );
+                              );
+                            }).toList()
+                          : [
+                              const Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Text(
+                                    "No results found",
+                                    style: TextStyle(fontSize: 24),
+                                  ))
+                            ]
+                      : []),
+            ),
+          );
+        });
   }
 
   Future<void> onItemTap(streamedUser, DocumentSnapshot search) async {
