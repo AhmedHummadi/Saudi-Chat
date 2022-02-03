@@ -6,7 +6,6 @@ import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/audio_container.dart';
-import 'package:saudi_chat/pages/chat/chat_list.dart';
 import 'package:saudi_chat/pages/chat/microphone_button.dart';
 import 'package:saudi_chat/pages/chat/nadi_details.dart';
 import 'package:saudi_chat/pages/chat/view_video.dart';
@@ -45,21 +44,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<Widget> columnChildren = [];
-
   bool isLoading = false;
 
-  Message? lastMessage;
+  final StreamController widgetStream = StreamController();
 
   @override
   void dispose() {
-    if (lastMessage != null) {
-      DeviceStorage().setLastReadMessageFromGroup(
-          message: lastMessage!.message!,
-          userName: lastMessage!.userName!,
-          userDocId: lastMessage!.documentId!,
-          groupDocId: widget.groupId ?? widget.groupDocument!.id);
-    }
+    widgetStream.close();
+
     super.dispose();
   }
 
@@ -70,16 +62,33 @@ class _ChatPageState extends State<ChatPage> {
     return StreamBuilder<DocumentSnapshot>(
         stream: documentStream,
         builder: (context, snapshot) {
+          // every time a new message is sent,
+          // this stream will be trigered
+
           if (snapshot.hasData) {
-            if (columnChildren.length !=
-                (snapshot.data!.get("messages") as List).length) {
-              buildWidgets(
-                  streamedUser: streamedUser,
-                  document: snapshot.data!,
-                  function: (text) {
-                    columnChildren = text;
-                  });
-            }
+            Map data = snapshot.data!.data() as Map;
+            GroupData groupData = GroupData.parse(data);
+
+            List messages = groupData.messages as List;
+            List userNames = groupData.users_name as List;
+            List times = groupData.time_of_messages as List;
+            List userDocs = groupData.users_doc_references as List;
+
+            final NewMessageCommand command = NewMessageCommand(
+                command: NewMessageCommandEnum.addMessage,
+                message: Message(
+                    message: messages.last,
+                    userName: userNames.last,
+                    documentId: userDocs.last.id),
+                widget: MessageItem(
+                    userNames: userNames,
+                    streamedUser: streamedUser,
+                    i: messages.length - 1,
+                    messages: messages,
+                    times: times));
+
+            widgetStream.sink.add(command);
+
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: 60,
@@ -169,21 +178,15 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
               body: Stack(fit: StackFit.expand, children: [
-                SingleChildScrollView(
-                  reverse: true,
-                  child: Column(children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: columnChildren,
-                    ),
-                    const SizedBox(
-                      height: 64.0,
-                    )
-                  ]),
+                _ChatWidgets(
+                  document: snapshot.data!, // the documentSnapshot of the group
+                  streamedUser: streamedUser,
+                  widgetStream: widgetStream,
                 ),
                 BottomFieldBar(
                     streamedUser: streamedUser,
                     businessStream: bussinessStream,
+                    widgetStream: widgetStream,
                     onLoadingStart: () {
                       if (mounted) {
                         setState(() {
@@ -238,12 +241,46 @@ class _ChatPageState extends State<ChatPage> {
           location: event.get("location"),
         ));
   }
+}
 
-  void buildWidgets(
+class _ChatWidgets extends StatefulWidget {
+  final DocumentSnapshot document; // group Document
+  final UserAuth streamedUser;
+  final StreamController widgetStream;
+  const _ChatWidgets(
+      {Key? key,
+      required this.streamedUser,
+      required this.widgetStream,
+      required this.document})
+      : super(key: key);
+
+  @override
+  State<_ChatWidgets> createState() => _ChatWidgetsState();
+}
+
+class _ChatWidgetsState extends State<_ChatWidgets> {
+  Message? lastMessage;
+
+  List<Widget> columnChildren =
+      []; // the list that will be the main for the widgets to display
+
+  // for sending in new widgets and adding them to column children
+
+  // view of messages for different sides A-B
+  final myAlign = Alignment.centerRight;
+  final theirAlign = Alignment.centerLeft;
+  final myAlignment = CrossAxisAlignment.end;
+  final theirAlignment = CrossAxisAlignment.start;
+  final myTextAlignment = TextAlign.end;
+  final theirTextAlignment = TextAlign.start;
+
+  List<Widget> buildWidgets(
       {required DocumentSnapshot document,
       required dynamic streamedUser,
-      required Function(List<Widget> widget) function}) {
+      NewMessageCommand? e}) {
     // group document data
+
+    List<Widget> widgets = [];
 
     Map data = document.data() as Map;
     GroupData groupData = GroupData.parse(data);
@@ -253,224 +290,309 @@ class _ChatPageState extends State<ChatPage> {
     List times = groupData.time_of_messages as List;
     List userDocs = groupData.users_doc_references as List;
 
-    // messages for displaying
-    List<Widget> widgets = [];
-
     lastMessage = Message(
-        message: messages.last,
+        message: messages.last.toString(),
         userName: userNames.last,
         documentId: userDocs.last.id);
 
-    // view of messages for different sides A-B
-    var myAlign = Alignment.centerRight;
-    var theirAlign = Alignment.centerLeft;
-    var myAlignment = CrossAxisAlignment.end;
-    var theirAlignment = CrossAxisAlignment.start;
-    var myTextAlignment = TextAlign.end;
-    var theirTextAlignment = TextAlign.start;
-
     // this will loop through the each message and
     // make a list of widgets for each message
-    for (var i = 0; i < messages.length; i++) {
+    for (int i = 0; i < messages.length; i++) {
       if (userNames.length > 0 && messages.length > 0) {
-        GlobalKey alignKey = GlobalKey();
-        // checks if the image is the users message
-        // to show it in their side
-        bool elementCheck = userNames.elementAt(i) == streamedUser.displayName;
-
-        //checks wether the message is an image
-        bool isImage = messages.elementAt(i) is Map &&
-            (messages.elementAt(i) as Map).containsKey("url");
-
-        // checks wether the message is a video
-        bool isVideo = isImage &&
-            (messages.elementAt(i) as Map)["storage_path"]
-                .toString()
-                .endsWith("mp4");
-
-        bool isAudio = isImage &&
-            (messages.elementAt(i) as Map)["storage_path"]
-                .toString()
-                .endsWith("mp3");
-
         // this is the widget that will be used if
         // the message is an image or video
-        final Widget? image = isImage
-            ? !isVideo
-                ? isAudio
-                    ? AudioContainer(
-                        audioUrl: messages.elementAt(i)["url"],
-                        storagePath: messages.elementAt(i)["storage_path"])
-                    : makeImage(messages, i)
-                : ViewVideo(
-                    storagePath: messages[i]["storage_path"],
-                    videoPosition: null,
-                    url: messages[i]["url"])
-            : null;
 
         // adds the widgets for displaying to
         // the widgets list to then return it
         // and use it in a column that will show
         // all of these messages
-        widgets.add(Align(
-          key: alignKey,
-          alignment: elementCheck ? myAlign : theirAlign,
-          child: GestureDetector(
-            /* to delete message, can be upgraded to select !!! NOT FINISHED !!!
-            onLongPressStart: (details) {
-              // give options on message
-              var keyContext = alignKey.currentContext;
-              var box = keyContext!.findRenderObject() as RenderBox;
-              var offset = box.localToGlobal(Offset.zero);
-              print(box.size.width);
-              var pos = alignKey.currentContext!.size!
-                  .bottomLeft(Offset(box.size.width, offset.dy - 50));
-              print(MediaQuery.of(context).size.height);
-              print(offset.dx);
-              showMenu(
-                  context: context,
-                  position: RelativeRect.fromLTRB(
-                      box.size.width,
-                      pos.dy,
-                      MediaQuery.of(context).size.width - box.size.width,
-                      MediaQuery.of(context).size.height - pos.dy),
-                  items: [PopupMenuItem(child: Text("Hi"))]);
-            },*/
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 10, 16, 10),
-              child: Column(
-                crossAxisAlignment: elementCheck ? myAlignment : theirAlignment,
-                children: [
-                  Visibility(
-                    visible: elementCheck
-                        ? false
-                        // ignore: prefer_const_constructors
-                        : true,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                      child: Text(
-                        elementCheck ? "" : userNames.elementAt(i),
-                        textAlign:
-                            elementCheck ? myTextAlignment : theirTextAlignment,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Material(
-                    elevation: 1.4,
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: elementCheck
-                              ? Theme.of(context).colorScheme.surface
-                              : Theme.of(context).colorScheme.onBackground),
-                      // ignore: prefer_const_constructors
-                      constraints: BoxConstraints.loose(Size.fromWidth(240)),
-                      child: Padding(
-                        padding: isImage
-                            ? isVideo
-                                ? const EdgeInsets.all(4.0)
-                                : isAudio
-                                    ? const EdgeInsets.all(4)
-                                    : const EdgeInsets.all(6.0)
-                            : const EdgeInsets.all(8.0),
-                        child: isImage
-                            ? isVideo
-                                ? Hero(
-                                    tag: (image! as ViewVideo).url,
-                                    child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        child: image),
-                                  )
-                                : isAudio
-                                    ? image
-                                    : GestureDetector(
-                                        child: Hero(
-                                          tag: (image! as CachedNetworkImage)
-                                              .imageUrl,
-                                          child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                              child: image),
-                                        ),
-                                        onTap: () async {
-                                          await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DetailScreen(
-                                                        isVideo: isVideo,
-                                                        videoPosition: null,
-                                                        storagePath: messages[i]
-                                                            ["storage_path"],
-                                                        tag: (image
-                                                                as CachedNetworkImage)
-                                                            .imageUrl,
-                                                        imageUrl:
-                                                            image.imageUrl,
-                                                      )));
-                                        },
-                                      )
-                            : SelectableText(
-                                messages.elementAt(i),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                                textAlign: elementCheck
-                                    ? myTextAlignment
-                                    : theirTextAlignment,
-                              ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Visibility(
-                      visible: times.elementAt(i) ==
-                              (i - 1 != (-1) ? times.elementAt(i - 1) : "null")
-                          ? false
-                          // ignore: prefer_const_constructors
-                          : true,
-                      child: Text(times.elementAt(i)))
-                ],
-              ),
-            ),
-          ),
-        ));
+        widgets.add(MessageItem(
+            streamedUser: streamedUser,
+            userNames: userNames,
+            i: i,
+            messages: messages,
+            times: times));
       }
-      function(widgets);
+
+      columnChildren = widgets;
     }
+    return widgets;
   }
 
-  CachedNetworkImage makeImage(List<dynamic> messages, int i) {
-    return CachedNetworkImage(
-      fadeOutDuration: const Duration(milliseconds: 500),
-      placeholder: (context, _) {
-        return const SizedBox(
-            height: 80, width: 80, child: SpinKitCircle(color: Colors.white));
-      },
-      errorWidget: (context, error, _) {
-        return SizedBox(
-          width: 50,
-          height: 50,
-          child: Center(
-            child: Row(
-              children: const [
-                Icon(Icons.error_outline),
-                Text("Could not load image")
-              ],
-            ),
+  @override
+  void dispose() {
+    if (lastMessage != null) {
+      DeviceStorage().setLastReadMessageFromGroup(
+          message: lastMessage!.message!.toString(),
+          userName: lastMessage!.userName!,
+          userDocId: lastMessage!.documentId!,
+          groupDocId: widget.document.id);
+    }
+
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: widget.widgetStream.stream,
+        builder: (context, snapshot) {
+          /// this is the StreamBuilder that will keep updating with
+          /// every new data passing in, it will not update all of the
+          /// widget like all the old method, but it will build all of the
+          /// widgets at the start with initState and buildWidgets, then we will
+          /// use widgetStream to send all of the new messages down the stream and add them
+          /// to the widget list instead of updating all of the widgets list
+
+          NewMessageCommand? e;
+          print(snapshot.hasData);
+          if (snapshot.hasData) {
+            print("Hi");
+            e = snapshot.data as NewMessageCommand?;
+            // shoulb be the last message in the chat list
+          }
+          print(columnChildren);
+
+          return SingleChildScrollView(
+            reverse: true,
+            child: Column(children: [
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: columnChildren.isEmpty
+                      ? buildWidgets(
+                          streamedUser: widget.streamedUser,
+                          document: widget.document,
+                        )
+                      : e == null
+                          ? columnChildren
+                          : columnChildren.last == e.widget
+                              ? columnChildren
+                              : (columnChildren..add(e.widget))),
+              const SizedBox(
+                height: 64.0,
+              )
+            ]),
+          );
+        });
+  }
+}
+
+class MessageItem extends StatelessWidget {
+  const MessageItem(
+      {Key? key,
+      required this.userNames,
+      required this.i,
+      required this.messages,
+      required this.times,
+      required this.streamedUser})
+      : super(key: key);
+
+  final List userNames;
+  final int i;
+  final UserAuth streamedUser;
+
+  final List messages;
+  final List times;
+  final myAlign = Alignment.centerRight;
+  final theirAlign = Alignment.centerLeft;
+  final myAlignment = CrossAxisAlignment.end;
+  final theirAlignment = CrossAxisAlignment.start;
+  final myTextAlignment = TextAlign.end;
+  final theirTextAlignment = TextAlign.start;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool elementCheck = userNames[i] == streamedUser.displayName;
+    final bool isImage =
+        messages[i] is Map && (messages[i] as Map).containsKey("url");
+
+    // checks wether the message is a video
+    final bool isVideo = isImage &&
+        (messages[i] as Map)["storage_path"].toString().endsWith("mp4");
+
+    final bool isAudio = isImage &&
+        (messages[i] as Map)["storage_path"].toString().endsWith("mp3");
+
+    final Widget? image;
+    if (isImage) {
+      if (!isVideo) {
+        if (isAudio) {
+          image = AudioContainer(
+              audioUrl: messages[i]["url"],
+              storagePath: messages[i]["storage_path"]);
+        } else {
+          image = makeImage(messages[i]);
+        }
+      } else {
+        image = ViewVideo(
+            storagePath: messages[i]["storage_path"],
+            videoPosition: null,
+            url: messages[i]["url"]);
+      }
+    } else {
+      image = null;
+    }
+
+    return Align(
+      alignment: elementCheck ? myAlign : theirAlign,
+      child: GestureDetector(
+        /* to delete message, can be upgraded to select !!! NOT FINISHED !!!
+      onLongPressStart: (details) {
+        // give options on message
+        var keyContext = alignKey.currentContext;
+        var box = keyContext!.findRenderObject() as RenderBox;
+        var offset = box.localToGlobal(Offset.zero);
+        print(box.size.width);
+        var pos = alignKey.currentContext!.size!
+            .bottomLeft(Offset(box.size.width, offset.dy - 50));
+        print(MediaQuery.of(context).size.height);
+        print(offset.dx);
+        showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+                box.size.width,
+                pos.dy,
+                MediaQuery.of(context).size.width - box.size.width,
+                MediaQuery.of(context).size.height - pos.dy),
+            items: [PopupMenuItem(child: Text("Hi"))]);
+      },*/
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 10, 16, 10),
+          child: Column(
+            crossAxisAlignment: elementCheck ? myAlignment : theirAlignment,
+            children: [
+              Visibility(
+                visible: elementCheck
+                    ? false
+                    // ignore: prefer_const_constructors
+                    : true,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                  child: Text(
+                    elementCheck ? "" : userNames[i],
+                    textAlign:
+                        elementCheck ? myTextAlignment : theirTextAlignment,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Material(
+                elevation: 1.4,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: elementCheck
+                          ? Theme.of(context).colorScheme.surface
+                          : Theme.of(context).colorScheme.onBackground),
+                  // ignore: prefer_const_constructors
+                  constraints: BoxConstraints.loose(Size.fromWidth(240)),
+                  child: Padding(
+                    padding: isImage
+                        ? isVideo
+                            ? const EdgeInsets.all(4.0)
+                            : isAudio
+                                ? const EdgeInsets.all(4)
+                                : const EdgeInsets.all(6.0)
+                        : const EdgeInsets.all(8.0),
+                    child: isImage
+                        ? isVideo
+                            ? Hero(
+                                tag: (image! as ViewVideo).url,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    child: image),
+                              )
+                            : isAudio
+                                ? image
+                                : GestureDetector(
+                                    child: Hero(
+                                      tag: (image! as CachedNetworkImage)
+                                          .imageUrl,
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                          child: image),
+                                    ),
+                                    onTap: () async {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailScreen(
+                                                    isVideo: isVideo,
+                                                    videoPosition: null,
+                                                    storagePath: messages[i]
+                                                        ["storage_path"],
+                                                    tag: (image
+                                                            as CachedNetworkImage)
+                                                        .imageUrl,
+                                                    imageUrl: (image
+                                                            as CachedNetworkImage)
+                                                        .imageUrl,
+                                                  )));
+                                    },
+                                  )
+                        : SelectableText(
+                            messages[i],
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16),
+                            textAlign: elementCheck
+                                ? myTextAlignment
+                                : theirTextAlignment,
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Visibility(
+                  visible: i > 0
+                      ? times[i] == times[(i - 1)]
+                          ? false
+                          : true
+                      : true,
+                  child: Text(times[i]))
+            ],
           ),
-        );
-      },
-      imageUrl: messages.elementAt(i)["url"].toString(),
-      filterQuality: FilterQuality.medium,
+        ),
+      ),
     );
   }
+}
+
+CachedNetworkImage makeImage(dynamic message) {
+  return CachedNetworkImage(
+    fadeOutDuration: const Duration(milliseconds: 500),
+    placeholder: (context, _) {
+      return const SizedBox(
+          height: 80, width: 80, child: SpinKitCircle(color: Colors.white));
+    },
+    errorWidget: (context, error, _) {
+      return SizedBox(
+        width: 50,
+        height: 50,
+        child: Center(
+          child: Row(
+            children: const [
+              Icon(Icons.error_outline),
+              Text("Could not load image")
+            ],
+          ),
+        ),
+      );
+    },
+    imageUrl: message["url"].toString(),
+    filterQuality: FilterQuality.medium,
+  );
 }
 
 class BottomFieldBar extends StatefulWidget {
@@ -480,9 +602,11 @@ class BottomFieldBar extends StatefulWidget {
   final Function onLoadingEnd;
   final dynamic streamedUser;
   final Stream<NadiData> businessStream;
+  final StreamController widgetStream;
   const BottomFieldBar(
       {Key? key,
       this.groupId,
+      required this.widgetStream,
       required this.onLoadingStart,
       required this.onLoadingEnd,
       this.groupDocument,

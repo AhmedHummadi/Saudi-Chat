@@ -38,6 +38,12 @@ class MyApp extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
               ),
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  backgroundColor: const Color(0xff26A69A),
+                  extendedTextStyle:
+                      const TextStyle(fontSize: 17, letterSpacing: 1),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
               colorScheme: const ColorScheme(
                   primary: Color(0xff009688),
                   primaryVariant: Color(0xff00695C),

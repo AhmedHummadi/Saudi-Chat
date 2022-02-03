@@ -231,7 +231,7 @@ class _BuildHomeItem extends StatelessWidget {
               GroupData.parse(snapshot.data!.data() as Map);
 
           final Message latestMessage = Message(
-              message: groupData.messages!.last,
+              message: groupData.messages!.last.toString(),
               userName: groupData.users_name!.last,
               documentId: groupData.users_doc_references!.last.id);
 

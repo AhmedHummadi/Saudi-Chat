@@ -53,7 +53,7 @@ class MessageDatabase {
               messageData.add(message.message);
               userNamesData.add(message.userName);
               print(message.userName);
-              timeData.add(message.time);
+              timeData.add(message.getTime);
               docsData.add(DataBaseService()
                   .authUsersCollection
                   .doc(message.documentId));
@@ -92,7 +92,7 @@ class MessageDatabase {
               messageData.add(message.message);
               userNamesData.add(message.userName);
               print(message.userName);
-              timeData.add(message.time);
+              timeData.add(message.getTime);
               docsData.add(DataBaseService()
                   .authUsersCollection
                   .doc(message.documentId));
@@ -138,7 +138,7 @@ class MessageDatabase {
 
       messageData.add({"url": url, "storage_path": uploadTask.ref.fullPath});
       userNamesData.add(message.userName);
-      timeData.add(message.time);
+      timeData.add(message.getTime);
 
       docsData
           .add(DataBaseService().authUsersCollection.doc(message.documentId));
@@ -179,7 +179,7 @@ class MessageDatabase {
 
       messageData.add({"url": url, "storage_path": uploadTask.ref.fullPath});
       userNamesData.add(message.userName);
-      timeData.add(message.time);
+      timeData.add(message.getTime);
       docsData
           .add(DataBaseService().authUsersCollection.doc(message.documentId));
       await groupDocument.update({

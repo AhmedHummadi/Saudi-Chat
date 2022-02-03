@@ -55,7 +55,7 @@ class _AudioContainerState extends State<AudioContainer>
             initialPosition: Duration.zero);
 
         // used for telling the widget that the audio
-        // has loaded e.g. remove the wave loading
+        // has loaded e.g. remove the loading
         if (mounted) {
           setState(() {
             isInitialized = true;
@@ -244,7 +244,7 @@ class _AudioContainerState extends State<AudioContainer>
               visible: !isInitialized,
               height: 50,
               strokeWidth: 2,
-              colors: const [Colors.white, Colors.black],
+              colors: [Colors.white.withOpacity(0.7), Colors.transparent],
               radius: 10),
     );
   }

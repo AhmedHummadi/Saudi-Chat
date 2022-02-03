@@ -61,29 +61,18 @@ class _HomeState extends State<Home> {
                     ]
                 : navigationBaritems),
         drawer: buildDrawer(),
-        floatingActionButton: _currentIndex == 2
+        floatingActionButton: _currentIndex == 0
             ?
-            // is on news page
-            // see if he is an Admin/Co-Admin to show the post news page
-            streamedUser.groupsAdmin!.isNotEmpty
-                ?
-                // he is admin/co-admin
-                FloatingActionButton(
-                    tooltip: "Post a story",
-                    child: Icon(
-                      Icons.post_add_rounded,
-                      color: Theme.of(context).colorScheme.surface,
-                      size: 30,
-                    ),
-                    backgroundColor: Colors.white,
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AddNewsPage(streamedUser: streamedUser))),
-                  )
-                // he is not admin
-                : null
             // is on home page
+            // show add chat group button
+            FloatingActionButton.extended(
+                onPressed: () {},
+                label: const Text("Add Group"),
+                icon: const Icon(
+                  Icons.add,
+                  size: 28,
+                ),
+              )
             : null,
         appBar: AppBar(
           title: Text(_currentIndex == 0
@@ -141,10 +130,9 @@ class GroupsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final dynamic streamedUser = Provider.of<UserAuth>(context);
-    return streamedUser.groups == null
-        ? Container()
-        : NewsList(streamedUser: streamedUser);
+    return Container();
   }
 }
 

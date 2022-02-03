@@ -27,124 +27,127 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-        elevation: 0.7,
-        title: const Text("Register"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Theme.of(context).primaryColor),
-                width: MediaQuery.of(context).size.width / 1.8,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                  child: Center(
-                      child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(
-                                  errorMessage,
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                      fontSize: 14),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              nameField(),
-                              const SizedBox(height: 10),
-                              emailField(),
-                              const SizedBox(height: 10),
-                              passwordStack(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              cityDropDown(),
-                              const SizedBox(height: 10),
-                              phoneNumberField(),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      setState(() {
-                                        createLoadingOverlay(context);
-                                      });
-                                      dynamic registerEPresult = await _auth
-                                          .registerWithEmailAndPassword(
-                                              email: registerEmail!.trim(),
-                                              password: registerPassword!,
-                                              name: registerName!,
-                                              city: registerCities,
-                                              phoneNum: registerPhoneNum!);
-                                      if (registerEPresult == null) {
-                                        setState(() {
-                                          errorMessage =
-                                              "Please supply valid credintals";
-                                        });
-                                      }
-                                      removeOverlayEntry(context);
-                                    }
-                                  },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+          elevation: 0.7,
+          title: const Text("Register"),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Theme.of(context).primaryColor),
+                  width: MediaQuery.of(context).size.width / 1.8,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                    child: Center(
+                        child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: Text(
-                                    "Register",
-                                    style: Theme.of(context).textTheme.button,
+                                    errorMessage,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                        fontSize: 14),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.grey[100]),
-                                  )),
-                              const SizedBox(
-                                height: 10,
-                              )
-                            ],
-                          ))),
+                                ),
+                                nameField(),
+                                const SizedBox(height: 10),
+                                emailField(),
+                                const SizedBox(height: 10),
+                                passwordStack(),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                cityDropDown(),
+                                const SizedBox(height: 10),
+                                phoneNumberField(),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        setState(() {
+                                          createLoadingOverlay(context);
+                                        });
+                                        dynamic registerEPresult = await _auth
+                                            .registerWithEmailAndPassword(
+                                                email: registerEmail!.trim(),
+                                                password: registerPassword!,
+                                                name: registerName!,
+                                                city: registerCities,
+                                                phoneNum: registerPhoneNum!);
+                                        if (registerEPresult == null) {
+                                          setState(() {
+                                            errorMessage =
+                                                "Please supply valid credintals";
+                                          });
+                                        }
+                                        removeOverlayEntry(context);
+                                      }
+                                    },
+                                    child: Text(
+                                      "Register",
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.grey[100]),
+                                    )),
+                                const SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            ))),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account?",
-                    style: TextStyle(inherit: false, color: Colors.black),
-                  ),
-                  SizedBox(
-                    height: 20,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: InkWell(
-                          borderRadius: BorderRadius.circular(5),
-                          onTap: () => widget.toggle!(),
-                          child: const Text(
-                            "Sign In",
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Color(0xff1796F6),
-                                fontWeight: FontWeight.w500),
-                          )),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Already have an account?",
+                      style: TextStyle(inherit: false, color: Colors.black),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(
+                      height: 20,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () => widget.toggle!(),
+                            child: const Text(
+                              "Sign In",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Color(0xff1796F6),
+                                  fontWeight: FontWeight.w500),
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
