@@ -236,32 +236,6 @@ class DataBaseService {
     return groupDocument.reference;
   }
 
-  Future createNadiData(NadiData nadiData) async {
-    try {
-      var nadiDoc = nadiCollection.doc();
-      await nadiDoc.set({
-        "location": nadiData.location,
-        "name": nadiData.nadiName,
-        "phoneNum": nadiData.phoneNum,
-        "email": nadiData.email
-      });
-      await messagesCollection.doc(nadiDoc.id).set({
-        "nadi_data": {
-          "location": nadiData.location,
-          "name": nadiData.nadiName,
-          "phoneNum": nadiData.phoneNum,
-          "email": nadiData.email
-        },
-        "messages": [],
-        "time_of_messages": [],
-        "users_name": [],
-        "users_doc_reference": [],
-      });
-    } catch (e) {
-      rethrow; // TODO: Test
-    }
-  }
-
   // update user auth data
   Future createUserAuthData({UserAuth? userAuth}) async {
     try {

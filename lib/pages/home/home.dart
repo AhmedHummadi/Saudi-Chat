@@ -1,8 +1,6 @@
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/control_panel.dart';
 import 'package:saudi_chat/pages/chat/chat_list.dart';
-import 'package:saudi_chat/pages/home/search/search_widget.dart';
-import 'package:saudi_chat/pages/news/post_news_page.dart';
 import 'package:saudi_chat/pages/news/news_list.dart';
 import 'package:saudi_chat/services/auth.dart';
 import 'package:flutter/material.dart';

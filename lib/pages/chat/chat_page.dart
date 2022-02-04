@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/user.dart';
@@ -77,9 +78,9 @@ class _ChatPageState extends State<ChatPage> {
             final NewMessageCommand command = NewMessageCommand(
                 command: NewMessageCommandEnum.addMessage,
                 message: Message(
-                    message: messages.last,
-                    userName: userNames.last,
-                    documentId: userDocs.last.id),
+                    message: messages.isEmpty ? null : messages.last,
+                    userName: userNames.isEmpty ? null : userNames.last,
+                    documentId: userDocs.isEmpty ? null : userDocs.last.id),
                 widget: MessageItem(
                     userNames: userNames,
                     streamedUser: streamedUser,
@@ -290,10 +291,14 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
     List times = groupData.time_of_messages as List;
     List userDocs = groupData.users_doc_references as List;
 
-    lastMessage = Message(
-        message: messages.last.toString(),
-        userName: userNames.last,
-        documentId: userDocs.last.id);
+    print(messages);
+
+    lastMessage = messages.isNotEmpty
+        ? Message(
+            message: messages.last.toString(),
+            userName: userNames.last,
+            documentId: userDocs.last.id)
+        : null;
 
     // this will loop through the each message and
     // make a list of widgets for each message
@@ -313,9 +318,10 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
             messages: messages,
             times: times));
       }
-
-      columnChildren = widgets;
     }
+    widgets.removeLast();
+    columnChildren = widgets;
+
     return widgets;
   }
 
@@ -333,11 +339,6 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: widget.widgetStream.stream,
@@ -350,13 +351,17 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
           /// to the widget list instead of updating all of the widgets list
 
           NewMessageCommand? e;
-          print(snapshot.hasData);
+
           if (snapshot.hasData) {
             print("Hi");
+
             e = snapshot.data as NewMessageCommand?;
             // shoulb be the last message in the chat list
+            lastMessage = Message(
+                message: e!.message.message,
+                userName: e.message.userName,
+                documentId: e.message.documentId);
           }
-          print(columnChildren);
 
           return SingleChildScrollView(
             reverse: true,
@@ -370,9 +375,13 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                         )
                       : e == null
                           ? columnChildren
-                          : columnChildren.last == e.widget
+                          : widget.document.get("messages").length ==
+                                      columnChildren.length &&
+                                  columnChildren.last == e.widget
                               ? columnChildren
-                              : (columnChildren..add(e.widget))),
+                              : columnChildren.contains(e.widget)
+                                  ? columnChildren
+                                  : (columnChildren..add(e.widget))),
               const SizedBox(
                 height: 64.0,
               )
@@ -560,7 +569,7 @@ class MessageItem extends StatelessWidget {
                           ? false
                           : true
                       : true,
-                  child: Text(times[i]))
+                  child: Text(DateFormat.jm().format(times[i].toDate())))
             ],
           ),
         ),

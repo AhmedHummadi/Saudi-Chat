@@ -231,9 +231,15 @@ class _BuildHomeItem extends StatelessWidget {
               GroupData.parse(snapshot.data!.data() as Map);
 
           final Message latestMessage = Message(
-              message: groupData.messages!.last.toString(),
-              userName: groupData.users_name!.last,
-              documentId: groupData.users_doc_references!.last.id);
+              message: groupData.messages!.isEmpty
+                  ? null
+                  : groupData.messages!.last.toString(),
+              userName: groupData.users_name!.isEmpty
+                  ? null
+                  : groupData.users_name!.last,
+              documentId: groupData.users_doc_references!.isEmpty
+                  ? null
+                  : groupData.users_doc_references!.last.id);
 
           DeviceStorage()
               .isLastMessageUnread(nadiDoc.id, latestMessage, streamedUser)

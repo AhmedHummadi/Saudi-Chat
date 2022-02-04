@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 enum NewMessageCommandEnum { addMessage, removeMessage }
 
@@ -20,8 +20,8 @@ class Message {
       this.documentId});
 
   // ignore: empty_constructor_bodies
-  String get getTime {
-    return DateFormat.jm().format(DateTime.now());
+  Timestamp get getTime {
+    return Timestamp.now();
   }
 }
 
