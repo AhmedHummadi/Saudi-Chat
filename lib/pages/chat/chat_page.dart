@@ -78,7 +78,7 @@ class _ChatPageState extends State<ChatPage> {
 
             final NewMessageCommand command = NewMessageCommand(
                 command: NewMessageCommandEnum.addMessage,
-                message: messages.last is Map
+                message: messages.isNotEmpty && messages.last is Map
                     ? messages.last["storage_path"].toString().endsWith(".mp3")
                         ? //voice message
                         VoiceMessage(
@@ -363,7 +363,9 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                 times: times)));
       }
     }
-    widgets.removeLast();
+    if (widgets.isNotEmpty) {
+      widgets.removeLast();
+    }
     columnChildren = widgets;
 
     return widgets;
@@ -488,7 +490,10 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                               ))
                             : getColumnChildren())
                         .getRange(
-                            columnChildren.length - _kColumnChildrenViewLength,
+                            columnChildren.length > 60
+                                ? columnChildren.length -
+                                    _kColumnChildrenViewLength
+                                : 0,
                             columnChildren.length)
                         .toList()),
                 const SizedBox(

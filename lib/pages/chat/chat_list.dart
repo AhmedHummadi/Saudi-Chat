@@ -226,8 +226,6 @@ class _BuildHomeItem extends StatelessWidget {
         // from the group snapshots stream, if the latest message is not the last read message
         // then it will send the data down the unreadMessage sink and update what the user sees
 
-        print("Hi");
-
         if (snapshot.hasData) {
           final GroupData groupData =
               GroupData.parse(snapshot.data!.data() as Map);
