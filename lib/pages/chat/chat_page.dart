@@ -23,6 +23,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import "package:images_picker/images_picker.dart";
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:saudi_chat/shared/loadingWidget.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
 import 'package:saudi_chat/shared/widgets.dart';
 
@@ -77,10 +78,43 @@ class _ChatPageState extends State<ChatPage> {
 
             final NewMessageCommand command = NewMessageCommand(
                 command: NewMessageCommandEnum.addMessage,
-                message: Message(
-                    message: messages.isEmpty ? null : messages.last,
-                    userName: userNames.isEmpty ? null : userNames.last,
-                    documentId: userDocs.isEmpty ? null : userDocs.last.id),
+                message: messages.last is Map
+                    ? messages.last["storage_path"].toString().endsWith(".mp3")
+                        ? //voice message
+                        VoiceMessage(
+                            documentId:
+                                userDocs.isEmpty ? null : userDocs.last.id,
+                            time: times.isEmpty ? null : times.last,
+                            userName: userNames.isEmpty ? null : userNames.last,
+                            url: messages.last["url"],
+                            storage_path: messages.last["storage_path"])
+                        : messages.last["storage_path"]
+                                .toString()
+                                .endsWith(".mp4")
+                            ? // video message
+                            VideoMessage(
+                                documentId:
+                                    userDocs.isEmpty ? null : userDocs.last.id,
+                                time: times.isEmpty ? null : times.last,
+                                userName:
+                                    userNames.isEmpty ? null : userNames.last,
+                                url: messages.last["url"],
+                                storage_path: messages.last["storage_path"])
+                            :
+                            // image message
+                            ImageMessage(
+                                documentId:
+                                    userDocs.isEmpty ? null : userDocs.last.id,
+                                time: times.isEmpty ? null : times.last,
+                                userName:
+                                    userNames.isEmpty ? null : userNames.last,
+                                url: messages.last["url"],
+                                storage_path: messages.last["storage_path"])
+                    : Message(
+                        time: times.isEmpty ? null : times.last,
+                        message: messages.isEmpty ? null : messages.last,
+                        userName: userNames.isEmpty ? null : userNames.last,
+                        documentId: userDocs.isEmpty ? null : userDocs.last.id),
                 widget: MessageItem(
                     userNames: userNames,
                     streamedUser: streamedUser,
@@ -211,7 +245,7 @@ class _ChatPageState extends State<ChatPage> {
                       Colors.grey.shade200,
                       Theme.of(context).colorScheme.secondaryVariant
                     ],
-                    radius: 10)
+                    radius: 0)
               ]),
             );
           } else {
@@ -260,10 +294,14 @@ class _ChatWidgets extends StatefulWidget {
 }
 
 class _ChatWidgetsState extends State<_ChatWidgets> {
+  final _scrollController = ScrollController();
+
   Message? lastMessage;
 
   List<Widget> columnChildren =
       []; // the list that will be the main for the widgets to display
+
+  List<NewMessageCommand> commands = [];
 
   // for sending in new widgets and adding them to column children
 
@@ -275,10 +313,10 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
   final myTextAlignment = TextAlign.end;
   final theirTextAlignment = TextAlign.start;
 
+  int _kColumnChildrenViewLength = 60;
+
   List<Widget> buildWidgets(
-      {required DocumentSnapshot document,
-      required dynamic streamedUser,
-      NewMessageCommand? e}) {
+      {required DocumentSnapshot document, required dynamic streamedUser}) {
     // group document data
 
     List<Widget> widgets = [];
@@ -289,16 +327,8 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
     List messages = groupData.messages as List;
     List userNames = groupData.users_name as List;
     List times = groupData.time_of_messages as List;
+    // ignore: unused_local_variable
     List userDocs = groupData.users_doc_references as List;
-
-    print(messages);
-
-    lastMessage = messages.isNotEmpty
-        ? Message(
-            message: messages.last.toString(),
-            userName: userNames.last,
-            documentId: userDocs.last.id)
-        : null;
 
     // this will loop through the each message and
     // make a list of widgets for each message
@@ -311,12 +341,26 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
         // the widgets list to then return it
         // and use it in a column that will show
         // all of these messages
+
         widgets.add(MessageItem(
             streamedUser: streamedUser,
             userNames: userNames,
             i: i,
             messages: messages,
             times: times));
+        commands.add(NewMessageCommand(
+            command: NewMessageCommandEnum.addMessage,
+            message: Message(
+                message: messages[i] is! String ? null : messages[i],
+                userName: userNames[i],
+                documentId: userDocs[i].id,
+                time: times[i]),
+            widget: MessageItem(
+                streamedUser: streamedUser,
+                userNames: userNames,
+                i: i,
+                messages: messages,
+                times: times)));
       }
     }
     widgets.removeLast();
@@ -329,13 +373,32 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
   void dispose() {
     if (lastMessage != null) {
       DeviceStorage().setLastReadMessageFromGroup(
-          message: lastMessage!.message!.toString(),
+          time: lastMessage!.time!,
           userName: lastMessage!.userName!,
           userDocId: lastMessage!.documentId!,
-          groupDocId: widget.document.id);
+          groupDocId: widget.document.id,
+          message: lastMessage!.message ?? '');
     }
 
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge) {
+        bool isTop = _scrollController.position.pixels == 0;
+        if (!isTop) {
+          setState(() {
+            _kColumnChildrenViewLength +=
+                columnChildren.length >= (_kColumnChildrenViewLength + 30)
+                    ? 30
+                    : columnChildren.length - _kColumnChildrenViewLength;
+          });
+        }
+      }
+    });
+    super.initState();
   }
 
   @override
@@ -353,39 +416,86 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
           NewMessageCommand? e;
 
           if (snapshot.hasData) {
-            print("Hi");
-
             e = snapshot.data as NewMessageCommand?;
-            // shoulb be the last message in the chat list
-            lastMessage = Message(
-                message: e!.message.message,
-                userName: e.message.userName,
-                documentId: e.message.documentId);
+
+            commands.contains(e) ? null : commands.add(e!);
+
+            // should be the last message in the chat list
+            lastMessage = e!.message;
           }
 
-          return SingleChildScrollView(
-            reverse: true,
-            child: Column(children: [
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: columnChildren.isEmpty
-                      ? buildWidgets(
-                          streamedUser: widget.streamedUser,
-                          document: widget.document,
-                        )
-                      : e == null
-                          ? columnChildren
-                          : widget.document.get("messages").length ==
-                                      columnChildren.length &&
-                                  columnChildren.last == e.widget
-                              ? columnChildren
-                              : columnChildren.contains(e.widget)
-                                  ? columnChildren
-                                  : (columnChildren..add(e.widget))),
-              const SizedBox(
-                height: 64.0,
-              )
-            ]),
+          List<Widget> getColumnChildren() {
+            Map data = widget.document.data() as Map;
+            GroupData groupData = GroupData.parse(data);
+
+            List messages = groupData.messages as List;
+            // ignore: unused_local_variable
+            List userNames = groupData.users_name as List;
+            List times = groupData.time_of_messages as List;
+            // ignore: unused_local_variable
+            List userDocs = groupData.users_doc_references as List;
+
+            // this method is used for checking if the last message
+            // in columnChildren is not the same, because the data added
+            // in the stream sometimes gets repeated twice, so this method
+            // helps prevent the user from seeing two of the same messages
+
+            return (e == null
+                ? columnChildren
+                // ignore: unnecessary_type_check
+                : e.message is ImageMessage ||
+                        e.message is VoiceMessage ||
+                        e.message is VideoMessage
+                    ? columnChildren.last == e.widget
+                        ? columnChildren
+                        : columnChildren.contains(e.widget)
+                            ? columnChildren
+                            : columnChildren.any((element) {
+                                var elem = element as MessageItem;
+                                return e!.message.time == times[elem.i] &&
+                                    e.message.userName == userNames[elem.i] &&
+                                    e.message.documentId == userDocs[elem.i].id;
+                              })
+                                ? columnChildren
+                                : (columnChildren..add(e.widget))
+                    : messages.length == columnChildren.length &&
+                            columnChildren.last == e.widget
+                        ? columnChildren
+                        : columnChildren.contains(e.widget)
+                            ? columnChildren
+                            : columnChildren.any((element) {
+                                var elem = element as MessageItem;
+                                return e!.message.time == times[elem.i] &&
+                                    e.message.userName == userNames[elem.i] &&
+                                    e.message.documentId == userDocs[elem.i].id;
+                              })
+                                ? columnChildren
+                                : (columnChildren..add(e.widget)));
+          }
+
+          return ScrollConfiguration(
+            behavior: NoGlowScrollBehaviour(),
+            child: SingleChildScrollView(
+              reverse: true,
+              controller: _scrollController,
+              child: Column(children: [
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: (columnChildren.isEmpty
+                            ? (buildWidgets(
+                                streamedUser: widget.streamedUser,
+                                document: widget.document,
+                              ))
+                            : getColumnChildren())
+                        .getRange(
+                            columnChildren.length - _kColumnChildrenViewLength,
+                            columnChildren.length)
+                        .toList()),
+                const SizedBox(
+                  height: 64.0,
+                )
+              ]),
+            ),
           );
         });
   }
@@ -565,9 +675,8 @@ class MessageItem extends StatelessWidget {
               ),
               Visibility(
                   visible: i > 0
-                      ? times[i] == times[(i - 1)]
-                          ? false
-                          : true
+                      ? !(DateFormat.jm().format(times[i].toDate()) ==
+                          DateFormat.jm().format(times[(i - 1)].toDate()))
                       : true,
                   child: Text(DateFormat.jm().format(times[i].toDate())))
             ],

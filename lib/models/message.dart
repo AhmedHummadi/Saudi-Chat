@@ -10,7 +10,7 @@ class Message {
   late String? userName;
   late String? businessName;
   late String? documentId;
-  late String? time;
+  late Timestamp? time;
 
   Message(
       {this.message,
@@ -38,19 +38,37 @@ class ImageMessage extends Message {
   late final String url;
   late final String storage_path;
 
-  ImageMessage({required this.url, required this.storage_path});
+  ImageMessage(
+      {String? userName,
+      String? documentId,
+      Timestamp? time,
+      required this.url,
+      required this.storage_path})
+      : super(userName: userName, documentId: documentId, time: time);
 }
 
 class VoiceMessage extends Message {
   late final String url;
   late final String storage_path;
 
-  VoiceMessage({required this.url, required this.storage_path});
+  VoiceMessage(
+      {String? userName,
+      String? documentId,
+      Timestamp? time,
+      required this.url,
+      required this.storage_path})
+      : super(userName: userName, documentId: documentId, time: time);
 }
 
 class VideoMessage extends Message {
   late final String url;
   late final String storage_path;
 
-  VideoMessage({required this.url, required this.storage_path});
+  VideoMessage(
+      {String? userName,
+      String? documentId,
+      Timestamp? time,
+      required this.url,
+      required this.storage_path})
+      : super(userName: userName, documentId: documentId, time: time);
 }

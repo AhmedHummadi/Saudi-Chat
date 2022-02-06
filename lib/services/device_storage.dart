@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
@@ -26,10 +25,14 @@ class DeviceStorage {
       // 0 - message
       // 1 - userName
       // 2 - userDocId
+      // 3 - time
 
       List<String> values = preferences.getStringList(key)!;
       return Message(
-          message: values[0], userName: values[1], documentId: values[2]);
+          message: values[0],
+          userName: values[1],
+          documentId: values[2],
+          time: Timestamp.fromDate(DateTime.parse(values[3])));
     } else {
       return null;
     }
@@ -39,6 +42,7 @@ class DeviceStorage {
       {required String message,
       required String userName,
       required String userDocId,
+      required Timestamp time,
       required String groupDocId}) async {
     final SharedPreferences preferences = await _preferences;
 
@@ -52,10 +56,10 @@ class DeviceStorage {
     // 0 - message
     // 1 - userName
     // 2 - userDocId
+    // 3 - time
 
-    print(message);
-
-    return await preferences.setStringList(key, [message, userName, userDocId]);
+    return await preferences.setStringList(
+        key, [message, userName, userDocId, time.toDate().toString()]);
   }
 
   Future<bool> isLastMessageUnread(
@@ -75,7 +79,7 @@ class DeviceStorage {
     if (lastReadMessage != null) {
       return latestMessage.userName == streamedUser.displayName
           ? false
-          : !(latestMessage.message == lastReadMessage.message &&
+          : !(latestMessage.time == lastReadMessage.time &&
               latestMessage.userName == lastReadMessage.userName &&
               lastReadMessage.documentId == latestMessage.documentId);
     } else {
