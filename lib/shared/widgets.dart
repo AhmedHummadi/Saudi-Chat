@@ -367,24 +367,29 @@ class MyTooltip extends StatelessWidget {
 
 class ScreenWidthCard extends StatelessWidget {
   final Widget child;
+  final Color? highlightColor;
+  final Color? splashColor;
   final Function? onTap;
   final double height;
   const ScreenWidthCard(
-      {Key? key, required this.child, required this.height, this.onTap})
+      {Key? key,
+      this.highlightColor,
+      this.splashColor,
+      required this.child,
+      required this.height,
+      this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: splashColor,
+      highlightColor: highlightColor,
       onTap: onTap == null ? () {} : () => onTap!(),
-      child: Column(
-        children: [
-          SizedBox(
-            height: height,
-            width: MediaQuery.of(context).size.width,
-            child: child,
-          ),
-        ],
+      child: SizedBox(
+        height: height,
+        width: MediaQuery.of(context).size.width,
+        child: child,
       ),
     );
   }

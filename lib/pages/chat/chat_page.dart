@@ -20,10 +20,8 @@ import 'package:gallery_saver/files.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import "package:images_picker/images_picker.dart";
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:saudi_chat/shared/loadingWidget.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
 import 'package:saudi_chat/shared/widgets.dart';
 
@@ -82,6 +80,8 @@ class _ChatPageState extends State<ChatPage> {
                     ? messages.last["storage_path"].toString().endsWith(".mp3")
                         ? //voice message
                         VoiceMessage(
+                            durationMilliseconds: Duration(
+                                milliseconds: messages.last["duration"]),
                             documentId:
                                 userDocs.isEmpty ? null : userDocs.last.id,
                             time: times.isEmpty ? null : times.last,
@@ -298,6 +298,8 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
 
   Message? lastMessage;
 
+  bool isTop = false;
+
   List<Widget> columnChildren =
       []; // the list that will be the main for the widgets to display
 
@@ -333,7 +335,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
     // this will loop through the each message and
     // make a list of widgets for each message
     for (int i = 0; i < messages.length; i++) {
-      if (userNames.length > 0 && messages.length > 0) {
+      if (userNames.isNotEmpty) {
         // this is the widget that will be used if
         // the message is an image or video
 
@@ -363,7 +365,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                 times: times)));
       }
     }
-    if (widgets.isNotEmpty) {
+    if (widgets.isNotEmpty && widgets.length > 1) {
       widgets.removeLast();
     }
     columnChildren = widgets;
@@ -373,7 +375,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
 
   @override
   void dispose() {
-    if (lastMessage != null) {
+    if (lastMessage != null && lastMessage!.time != null) {
       DeviceStorage().setLastReadMessageFromGroup(
           time: lastMessage!.time!,
           userName: lastMessage!.userName!,
@@ -389,15 +391,19 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
   void initState() {
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
-        bool isTop = _scrollController.position.pixels == 0;
-        if (!isTop) {
-          setState(() {
+        setState(() {
+          isTop = _scrollController.position.pixels == 0;
+          if (!isTop) {
             _kColumnChildrenViewLength +=
                 columnChildren.length >= (_kColumnChildrenViewLength + 30)
                     ? 30
                     : columnChildren.length - _kColumnChildrenViewLength;
-          });
-        }
+          }
+        });
+      } else {
+        setState(() {
+          isTop = false;
+        });
       }
     });
     super.initState();
@@ -481,6 +487,9 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
               reverse: true,
               controller: _scrollController,
               child: Column(children: [
+                const SizedBox(
+                  height: 15,
+                ),
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: (columnChildren.isEmpty
@@ -547,6 +556,7 @@ class MessageItem extends StatelessWidget {
       if (!isVideo) {
         if (isAudio) {
           image = AudioContainer(
+              duration: Duration(milliseconds: messages[i]["duration"]),
               audioUrl: messages[i]["url"],
               storagePath: messages[i]["storage_path"]);
         } else {
@@ -658,9 +668,7 @@ class MessageItem extends StatelessWidget {
                                                     tag: (image
                                                             as CachedNetworkImage)
                                                         .imageUrl,
-                                                    imageUrl: (image
-                                                            as CachedNetworkImage)
-                                                        .imageUrl,
+                                                    imageUrl: image.imageUrl,
                                                   )));
                                     },
                                   )
@@ -744,28 +752,24 @@ class BottomFieldBar extends StatefulWidget {
 class _BottomFieldBarState extends State<BottomFieldBar> {
   final controller = TextEditingController();
 
-  Future<void> pickFile(streamedUser) async {
+  Future<void> pickFile(streamedUser, pickType) async {
     try {
-      final List<Media>? insertedFiles = await ImagesPicker.pick(
-          maxSize: 100000000, // 100 MB
-          pickType: PickType.all);
+      final XFile? insertedFile = pickType == "image"
+          ? await ImagePicker().pickImage(source: ImageSource.gallery)
+          : await ImagePicker().pickVideo(source: ImageSource.gallery);
 
-      if (insertedFiles != null && insertedFiles.isNotEmpty) {
+      if (insertedFile != null) {
         widget.onLoadingStart();
 
-        final Media pickerFile = insertedFiles.single;
+        final File storedImage = File(insertedFile.path);
 
-        final File storedImage = File(pickerFile.path);
-
-        final XFile insertedImage =
-            XFile.fromData(await storedImage.readAsBytes());
         MessageDatabase()
             .addImageOrVideoToGroup(
                 storedImage,
                 widget.groupId ?? widget.groupDocument!.id,
-                (isVideo(pickerFile.path)
-                    ? "${insertedImage.name}.mp4"
-                    : "${insertedImage.name}.jpg"),
+                (isVideo(insertedFile.path)
+                    ? "${insertedFile.name}.mp4"
+                    : "${insertedFile.name}.jpg"),
                 Message(
                     userName: streamedUser.displayName,
                     documentId: streamedUser.uid))
@@ -883,7 +887,79 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                     splashRadius: 26.3,
                     color: Colors.white,
                     onPressed: () async {
-                      await pickFile(streamedUser);
+                      String? type = await showModalBottomSheet(
+                          context: context,
+                          constraints: BoxConstraints.loose(Size.fromHeight(
+                              MediaQuery.of(context).size.height / 6 + 12)),
+                          enableDrag: false,
+                          builder: (context) {
+                            return Column(children: [
+                              ScreenWidthCard(
+                                  highlightColor: Colors.grey[200],
+                                  splashColor: Colors.transparent,
+                                  onTap: () => Navigator.pop(context, "image"),
+                                  child: Row(children: [
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Icon(
+                                      Icons.image_outlined,
+                                      size: 32,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .color,
+                                    ),
+                                    const SizedBox(
+                                      width: 26,
+                                    ),
+                                    Text(
+                                      "Pick an Image",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(fontSize: 18),
+                                    )
+                                  ]),
+                                  height:
+                                      MediaQuery.of(context).size.height / 12),
+                              ScreenWidthCard(
+                                  highlightColor: Colors.grey[200],
+                                  splashColor: Colors.transparent,
+                                  onTap: () => Navigator.pop(context, "video"),
+                                  child: Row(children: [
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Icon(
+                                      Icons.slideshow_rounded,
+                                      size: 32,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .color,
+                                    ),
+                                    const SizedBox(
+                                      width: 26,
+                                    ),
+                                    Text(
+                                      "Pick a Video",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(fontSize: 18),
+                                    )
+                                  ]),
+                                  height:
+                                      MediaQuery.of(context).size.height / 12),
+                              SizedBox(
+                                height: 12,
+                              )
+                            ]);
+                          });
+                      if (type != null) {
+                        await pickFile(streamedUser, type);
+                      }
                     },
                     icon: const Icon(
                       Icons.image_outlined,

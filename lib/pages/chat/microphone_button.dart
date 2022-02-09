@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:media_info/media_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:saudi_chat/models/message.dart';
@@ -32,6 +33,9 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
 
   double dragContainerForCancelPositioBottomPadding = 0;
   bool longPressed = false;
+
+  MediaInfo info = MediaInfo();
+  Duration? infoDuration;
 
   // audio recorder var
   final audioRecorder = Record();
@@ -152,7 +156,8 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                             .addVoiceMessage(
                                 audioFile,
                                 widget.groupId,
-                                Message(
+                                VoiceMessage(
+                                    durationMilliseconds: infoDuration!,
                                     userName: widget.streamedUser.displayName,
                                     documentId: widget.streamedUser.uid))
                             .then((value) => widget.onLoadingEnd());
@@ -221,6 +226,10 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
     try {
       if (await audioRecorder.isRecording()) {
         final recordPath = await audioRecorder.stop();
+        final Map _info = await info.getMediaInfo(recordPath!);
+        setState(() {
+          infoDuration = Duration(milliseconds: _info["durationMs"]);
+        });
         return recordPath;
       }
     } catch (e) {

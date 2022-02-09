@@ -117,7 +117,7 @@ class MessageDatabase {
   }
 
   Future addVoiceMessage(
-      File audioFile, String groupId, Message message) async {
+      File audioFile, String groupId, VoiceMessage message) async {
     try {
       firebase_storage.Reference _storage = firestorage
           .ref("$groupId/audio_messages/${audioFile.path.split("/").last}");
@@ -136,7 +136,11 @@ class MessageDatabase {
       List timeData = groupData.time_of_messages as List;
       List docsData = groupData.users_doc_references as List;
 
-      messageData.add({"url": url, "storage_path": uploadTask.ref.fullPath});
+      messageData.add({
+        "url": url,
+        "storage_path": uploadTask.ref.fullPath,
+        "duration": message.durationMilliseconds.inMilliseconds
+      });
       userNamesData.add(message.userName);
       timeData.add(message.getTime);
       docsData

@@ -48,15 +48,17 @@ class ImageMessage extends Message {
 }
 
 class VoiceMessage extends Message {
-  late final String url;
-  late final String storage_path;
+  late final String? url;
+  late final String? storage_path;
+  late final Duration durationMilliseconds;
 
   VoiceMessage(
       {String? userName,
       String? documentId,
       Timestamp? time,
-      required this.url,
-      required this.storage_path})
+      this.url,
+      required this.durationMilliseconds,
+      this.storage_path})
       : super(userName: userName, documentId: documentId, time: time);
 }
 

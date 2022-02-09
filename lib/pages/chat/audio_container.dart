@@ -1,18 +1,20 @@
 import 'dart:io';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saudi_chat/shared/widgets.dart';
 
 class AudioContainer extends StatefulWidget {
   final String audioUrl;
   final String storagePath;
+  final Duration duration;
   const AudioContainer(
-      {Key? key, required this.audioUrl, required this.storagePath})
+      {Key? key,
+      required this.duration,
+      required this.audioUrl,
+      required this.storagePath})
       : super(key: key);
 
   @override
@@ -24,7 +26,7 @@ class _AudioContainerState extends State<AudioContainer>
   late AnimationController _animationController;
 
   final _audio = AudioPlayer();
-  bool isInitialized = false;
+  bool? isInitialized;
 
   Duration currentAudioPosition = Duration.zero;
   Duration audioDuration = Duration.zero;
@@ -36,6 +38,13 @@ class _AudioContainerState extends State<AudioContainer>
 
       if (!(await File("${filePath.path}/audio/${widget.storagePath}")
           .exists())) {
+        if (mounted) {
+          setState(() {
+            isInitialized = false;
+          });
+        } else {
+          isInitialized = false;
+        }
         // get the video form firebase storage
         final response = await get(Uri.parse(widget.audioUrl));
 
@@ -67,10 +76,10 @@ class _AudioContainerState extends State<AudioContainer>
         _audio.durationStream.listen((duration) {
           if (mounted) {
             setState(() {
-              audioDuration = duration!;
+              audioDuration = Duration(milliseconds: duration!.inMilliseconds);
             });
           } else {
-            audioDuration = duration!;
+            audioDuration = Duration(milliseconds: duration!.inMilliseconds);
           }
         });
         // used for seek bar purposes, like updating it
@@ -108,6 +117,13 @@ class _AudioContainerState extends State<AudioContainer>
           }
         });
       } else {
+        if (mounted) {
+          setState(() {
+            isInitialized = false;
+          });
+        } else {
+          isInitialized = false;
+        }
         await _audio.setFilePath("${filePath.path}/audio/${widget.storagePath}",
             initialPosition: Duration.zero);
         if (mounted) {
@@ -191,7 +207,6 @@ class _AudioContainerState extends State<AudioContainer>
   void initState() {
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
-    initialize();
     super.initState();
   }
 
@@ -204,49 +219,51 @@ class _AudioContainerState extends State<AudioContainer>
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints.tight(const Size(240, 50)),
-      child: isInitialized
-          ? Row(
-              children: [
-                SeekBarSlider(
-                    onEnd: () {
-                      setState(() {
-                        pauseAudio();
-                      });
-                    },
-                    timerStyle: const TextStyle(fontSize: 12),
-                    total: _audio.duration,
-                    progress: currentAudioPosition,
-                    onChanged: (duration) {
-                      setState(() {
-                        _audio.seek(duration);
-                      });
-                    },
-                    timerColor: Colors.white),
-                GestureDetector(
-                  onTap: () {
-                    if (_audio.playing) {
-                      pauseAudio();
-                    } else {
-                      playAudio();
-                    }
-                  },
-                  child: AnimatedIcon(
-                    icon: AnimatedIcons.play_pause,
-                    size: 34,
-                    progress: _animationController,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            )
-          : PendingOutlinedScreen(
-              visible: !isInitialized,
-              height: 50,
-              strokeWidth: 2,
-              colors: [Colors.white.withOpacity(0.7), Colors.transparent],
-              radius: 10),
-    );
+        constraints: BoxConstraints.tight(const Size(240, 50)),
+        child: Row(
+          children: [
+            SeekBarSlider(
+                onEnd: () {
+                  setState(() {
+                    pauseAudio();
+                  });
+                },
+                timerStyle: const TextStyle(fontSize: 12),
+                total: _audio.duration ?? widget.duration,
+                progress: currentAudioPosition,
+                onChanged: (duration) {
+                  setState(() {
+                    _audio.seek(duration);
+                  });
+                },
+                timerColor: Colors.white),
+            GestureDetector(
+              onTap: () {
+                if (_audio.playing) {
+                  pauseAudio();
+                } else {
+                  if (isInitialized == null) {
+                    initialize().then((value) => playAudio());
+                  } else if (isInitialized == true) {
+                    playAudio();
+                  }
+                }
+              },
+              child: isInitialized == false
+                  ? const SpinKitRing(
+                      lineWidth: 3.5,
+                      color: Colors.white,
+                      size: 30,
+                    )
+                  : AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      size: 34,
+                      progress: _animationController,
+                      color: Colors.white,
+                    ),
+            ),
+          ],
+        ));
   }
 }
 

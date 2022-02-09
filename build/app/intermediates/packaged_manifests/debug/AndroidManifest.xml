@@ -19,7 +19,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <queries>
         <intent>
@@ -190,52 +189,6 @@
             android:exported="false"
             android:initOrder="100" />
         <provider
-            android:name="com.luck.picture.lib.PictureFileProvider"
-            android:authorities="com.ahmedhummadi.saudi_chat.luckProvider"
-            android:exported="false"
-            android:grantUriPermissions="true" >
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorWeChatStyleActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorCameraEmptyActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/Picture.Theme.Translucent" />
-        <activity
-            android:name="com.luck.picture.lib.PictureCustomCameraActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PicturePreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorPreviewWeChatStyleActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureVideoPlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensor" />
-        <activity
-            android:name="com.luck.picture.lib.PictureExternalPreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PicturePlayAudioActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Base.Theme.NoActionBar" />
-        <activity
-            android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
-            android:theme="@style/Base.Theme.NoActionBar" />
-
-        <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="com.ahmedhummadi.saudi_chat.androidx-startup"
             android:exported="false" >
@@ -360,14 +313,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--
-        Service for holding metadata. Cannot be instantiated.
-        Metadata will be merged from other manifests.
-        -->
-        <service
-            android:name="androidx.camera.core.impl.MetadataHolderService"
-            android:enabled="false"
-            android:exported="false" />
+
         <service
             android:name="androidx.room.MultiInstanceInvalidationService"
             android:directBootAware="true"
