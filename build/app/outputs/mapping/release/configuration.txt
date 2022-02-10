@@ -122,7 +122,6 @@
 
 # End of content from /Users/ahmedhummadi/AppDev/flutter/packages/flutter_tools/gradle/flutter_proguard_rules.pro
 # The proguard configuration file for the following section is /Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/aapt_proguard_file/release/aapt_rules.txt
--keep class androidx.camera.core.impl.MetadataHolderService { <init>(); }
 -keep class androidx.core.app.CoreComponentFactory { <init>(); }
 -keep class androidx.room.MultiInstanceInvalidationService { <init>(); }
 -keep class androidx.startup.InitializationProvider { <init>(); }
@@ -147,62 +146,8 @@
 -keep class com.google.firebase.auth.internal.RecaptchaActivity { <init>(); }
 -keep class com.google.firebase.components.ComponentDiscoveryService { <init>(); }
 -keep class com.google.firebase.provider.FirebaseInitProvider { <init>(); }
--keep class com.luck.picture.lib.PictureCustomCameraActivity { <init>(); }
--keep class com.luck.picture.lib.PictureExternalPreviewActivity { <init>(); }
--keep class com.luck.picture.lib.PictureFileProvider { <init>(); }
--keep class com.luck.picture.lib.PicturePlayAudioActivity { <init>(); }
--keep class com.luck.picture.lib.PicturePreviewActivity { <init>(); }
--keep class com.luck.picture.lib.PictureSelectorActivity { <init>(); }
--keep class com.luck.picture.lib.PictureSelectorCameraEmptyActivity { <init>(); }
--keep class com.luck.picture.lib.PictureSelectorPreviewWeChatStyleActivity { <init>(); }
--keep class com.luck.picture.lib.PictureSelectorWeChatStyleActivity { <init>(); }
--keep class com.luck.picture.lib.PictureVideoPlayActivity { <init>(); }
--keep class com.yalantis.ucrop.PictureMultiCuttingActivity { <init>(); }
--keep class com.yalantis.ucrop.UCropActivity { <init>(); }
 -keep class io.flutter.plugins.imagepicker.ImagePickerFileProvider { <init>(); }
--keep class android.widget.Space { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.app.AlertController$RecycleListView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.view.menu.ActionMenuItemView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.view.menu.ExpandedMenuView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.view.menu.ListMenuItemView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ActionBarContainer { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ActionBarContextView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ActionBarOverlayLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ActionMenuView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ActivityChooserView$InnerLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.AlertDialogLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ButtonBarLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ContentFrameLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.DialogTitle { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.FitWindowsFrameLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.FitWindowsLinearLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.SearchView$SearchAutoComplete { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.Toolbar { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.appcompat.widget.ViewStubCompat { <init>(android.content.Context, android.util.AttributeSet); }
-
 -keep class androidx.browser.browseractions.BrowserActionsFallbackMenuView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.camera.view.PreviewView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class androidx.core.widget.NestedScrollView { <init>(android.content.Context, android.util.AttributeSet); }
 
 -keep class androidx.recyclerview.widget.RecyclerView { <init>(android.content.Context, android.util.AttributeSet); }
 
@@ -212,44 +157,8 @@
 
 -keep class com.google.android.exoplayer2.ui.TrackSelectionView { <init>(android.content.Context, android.util.AttributeSet); }
 
--keep class com.luck.picture.lib.camera.CustomCameraView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.camera.view.CaptureLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.photoview.PhotoView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.widget.PreviewViewPager { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.widget.RecyclerPreloadView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.widget.SquareRelativeLayout { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.yalantis.ucrop.view.GestureCropImageView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.yalantis.ucrop.view.OverlayView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.yalantis.ucrop.view.UCropView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.yalantis.ucrop.view.widget.AspectRatioTextView { <init>(android.content.Context, android.util.AttributeSet); }
-
--keep class com.yalantis.ucrop.view.widget.HorizontalProgressWheelView { <init>(android.content.Context, android.util.AttributeSet); }
-
 
 # End of content from /Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/aapt_proguard_file/release/aapt_rules.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/AppDev/saudi_chat/build/images_picker/intermediates/consumer_proguard_dir/release/lib0/proguard.txt
-#PictureSelector 2.0
--keep class com.luck.picture.lib.** { *; }
-
-#Ucrop
--dontwarn com.yalantis.ucrop**
--keep class com.yalantis.ucrop** { *; }
--keep interface com.yalantis.ucrop** { *; }
-
-#Okio
--dontwarn org.codehaus.mojo.animal_sniffer.*
-# End of content from /Users/ahmedhummadi/AppDev/saudi_chat/build/images_picker/intermediates/consumer_proguard_dir/release/lib0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/AppDev/saudi_chat/build/flutter_plugin_android_lifecycle/intermediates/consumer_proguard_dir/release/lib0/proguard.txt
 # The point of this package is to specify that a dependent plugin intends to
 # use the AndroidX lifecycle classes. Make sure no R8 heuristics shrink classes
@@ -387,6 +296,23 @@
 -dontwarn com.google.auto.value.AutoValue$Builder
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a01438859ce20e8b20386a3fe0841bf0/jetified-firebase-common-20.0.0/proguard.txt
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/proguard.txt
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep class * extends com.bumptech.glide.module.AppGlideModule {
+ <init>(...);
+}
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+-keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
+  *** rewind();
+}
+
+# Uncomment for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/13eba67e78499a87fd98949592d0ac19/jetified-exoplayer-ui-2.15.1/proguard.txt
 # Proguard rules specific to the UI module.
 
@@ -498,45 +424,17 @@
 }
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/299eefacaa43afd49f53676447b5c06b/jetified-exoplayer-core-2.15.1/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/21a5f2048c4cea6d581ad29f9ada93d2/appcompat-1.3.1/proguard.txt
-# Copyright (C) 2018 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# aapt is not able to read app::actionViewClass and app:actionProviderClass to produce proguard
-# keep rules. Add a commonly used SearchView to the keep list until b/109831488 is resolved.
--keep class androidx.appcompat.widget.SearchView { <init>(...); }
-
-# Never inline methods, but allow shrinking and obfuscation.
--keepclassmembernames,allowobfuscation,allowshrinking class androidx.appcompat.widget.AppCompatTextViewAutoSizeHelper$Impl* {
-  <methods>;
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/proguard.txt
+-keep class * extends androidx.work.Worker
+-keep class * extends androidx.work.InputMerger
+# Keep all constructors on ListenableWorker, Worker (also marked with @Keep)
+-keep public class * extends androidx.work.ListenableWorker {
+    public <init>(...);
 }
+# We need to keep WorkerParameters for the ListenableWorker constructor
+-keep class androidx.work.WorkerParameters
 
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/21a5f2048c4cea6d581ad29f9ada93d2/appcompat-1.3.1/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5dd4cb771c02c29fad4262cad79b96f1/jetified-glide-4.11.0/proguard.txt
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep class * extends com.bumptech.glide.module.AppGlideModule {
- <init>(...);
-}
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-
-# Uncomment for DexGuard only
-#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5dd4cb771c02c29fad4262cad79b96f1/jetified-glide-4.11.0/proguard.txt
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/0b690c10f3e9533018d7191b6722cd1a/jetified-play-services-base-17.1.0/proguard.txt
 # b/35135904 Ensure that proguard will not strip the mResultGuardian.
 -keepclassmembers class com.google.android.gms.common.api.internal.BasePendingResult {
@@ -665,8 +563,8 @@
 
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/76b2bc49eaef537248ea6e206ac20a7b/jetified-play-services-basement-18.0.0/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/bc5185b87f2c274ce1492c319110cec3/fragment-1.3.6/proguard.txt
-# Copyright (C) 2020 The Android Open Source Project
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/98a6cab9372d38d2220eef0dd3a96686/vectordrawable-animated-1.0.0/proguard.txt
+# Copyright (C) 2016 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -680,72 +578,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The default FragmentFactory creates Fragment instances using reflection
--if public class ** extends androidx.fragment.app.Fragment
--keepclasseswithmembers,allowobfuscation public class <1> {
-    public <init>();
+# keep setters in VectorDrawables so that animations can still work.
+-keepclassmembers class androidx.vectordrawable.graphics.drawable.VectorDrawableCompat$* {
+   void set*(***);
+   *** get*();
 }
 
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/bc5185b87f2c274ce1492c319110cec3/fragment-1.3.6/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/proguard.txt
--keep class * extends androidx.work.Worker
--keep class * extends androidx.work.InputMerger
-# Keep all constructors on ListenableWorker, Worker (also marked with @Keep)
--keep public class * extends androidx.work.ListenableWorker {
-    public <init>(...);
-}
-# We need to keep WorkerParameters for the ListenableWorker constructor
--keep class androidx.work.WorkerParameters
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/67b9d1cde8b90dd708953d5b70e6bb10/recyclerview-1.2.1/proguard.txt
-# Copyright (C) 2015 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# When layoutManager xml attribute is used, RecyclerView inflates
-#LayoutManagers' constructors using reflection.
--keep public class * extends androidx.recyclerview.widget.RecyclerView$LayoutManager {
-    public <init>(android.content.Context, android.util.AttributeSet, int, int);
-    public <init>();
-}
-
--keepclassmembers class androidx.recyclerview.widget.RecyclerView {
-    public void suppressLayout(boolean);
-    public boolean isLayoutSuppressed();
-}
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/67b9d1cde8b90dd708953d5b70e6bb10/recyclerview-1.2.1/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/92c94e1b8324b173bf1997ed108c2437/transition-1.4.1/proguard.txt
-# Copyright (C) 2017 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# Keep a field in transition that is used to keep a reference to weakly-referenced object
--keepclassmembers class androidx.transition.ChangeBounds$* extends android.animation.AnimatorListenerAdapter {
-  androidx.transition.ChangeBounds$ViewBounds mViewBounds;
-}
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/92c94e1b8324b173bf1997ed108c2437/transition-1.4.1/proguard.txt
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/98a6cab9372d38d2220eef0dd3a96686/vectordrawable-animated-1.0.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f0ccc887a46596f5918050f128a5dceb/jetified-media2-common-1.1.3/proguard.txt
 # Copyright 2020 The Android Open Source Project
 #
@@ -792,6 +631,33 @@
     public static final android.os.Parcelable$Creator *;
 }
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/857bc61be0897509a92147f15a578c5a/media-1.3.1/proguard.txt
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/67b9d1cde8b90dd708953d5b70e6bb10/recyclerview-1.2.1/proguard.txt
+# Copyright (C) 2015 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# When layoutManager xml attribute is used, RecyclerView inflates
+#LayoutManagers' constructors using reflection.
+-keep public class * extends androidx.recyclerview.widget.RecyclerView$LayoutManager {
+    public <init>(android.content.Context, android.util.AttributeSet, int, int);
+    public <init>();
+}
+
+-keepclassmembers class androidx.recyclerview.widget.RecyclerView {
+    public void suppressLayout(boolean);
+    public boolean isLayoutSuppressed();
+}
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/67b9d1cde8b90dd708953d5b70e6bb10/recyclerview-1.2.1/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/7909bc21df339f474940953ce795bf0b/coordinatorlayout-1.0.0/proguard.txt
 # Copyright (C) 2016 The Android Open Source Project
 #
@@ -817,28 +683,6 @@
 -keepattributes *Annotation*
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/7909bc21df339f474940953ce795bf0b/coordinatorlayout-1.0.0/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f91641a7f9fe6ea379b907f27e1bbad7/vectordrawable-animated-1.1.0/proguard.txt
-# Copyright (C) 2016 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# keep setters in VectorDrawables so that animations can still work.
--keepclassmembers class androidx.vectordrawable.graphics.drawable.VectorDrawableCompat$* {
-   void set*(***);
-   *** get*();
-}
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f91641a7f9fe6ea379b907f27e1bbad7/vectordrawable-animated-1.1.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/86cae1ed7f87903c37ea187d62abf974/core-1.6.0/proguard.txt
 # Never inline methods, but allow shrinking and obfuscation.
 -keepclassmembernames,allowobfuscation,allowshrinking class androidx.core.view.ViewCompat$Api* {
@@ -880,17 +724,7 @@
 # Also this rule prevents registerIn from being inlined.
 -keepclassmembers class androidx.lifecycle.ReportFragment$LifecycleCallbacks { *; }
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/86c7cb46254bf45d5d55c08fdc6f7659/lifecycle-runtime-2.4.0-beta01/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b95c06a1f35d6ea5ccffc0302605f161/jetified-lifecycle-viewmodel-savedstate-2.3.1/proguard.txt
--keepclassmembers,allowobfuscation class * extends androidx.lifecycle.ViewModel {
-    <init>(androidx.lifecycle.SavedStateHandle);
-}
-
--keepclassmembers,allowobfuscation class * extends androidx.lifecycle.AndroidViewModel {
-    <init>(android.app.Application,androidx.lifecycle.SavedStateHandle);
-}
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b95c06a1f35d6ea5ccffc0302605f161/jetified-lifecycle-viewmodel-savedstate-2.3.1/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b9966d107b4a78320709d043c218d146/jetified-savedstate-1.1.0/proguard.txt
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/53fffe1e5efc4ee29b0c19691ebf057a/jetified-savedstate-1.0.0/proguard.txt
 # Copyright (C) 2019 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -909,7 +743,7 @@
     <init>();
 }
 
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b9966d107b4a78320709d043c218d146/jetified-savedstate-1.1.0/proguard.txt
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/53fffe1e5efc4ee29b0c19691ebf057a/jetified-savedstate-1.0.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/9edf67105f774845d160e2098963aa8f/jetified-startup-runtime-1.0.0/proguard.txt
 # This Proguard rule ensures that ComponentInitializers are are neither shrunk nor obfuscated.
 # This is because they are discovered and instantiated during application initialization.
@@ -984,7 +818,7 @@
 -dontwarn androidx.room.paging.**
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/3e5c7d8e369d37c9c6f33636a582c30e/room-runtime-2.2.5/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/3020374cbaa526654138d268eee5dba9/lifecycle-viewmodel-2.3.1/proguard.txt
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/8a3c15e1ba112eee5571ec2ff3dda327/lifecycle-viewmodel-2.1.0/proguard.txt
 -keepclassmembers,allowobfuscation class * extends androidx.lifecycle.ViewModel {
     <init>();
 }
@@ -993,7 +827,7 @@
     <init>(android.app.Application);
 }
 
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/3020374cbaa526654138d268eee5dba9/lifecycle-viewmodel-2.3.1/proguard.txt
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/8a3c15e1ba112eee5571ec2ff3dda327/lifecycle-viewmodel-2.1.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/303b10e6e6b60db9b96295dd4ac3e2e2/rules/lib/META-INF/proguard/androidx-annotations.pro
 -keep,allowobfuscation @interface androidx.annotation.Keep
 -keep @androidx.annotation.Keep class * {*;}
@@ -1024,32 +858,6 @@
 }
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/2bc1025c884d46e2d0314c7bbc9f8655/jetified-grpc-android-1.41.0/proguard.txt
-# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/1a5496d0688a85ee443cbf190aa78751/jetified-annotation-experimental-1.1.0/proguard.txt
-# Copyright (C) 2020 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# Ignore missing Kotlin meta-annotations so that this library can be used
-# without adding a compileOnly dependency on the Kotlin standard library.
--dontwarn kotlin.Deprecated
--dontwarn kotlin.Metadata
--dontwarn kotlin.ReplaceWith
--dontwarn kotlin.annotation.AnnotationRetention
--dontwarn kotlin.annotation.AnnotationTarget
--dontwarn kotlin.annotation.Retention
--dontwarn kotlin.annotation.Target
-
-# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/1a5496d0688a85ee443cbf190aa78751/jetified-annotation-experimental-1.1.0/proguard.txt
 # The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f0e4c4cd28694b4a7f9e10203c5040eb/jetified-protolite-well-known-types-18.0.0/proguard.txt
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
@@ -1080,6 +888,32 @@
 }
 
 # End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f0e4c4cd28694b4a7f9e10203c5040eb/jetified-protolite-well-known-types-18.0.0/proguard.txt
+# The proguard configuration file for the following section is /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/1a5496d0688a85ee443cbf190aa78751/jetified-annotation-experimental-1.1.0/proguard.txt
+# Copyright (C) 2020 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Ignore missing Kotlin meta-annotations so that this library can be used
+# without adding a compileOnly dependency on the Kotlin standard library.
+-dontwarn kotlin.Deprecated
+-dontwarn kotlin.Metadata
+-dontwarn kotlin.ReplaceWith
+-dontwarn kotlin.annotation.AnnotationRetention
+-dontwarn kotlin.annotation.AnnotationTarget
+-dontwarn kotlin.annotation.Retention
+-dontwarn kotlin.annotation.Target
+
+# End of content from /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/1a5496d0688a85ee443cbf190aa78751/jetified-annotation-experimental-1.1.0/proguard.txt
 # The proguard configuration file for the following section is <unknown>
 -ignorewarnings
 # End of content from <unknown>

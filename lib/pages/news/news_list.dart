@@ -17,9 +17,32 @@ class NewsList extends StatefulWidget {
 class _NewsListState extends State<NewsList> {
   List<NewsForm> news = [];
 
+  final _scrollController = ScrollController();
+
+  bool isTop = false;
+
+  int _kColumnChildrenViewLength = 60;
+
   @override
   void initState() {
     findNews();
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge) {
+        setState(() {
+          isTop = _scrollController.position.pixels == 0;
+          if (!isTop) {
+            _kColumnChildrenViewLength +=
+                news.length >= (_kColumnChildrenViewLength + 30)
+                    ? 30
+                    : news.length - _kColumnChildrenViewLength;
+          }
+        });
+      } else {
+        setState(() {
+          isTop = false;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -66,11 +89,24 @@ class _NewsListState extends State<NewsList> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
-            children: news
-                .map((e) => NewsCard(
-                      news: e,
-                    ))
-                .toList(),
+            children: [
+              Column(
+                children: news
+                    .map((e) => NewsCard(
+                          news: e,
+                        ))
+                    .toList()
+                    .getRange(
+                        news.length > 60
+                            ? news.length - _kColumnChildrenViewLength
+                            : 0,
+                        news.length)
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              )
+            ],
           ),
         ),
       ),
@@ -244,7 +280,7 @@ class NewsCard extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 4,
                     )
                   ],

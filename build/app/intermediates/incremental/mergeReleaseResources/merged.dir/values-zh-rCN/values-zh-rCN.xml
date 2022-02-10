@@ -8,33 +8,6 @@
     <item quantity="one">快退 %d 秒</item>
     <item quantity="other">快退 %d 秒</item>
   </plurals>
-    <string msgid="5976598919945601918" name="abc_action_bar_home_description">"转到首页"</string>
-    <string msgid="8388173803310557296" name="abc_action_bar_up_description">"转到上一层级"</string>
-    <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"更多选项"</string>
-    <string msgid="4692188335987374352" name="abc_action_mode_done">"完成"</string>
-    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"查看全部"</string>
-    <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"选择应用"</string>
-    <string msgid="4215997306490295099" name="abc_capital_off">"关闭"</string>
-    <string msgid="884982626291842264" name="abc_capital_on">"开启"</string>
-    <string msgid="8833365367933412986" name="abc_menu_alt_shortcut_label">"Alt+"</string>
-    <string msgid="2223301931652355242" name="abc_menu_ctrl_shortcut_label">"Ctrl+"</string>
-    <string msgid="838001238306846836" name="abc_menu_delete_shortcut_label">"Delete 键"</string>
-    <string msgid="7986526966204849475" name="abc_menu_enter_shortcut_label">"Enter 键"</string>
-    <string msgid="375214403600139847" name="abc_menu_function_shortcut_label">"Fn+"</string>
-    <string msgid="4192209724446364286" name="abc_menu_meta_shortcut_label">"Meta+"</string>
-    <string msgid="4741552369836443843" name="abc_menu_shift_shortcut_label">"Shift+"</string>
-    <string msgid="5473865519181928982" name="abc_menu_space_shortcut_label">"空格键"</string>
-    <string msgid="6180552449598693998" name="abc_menu_sym_shortcut_label">"Sym+"</string>
-    <string msgid="5520303668377388990" name="abc_prepend_shortcut_label">"Menu+"</string>
-    <string msgid="7208076849092622260" name="abc_search_hint">"搜索…"</string>
-    <string msgid="3741173234950517107" name="abc_searchview_description_clear">"清除查询"</string>
-    <string msgid="693312494995508443" name="abc_searchview_description_query">"搜索查询"</string>
-    <string msgid="3417662926640357176" name="abc_searchview_description_search">"搜索"</string>
-    <string msgid="1486535517437947103" name="abc_searchview_description_submit">"提交查询"</string>
-    <string msgid="2293578557972875415" name="abc_searchview_description_voice">"语音搜索"</string>
-    <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"分享对象"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"与<ns1:g id="APPLICATION_NAME">%s</ns1:g>分享"</string>
-    <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"收起"</string>
     <string msgid="8585111718777012708" name="common_google_play_services_enable_button">"启用"</string>
     <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"您必须先启用 Google Play 服务，然后才能运行<ns1:g id="APP_NAME">%1$s</ns1:g>。"</string>
     <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"启用 Google Play 服务"</string>
@@ -107,79 +80,8 @@
     <string name="exo_track_surround_7_point_1">7.1 环绕声</string>
     <string name="exo_track_unknown">未知</string>
     <string msgid="4221330012095125431" name="pause_button_content_description">"暂停"</string>
-    <string name="picture_all_audio">所有音频</string>
-    <string name="picture_audio">获取系统录音权限被拒绝</string>
-    <string name="picture_audio_empty">你可以使用系统录音录制音频</string>
-    <string name="picture_audio_error">音频已损坏</string>
-    <string name="picture_camera">获取系统相机权限被拒绝</string>
-    <string name="picture_camera_roll">相机胶卷</string>
-    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
-    <string name="picture_cancel">取消</string>
-    <string name="picture_choose_limit_seconds">只能选择 %1$ds 至 %2$ds内的视频</string>
-    <string name="picture_choose_max_seconds">最大只能选择 %1$ds 以内的视频</string>
-    <string name="picture_choose_min_seconds">不能选择低于 %1$ds 内的视频</string>
-    <string name="picture_completed">已完成</string>
-    <string name="picture_confirm">确定</string>
-    <string name="picture_data_exception">获取相册数据异常…</string>
-    <string name="picture_data_null">这里空空如也…</string>
-    <string name="picture_default_original_image">原图</string>
-    <string name="picture_done">完 成</string>
-    <string name="picture_done_front_num">%1$d/%2$d 完成</string>
-    <string name="picture_editor">编辑</string>
-    <string name="picture_empty">你可以使用相机拍摄照片或视频</string>
-    <string name="picture_empty_audio_title">无音频文件\n</string>
-    <string name="picture_empty_title">无视频或照片\n</string>
-    <string name="picture_error">图片已损坏</string>
-    <string name="picture_gif_tag">动图</string>
-    <string name="picture_go_setting">去设置</string>
-    <string name="picture_jurisdiction">读取内存卡权限被拒绝</string>
-    <string name="picture_know">我知道了</string>
-    <string name="picture_long_chart">长图</string>
-    <string name="picture_message_audio_max_num">你最多只能选择%1$s个音频</string>
-    <string name="picture_message_max_num">你最多只能选择%1$s张照片</string>
-    <string name="picture_message_video_max_num">你最多只能选择%1$s个视频</string>
-    <string name="picture_min_img_num">图片最低选择不能少于%1$s张</string>
-    <string name="picture_min_video_num">视频最低选择不能少于%1$s个</string>
-    <string name="picture_not_crop_data">无可用裁剪数据</string>
-    <string name="picture_original_image">原图 (%1$s)</string>
-    <string name="picture_pause_audio">暂停</string>
-    <string name="picture_photo_camera">单击拍照，长按摄像</string>
-    <string name="picture_photo_pictures">单击拍照</string>
-    <string name="picture_photo_recording">长按摄像</string>
-    <string name="picture_photograph">拍照</string>
-    <string name="picture_play_audio">播放</string>
-    <string name="picture_please">请稍候…</string>
-    <string name="picture_please_select">请选择</string>
-    <string name="picture_preview">预览</string>
-    <string name="picture_preview_image_num">%1$d/%2$d</string>
-    <string name="picture_preview_num">预览(%1$d)</string>
-    <string name="picture_prompt">提示</string>
-    <string name="picture_prompt_content">是否保存图片至手机？</string>
-    <string name="picture_quit_audio">退出</string>
-    <string name="picture_record_video">录视频</string>
-    <string name="picture_recording_time_is_short">录制时间过短</string>
-    <string name="picture_rule">不能同时选择图片或视频</string>
-    <string name="picture_save_error">图片保存失败</string>
-    <string name="picture_save_success">图片保存成功至</string>
-    <string name="picture_select">选择</string>
-    <string name="picture_send">完成</string>
-    <string name="picture_send_num">完成(%1$d/%2$d)</string>
-    <string name="picture_stop_audio">停止</string>
-    <string name="picture_take_picture">拍摄</string>
-    <string name="picture_tape">录音</string>
-    <string name="picture_video_error">视频已损坏</string>
-    <string name="picture_video_toast">视频不可预览</string>
-    <string name="picture_warning">暂无媒体文件！</string>
     <string msgid="6034272287948142298" name="play_button_content_description">"播放"</string>
-    <string msgid="6264217191555673260" name="search_menu_title">"搜索"</string>
     <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"跳至下一项"</string>
     <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"跳至上一项"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
-    <string name="ucrop_crop">裁剪</string>
-    <string name="ucrop_gif_tag">动图</string>
-    <string name="ucrop_label_edit_photo">裁剪</string>
-    <string name="ucrop_label_original">原始比例</string>
-    <string name="ucrop_menu_crop">裁剪</string>
-    <string name="ucrop_rotate">旋转</string>
-    <string name="ucrop_scale">比例</string>
 </resources>

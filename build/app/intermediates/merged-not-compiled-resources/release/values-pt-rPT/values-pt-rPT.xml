@@ -8,33 +8,6 @@
     <item quantity="one">Retroceder %d segundo</item>
     <item quantity="other">Retroceder %d segundos</item>
   </plurals>
-    <string msgid="5976598919945601918" name="abc_action_bar_home_description">"Navegar para casa"</string>
-    <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Navegar para cima"</string>
-    <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Mais opções"</string>
-    <string msgid="4692188335987374352" name="abc_action_mode_done">"Concluído"</string>
-    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Ver tudo"</string>
-    <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Escolher uma app"</string>
-    <string msgid="4215997306490295099" name="abc_capital_off">"DESATIVADO"</string>
-    <string msgid="884982626291842264" name="abc_capital_on">"ATIVADO"</string>
-    <string msgid="8833365367933412986" name="abc_menu_alt_shortcut_label">"Alt +"</string>
-    <string msgid="2223301931652355242" name="abc_menu_ctrl_shortcut_label">"Ctrl +"</string>
-    <string msgid="838001238306846836" name="abc_menu_delete_shortcut_label">"eliminar"</string>
-    <string msgid="7986526966204849475" name="abc_menu_enter_shortcut_label">"enter"</string>
-    <string msgid="375214403600139847" name="abc_menu_function_shortcut_label">"Função +"</string>
-    <string msgid="4192209724446364286" name="abc_menu_meta_shortcut_label">"Meta +"</string>
-    <string msgid="4741552369836443843" name="abc_menu_shift_shortcut_label">"Shift +"</string>
-    <string msgid="5473865519181928982" name="abc_menu_space_shortcut_label">"espaço"</string>
-    <string msgid="6180552449598693998" name="abc_menu_sym_shortcut_label">"Sym +"</string>
-    <string msgid="5520303668377388990" name="abc_prepend_shortcut_label">"Menu +"</string>
-    <string msgid="7208076849092622260" name="abc_search_hint">"Pesquisar…"</string>
-    <string msgid="3741173234950517107" name="abc_searchview_description_clear">"Limpar consulta"</string>
-    <string msgid="693312494995508443" name="abc_searchview_description_query">"Consulta de pesquisa"</string>
-    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Pesquisar"</string>
-    <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Enviar consulta"</string>
-    <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Pesquisa por voz"</string>
-    <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Partilhar com"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Partilhar com a app <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
-    <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Reduzir"</string>
     <string msgid="8585111718777012708" name="common_google_play_services_enable_button">"Ativar"</string>
     <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"O <ns1:g id="APP_NAME">%1$s</ns1:g> não funciona enquanto não ativar os serviços do Google Play."</string>
     <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"Ativar serviços do Google Play"</string>
@@ -107,80 +80,8 @@
     <string name="exo_track_surround_7_point_1">Som surround 7.1</string>
     <string name="exo_track_unknown">Desconhecida</string>
     <string msgid="4221330012095125431" name="pause_button_content_description">"Pausar"</string>
-    <string name="picture_all_audio">Todos os áudios</string>
-    <string name="picture_audio">Acesso ao sistema de gravação negado</string>
-    <string name="picture_audio_empty">Você pode gravar o áudio usando o sistema de gravação</string>
-    <string name="picture_audio_error">áudio está danificada</string>
-    <string name="picture_camera">Acesso à câmera do sistema negado</string>
-    <string name="picture_camera_roll">Todos</string>
-    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
-    <string name="picture_cancel">Cancelar</string>
-    <string name="picture_choose_limit_seconds">Só podem ser selecionados vídeos de %1$ds a %2$ds segundos</string>
-    <string name="picture_choose_max_seconds">Até um máximo de %1$ds vídeos podem ser selecionados</string>
-    <string name="picture_choose_min_seconds">No mínimo, só podem ser selecionados vídeos de %1$ds segundos</string>
-    <string name="picture_completed">Terminar</string>
-    <string name="picture_confirm">Certeza</string>
-    <string name="picture_data_exception">Obter uma exceção para os dados do álbum…</string>
-    <string name="picture_data_null">Dados em branco…</string>
-    <string name="picture_default_original_image">Original</string>
-    <string name="picture_done">Terminar</string>
-    <string name="picture_done_front_num">%1$d/%2$d Terminar</string>
-    <string name="picture_editor">Editar</string>
-    <string name="picture_empty">Você pode usar a câmera para tirar fotos ou vídeos</string>
-    <string name="picture_empty_audio_title">Não há ficheiros de áudio\n</string>
-    <string name="picture_empty_title">Não há arquivos de vídeo ou imagem\n</string>
-    <string name="picture_error">imagem está danificada</string>
-    <string name="picture_gif_tag">gif</string>
-    <string name="picture_go_setting">As configurações</string>
-    <string name="picture_jurisdiction">A permissão para ler o cartão de memória foi negada</string>
-    <string name="picture_know">Entendo</string>
-    <string name="picture_long_chart">Figura muito</string>
-    <string name="picture_message_audio_max_num">Você pode escolher um máximo de %1$s áudio</string>
-    <string name="picture_message_max_num">Você pode escolher um máximo de %1$s foto</string>
-    <string name="picture_message_video_max_num">Você pode escolher um máximo de %1$s vídeo</string>
-    <string name="picture_min_img_num">Não pode haver menos de %1$s imagens</string>
-    <string name="picture_min_video_num">Os vídeos não podem ser menos de %1$s</string>
-    <string name="picture_not_crop_data">Recursos sem cortes</string>
-    <string name="picture_original_image">Original (%1$s)</string>
-    <string name="picture_pause_audio">Pausa</string>
-    <string name="picture_photo_camera">Tirar fotos，Câmara</string>
-    <string name="picture_photo_pictures">Tirar fotos</string>
-    <string name="picture_photo_recording">Câmara</string>
-    <string name="picture_photograph">Tirar fotos</string>
-    <string name="picture_play_audio">Play</string>
-    <string name="picture_please">Espera…</string>
-    <string name="picture_please_select">Escolha</string>
-    <string name="picture_preview">Antevisão</string>
-    <string name="picture_preview_image_num">%1$d/%2$d</string>
-    <string name="picture_preview_num">Antevisão(%1$d)</string>
-    <string name="picture_prompt">Dica</string>
-    <string name="picture_prompt_content">Salve a imagem para o telemóvel？</string>
-    <string name="picture_quit_audio">Desistir</string>
-    <string name="picture_record_video">Gravem video</string>
-    <string name="picture_recording_time_is_short">Tempo de gravação é muito curto</string>
-    <string name="picture_rule">Não é possível selecionar imagens ou vídeos ao mesmo tempo</string>
-    <string name="picture_save_error">Falha em salvar a imagem</string>
-    <string name="picture_save_success">A imagem foi salva com sucesso</string>
-    <string name="picture_select">Escolha</string>
-    <string name="picture_send">Terminar</string>
-    <string name="picture_send_num">Terminar(%1$d/%2$d)</string>
-    <string name="picture_stop_audio">Parar</string>
-    <string name="picture_take_picture">Fotografia</string>
-    <string name="picture_tape">Gravação</string>
-    <string name="picture_video_error">vídeo está danificada</string>
-    <string name="picture_video_toast">A visualização do vídeo não é suportada</string>
-    <string name="picture_warning">Não há documentos！</string>
-    <string name="picture_webp_tag">webp</string>
     <string msgid="6034272287948142298" name="play_button_content_description">"Reproduzir"</string>
-    <string msgid="6264217191555673260" name="search_menu_title">"Pesquisar"</string>
     <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"Ir para o item seguinte"</string>
     <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"Ir para o item anterior"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
-    <string name="ucrop_crop">Recorte</string>
-    <string name="ucrop_gif_tag">Gif</string>
-    <string name="ucrop_label_edit_photo">Recorte</string>
-    <string name="ucrop_label_original">Proporção inicial</string>
-    <string name="ucrop_menu_crop">Recorte</string>
-    <string name="ucrop_rotate">Rotação</string>
-    <string name="ucrop_scale">Proporção</string>
 </resources>

@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <queries>
         <intent>
@@ -37,10 +36,10 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" /> <!-- Include required permissions for Advertising Id -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" /> <!-- Include required permissions for Advertising Id -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -186,76 +185,6 @@
             android:exported="false"
             android:initOrder="100" />
         <provider
-            android:name="com.luck.picture.lib.PictureFileProvider"
-            android:authorities="com.ahmedhummadi.saudi_chat.luckProvider"
-            android:exported="false"
-            android:grantUriPermissions="true" >
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorWeChatStyleActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorCameraEmptyActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/Picture.Theme.Translucent" />
-        <activity
-            android:name="com.luck.picture.lib.PictureCustomCameraActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PicturePreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureSelectorPreviewWeChatStyleActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PictureVideoPlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensor" />
-        <activity
-            android:name="com.luck.picture.lib.PictureExternalPreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.luck.picture.lib.PicturePlayAudioActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Base.Theme.NoActionBar" />
-        <activity
-            android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
-            android:theme="@style/Base.Theme.NoActionBar" />
-        <activity
-            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-            android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <receiver
-            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
-            android:enabled="true"
-            android:exported="false" >
-        </receiver>
-
-        <service
-            android:name="com.google.android.gms.measurement.AppMeasurementService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="com.ahmedhummadi.saudi_chat.androidx-startup"
             android:exported="false" >
@@ -355,14 +284,32 @@
                 <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
             </intent-filter>
         </receiver>
-        <!--
-        Service for holding metadata. Cannot be instantiated.
-        Metadata will be merged from other manifests.
-        -->
+
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver
+            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+            android:enabled="true"
+            android:exported="false" >
+        </receiver>
+
         <service
-            android:name="androidx.camera.core.impl.MetadataHolderService"
-            android:enabled="false"
+            android:name="com.google.android.gms.measurement.AppMeasurementService"
+            android:enabled="true"
             android:exported="false" />
+        <service
+            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <service
             android:name="androidx.room.MultiInstanceInvalidationService"
             android:directBootAware="true"
