@@ -32,8 +32,8 @@ class _NewsListState extends State<NewsList> {
           isTop = _scrollController.position.pixels == 0;
           if (!isTop) {
             _kColumnChildrenViewLength +=
-                news.length >= (_kColumnChildrenViewLength + 30)
-                    ? 30
+                news.length >= (_kColumnChildrenViewLength + 6)
+                    ? 6
                     : news.length - _kColumnChildrenViewLength;
           }
         });
@@ -97,7 +97,7 @@ class _NewsListState extends State<NewsList> {
                         ))
                     .toList()
                     .getRange(
-                        news.length > 60
+                        news.length > 8
                             ? news.length - _kColumnChildrenViewLength
                             : 0,
                         news.length)
