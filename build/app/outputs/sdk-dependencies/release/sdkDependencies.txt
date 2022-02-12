@@ -830,12 +830,12 @@ library {
 }
 library {
   maven_library {
-    groupId: "androidx.core"
-    artifactId: "core-ktx"
-    version: "1.6.0"
+    groupId: "org.jetbrains.kotlin"
+    artifactId: "kotlin-stdlib-jdk7"
+    version: "1.5.31"
   }
   digests {
-    sha256: "q\357\002\316\347\353\241\351\005\247\363\1771;P\272\212;\356\016\305\232\017\207mZx\206\016\035\351c"
+    sha256: "\242[\364sS\316\211\235\204<\275\336\345\026\326!\2474s\347\373\251\177\215\003\001\347\264\256\327\301_"
   }
 }
 library {
@@ -870,6 +870,16 @@ library {
 }
 library {
   maven_library {
+    groupId: "androidx.core"
+    artifactId: "core-ktx"
+    version: "1.6.0"
+  }
+  digests {
+    sha256: "q\357\002\316\347\353\241\351\005\247\363\1771;P\272\212;\356\016\305\232\017\207mZx\206\016\035\351c"
+  }
+}
+library {
+  maven_library {
     groupId: "androidx.legacy"
     artifactId: "legacy-support-v4"
     version: "1.0.0"
@@ -886,16 +896,6 @@ library {
   }
   digests {
     sha256: "$\306\312\f(\033\'\336\300T\240\232\345\204\002\202fh2t\312\217S\2620G\017\364\004\247\323\364"
-  }
-}
-library {
-  maven_library {
-    groupId: "org.jetbrains.kotlin"
-    artifactId: "kotlin-stdlib-jdk7"
-    version: "1.5.31"
-  }
-  digests {
-    sha256: "\242[\364sS\316\211\235\204<\275\336\345\026\326!\2474s\347\373\251\177\215\003\001\347\264\256\327\301_"
   }
 }
 library {
@@ -1277,7 +1277,7 @@ library {
 }
 library {
   digests {
-    sha256: "\216\203\234\2510f\3429\\\022\276\002\341h\326\365l\2056\375\205D\023\277.\022YR\202\267\361\266"
+    sha256: "T\234\f\300e\316XQ\3051x\264\2739\306\264f\203\226\332o\311\232s\235\a]&\222\241\'C"
   }
 }
 library_dependencies {
@@ -1730,8 +1730,6 @@ library_dependencies {
 library_dependencies {
   library_index: 83
   library_dep_index: 84
-  library_dep_index: 0
-  library_dep_index: 7
 }
 library_dependencies {
   library_index: 84
@@ -1740,20 +1738,22 @@ library_dependencies {
 }
 library_dependencies {
   library_index: 87
+  library_dep_index: 84
+  library_dep_index: 0
   library_dep_index: 7
-  library_dep_index: 88
+}
+library_dependencies {
+  library_index: 88
+  library_dep_index: 7
+  library_dep_index: 89
   library_dep_index: 31
   library_dep_index: 76
   library_dep_index: 5
 }
 library_dependencies {
-  library_index: 88
+  library_index: 89
   library_dep_index: 10
   library_dep_index: 7
-}
-library_dependencies {
-  library_index: 89
-  library_dep_index: 84
 }
 library_dependencies {
   library_index: 90
@@ -1771,7 +1771,7 @@ library_dependencies {
 library_dependencies {
   library_index: 93
   library_dep_index: 84
-  library_dep_index: 89
+  library_dep_index: 83
 }
 library_dependencies {
   library_index: 94
@@ -1805,7 +1805,7 @@ library_dependencies {
   library_index: 99
   library_dep_index: 10
   library_dep_index: 98
-  library_dep_index: 88
+  library_dep_index: 89
   library_dep_index: 16
   library_dep_index: 69
 }
@@ -1845,7 +1845,7 @@ library_dependencies {
   library_dep_index: 100
   library_dep_index: 0
   library_dep_index: 107
-  library_dep_index: 88
+  library_dep_index: 89
 }
 library_dependencies {
   library_index: 107
@@ -1857,7 +1857,7 @@ library_dependencies {
 library_dependencies {
   library_index: 108
   library_dep_index: 101
-  library_dep_index: 88
+  library_dep_index: 89
 }
 library_dependencies {
   library_index: 109
@@ -1941,9 +1941,9 @@ library_dependencies {
 module_dependencies {
   module_name: "base"
   dependency_index: 128
+  dependency_index: 83
   dependency_index: 21
   dependency_index: 22
-  dependency_index: 89
   dependency_index: 125
   dependency_index: 126
   dependency_index: 127

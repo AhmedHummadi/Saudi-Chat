@@ -1052,6 +1052,10 @@
         "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/0b690c10f3e9533018d7191b6722cd1a/jetified-play-services-base-17.1.0/res/drawable/common_google_signin_btn_icon_light_normal.xml"
     },
     {
+        "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/layout_teclado_popup.xml.flat",
+        "source": "/Users/ahmedhummadi/AppDev/saudi_chat/build/keyboard_utils/intermediates/packaged_res/release/layout/teclado_popup.xml"
+    },
+    {
         "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/drawable-anydpi-v21_media_session_service_notification_ic_skip_to_previous.xml.flat",
         "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/81e810162888fa53afeff8104d0c3d09/jetified-media2-session-1.1.3/res/drawable-anydpi-v21/media_session_service_notification_ic_skip_to_previous.xml"
     },
@@ -1240,12 +1244,12 @@
         "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/13eba67e78499a87fd98949592d0ac19/jetified-exoplayer-ui-2.15.1/res/drawable-xxxhdpi-v4/exo_ic_subtitle_on.png"
     },
     {
-        "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/layout_exo_styled_settings_list_item.xml.flat",
-        "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/13eba67e78499a87fd98949592d0ac19/jetified-exoplayer-ui-2.15.1/res/layout/exo_styled_settings_list_item.xml"
-    },
-    {
         "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/drawable-anydpi-v21_exo_icon_shuffle_off.xml.flat",
         "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/13eba67e78499a87fd98949592d0ac19/jetified-exoplayer-ui-2.15.1/res/drawable-anydpi-v21/exo_icon_shuffle_off.xml"
+    },
+    {
+        "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/layout_exo_styled_settings_list_item.xml.flat",
+        "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/13eba67e78499a87fd98949592d0ac19/jetified-exoplayer-ui-2.15.1/res/layout/exo_styled_settings_list_item.xml"
     },
     {
         "merged": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/res/merged/release/layout-v21_notification_action_tombstone.xml.flat",

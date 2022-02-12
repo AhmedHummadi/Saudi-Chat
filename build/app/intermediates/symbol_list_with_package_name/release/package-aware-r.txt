@@ -464,6 +464,7 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
+id teclado_popup
 id text
 id text2
 id texture_view
@@ -509,6 +510,7 @@ layout notification_template_media
 layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout teclado_popup
 layout toast_custom
 mipmap ic_launcher
 plurals exo_controls_fastforward_by_amount_description
