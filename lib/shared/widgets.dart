@@ -560,17 +560,24 @@ class EmojiPickerWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final Config config = const Config(columns: 7);
-
   @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
-        child: ConstrainedBox(
-          constraints: BoxConstraints.loose(Size.fromHeight(keyboardHeight)),
-          child: EmojiPicker(
-            config: config,
-            onEmojiSelected: (category, emoji) => onEmojiSelected(emoji.emoji),
-          ),
+  Widget build(BuildContext context) {
+    final Config config = Config(
+        columns: 7,
+        skinToneIndicatorColor: Colors.grey,
+        bgColor: Theme.of(context).brightness == Brightness.light
+            ? const Color(0xFFEBEFF2)
+            : const Color(0xFF303030));
+
+    return Material(
+      color: Colors.transparent,
+      child: ConstrainedBox(
+        constraints: BoxConstraints.loose(Size.fromHeight(keyboardHeight)),
+        child: EmojiPicker(
+          config: config,
+          onEmojiSelected: (category, emoji) => onEmojiSelected(emoji.emoji),
         ),
-      );
+      ),
+    );
+  }
 }

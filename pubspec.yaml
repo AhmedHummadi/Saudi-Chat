@@ -67,6 +67,7 @@ dependencies:
   # System Interigations
   fluttertoast: ^8.0.8
   flutter_keyboard_visibility: ^5.1.1
+  flutter_persistent_keyboard_height: ^1.0.2
   
 
   # Widgets

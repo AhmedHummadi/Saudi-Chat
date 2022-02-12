@@ -10,6 +10,7 @@ MERGED from [:image_picker] /Users/ahmedhummadi/AppDev/saudi_chat/build/image_pi
 MERGED from [:flutter_plugin_android_lifecycle] /Users/ahmedhummadi/AppDev/saudi_chat/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:cloud_firestore] /Users/ahmedhummadi/AppDev/saudi_chat/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-15:12
 MERGED from [:record] /Users/ahmedhummadi/AppDev/saudi_chat/build/record/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:keyboard_utils] /Users/ahmedhummadi/AppDev/saudi_chat/build/keyboard_utils/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:gallery_saver] /Users/ahmedhummadi/AppDev/saudi_chat/build/gallery_saver/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:geolocator_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/geolocator_android/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:just_audio] /Users/ahmedhummadi/AppDev/saudi_chat/build/just_audio/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
@@ -306,6 +307,8 @@ MERGED from [:cloud_firestore] /Users/ahmedhummadi/AppDev/saudi_chat/build/cloud
 MERGED from [:cloud_firestore] /Users/ahmedhummadi/AppDev/saudi_chat/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:record] /Users/ahmedhummadi/AppDev/saudi_chat/build/record/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:record] /Users/ahmedhummadi/AppDev/saudi_chat/build/record/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:keyboard_utils] /Users/ahmedhummadi/AppDev/saudi_chat/build/keyboard_utils/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:keyboard_utils] /Users/ahmedhummadi/AppDev/saudi_chat/build/keyboard_utils/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:gallery_saver] /Users/ahmedhummadi/AppDev/saudi_chat/build/gallery_saver/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:gallery_saver] /Users/ahmedhummadi/AppDev/saudi_chat/build/gallery_saver/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:geolocator_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/geolocator_android/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44

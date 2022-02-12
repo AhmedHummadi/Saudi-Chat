@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:saudi_chat/models/nadi.dart';
@@ -127,123 +128,119 @@ class _ChatPageState extends State<ChatPage> {
 
             widgetStream.sink.add(command);
 
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                toolbarHeight: 60,
-                title: GestureDetector(
-                  onTap: () async {
-                    QuerySnapshot membersCollection =
-                        await widget.groupDocument!.collection("members").get();
+            return PersistentKeyboardHeightProvider(
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  toolbarHeight: 60,
+                  title: GestureDetector(
+                    onTap: () async {
+                      QuerySnapshot membersCollection = await widget
+                          .groupDocument!
+                          .collection("members")
+                          .get();
 
-                    Navigator.push(context, MaterialPageRoute(
-                        // needs PageRouteBuilder
-                        /*transitionDuration: Duration(milliseconds: 200),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(0.0, 1.0);
-                              const end = Offset.zero;
-                              const curve = Curves.linear;
-
-                              final tween = Tween(begin: begin, end: end);
-                              final curvedAnimation = CurvedAnimation(
-                                parent: animation,
-                                curve: curve,
-                              );
-
-                              return SlideTransition(
-                                position: tween.animate(curvedAnimation),
-                                child: child,
-                              );
-                            },*/
-                        builder: (context) {
-                      return NadiDetails(
-                        streamUser: streamedUser,
-                        groupDocument: widget.groupDocument!,
-                        membersCollection: membersCollection,
-                        groupData: snapshot.data!.data() as Map,
-                      );
-                    }));
-                  },
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundImage: Image.asset(
-                          "assets/new_nadi_profile_pic.jpg",
-                        ).image,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        snapshot.data!.get("nadi_data")["name"].toString(),
-                        style: const TextStyle(fontSize: 22),
-                      ),
-                    ],
+                      Navigator.push(context, MaterialPageRoute(
+                          // needs PageRouteBuilder
+                          /*transitionDuration: Duration(milliseconds: 200),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                const begin = Offset(0.0, 1.0);
+                                const end = Offset.zero;
+                                const curve = Curves.linear;
+            
+                                final tween = Tween(begin: begin, end: end);
+                                final curvedAnimation = CurvedAnimation(
+                                  parent: animation,
+                                  curve: curve,
+                                );
+            
+                                return SlideTransition(
+                                  position: tween.animate(curvedAnimation),
+                                  child: child,
+                                );
+                              },*/
+                          builder: (context) {
+                        return NadiDetails(
+                          streamUser: streamedUser,
+                          groupDocument: widget.groupDocument!,
+                          membersCollection: membersCollection,
+                          groupData: snapshot.data!.data() as Map,
+                        );
+                      }));
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundImage: Image.asset(
+                            "assets/new_nadi_profile_pic.jpg",
+                          ).image,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          snapshot.data!.get("nadi_data")["name"].toString(),
+                          style: const TextStyle(fontSize: 22),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              body: Column(
-                children: [
-                  Expanded(
-                    child: Stack(fit: StackFit.expand, children: [
-                      _ChatWidgets(
-                        keyboardOn: _kBottomOffset,
-                        document:
-                            snapshot.data!, // the documentSnapshot of the group
-                        streamedUser: streamedUser,
-                        widgetStream: widgetStream,
-                      ),
-                      BottomFieldBar(
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(fit: StackFit.expand, children: [
+                        _ChatWidgets(
+                          keyboardOn: _kBottomOffset,
+                          document: snapshot
+                              .data!, // the documentSnapshot of the group
                           streamedUser: streamedUser,
-                          businessStream: bussinessStream,
                           widgetStream: widgetStream,
-                          changeBottomOffset: (keyboardOn) {
-                            if (mounted) {
-                              setState(() {
-                                print(keyboardOn);
+                        ),
+                        BottomFieldBar(
+                            streamedUser: streamedUser,
+                            businessStream: bussinessStream,
+                            widgetStream: widgetStream,
+                            changeBottomOffset: (keyboardOn) {
+                              if (mounted) {
+                                setState(() {
+                                  _kBottomOffset = keyboardOn;
+                                });
+                              } else {
                                 _kBottomOffset = keyboardOn;
-                              });
-                            } else {
-                              print(keyboardOn);
-                              _kBottomOffset = keyboardOn;
-                            }
-                          },
-                          onLoadingStart: () {
-                            if (mounted) {
-                              setState(() {
-                                isLoading = true;
-                              });
-                            }
-                          },
-                          onLoadingEnd: () {
-                            if (mounted) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                            }
-                          },
-                          groupDocument: widget.groupDocument,
-                          groupId: widget.groupId),
-                      PendingBar(
-                          visible: isLoading,
-                          strokeWidth: 4,
-                          colors: [
-                            Colors.grey.shade200,
-                            Theme.of(context).colorScheme.secondaryVariant
-                          ],
-                          radius: 0)
-                    ]),
-                  ),
-                  Offstage(
-                    offstage: _kBottomOffset == null ? true : !_kBottomOffset!,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 2.83,
-                      color: Colors.transparent,
+                              }
+                            },
+                            onLoadingStart: () {
+                              if (mounted) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                              }
+                            },
+                            onLoadingEnd: () {
+                              if (mounted) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
+                            },
+                            groupDocument: widget.groupDocument,
+                            groupId: widget.groupId),
+                        PendingBar(
+                            visible: isLoading,
+                            strokeWidth: 4,
+                            colors: [
+                              Colors.grey.shade200,
+                              Theme.of(context).colorScheme.secondaryVariant
+                            ],
+                            radius: 0)
+                      ]),
                     ),
-                  )
-                ],
+                    OffstageOffsetWidget(kBottomOffset: _kBottomOffset)
+                  ],
+                ),
               ),
             );
           } else {
@@ -389,6 +386,10 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
 
   @override
   void initState() {
+    // this will limit the amount of items a user sees in the page
+    // if he reaches the end of the limit, then it will add more
+    // until it reaches the end, this listner does the job
+
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
         setState(() {
@@ -766,6 +767,8 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
 
   double keyboardHeight = 0;
 
+  bool wasFocused = false;
+
   Future<void> pickFile(streamedUser, pickType) async {
     try {
       final XFile? insertedFile = pickType == "image"
@@ -797,11 +800,24 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
   }
 
   @override
+  void dispose() {
+    focusNode.removeListener(_onFocusChanged);
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
-    super.initState();
+    // this will add a listener to check if the user has opened the textfield
+    // or is it selected to switch from the emojikeyboard to keyboard or nothing
+
+    focusNode.addListener(_onFocusChanged);
+
+    // this will keep updating every time the user has opened the keyboard
+    // it will change the offset for the chat messages and hidden box
+    // and remove the moji keyboard if its on
 
     KeyboardVisibilityController().onChange.listen((bool visible) {
-      print(visible);
       if (visible) {
         widget.changeBottomOffset(true);
       } else if (isEmojiVisible) {
@@ -823,6 +839,14 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
         });
       }
     });
+
+    super.initState();
+  }
+
+  void _onFocusChanged() {
+    setState(() {
+      wasFocused = true;
+    });
   }
 
   void onEmojiSelected(String emoji) => setState(() {
@@ -839,9 +863,12 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
         isEmojiVisible = false;
         isKeyboardVisible = true;
       });
-
       FocusScope.of(context).requestFocus();
-      widget.changeBottomOffset(true);
+      if (wasFocused) {
+        widget.changeBottomOffset(true);
+      } else {
+        widget.changeBottomOffset(null);
+      }
       return;
     }
 
@@ -862,13 +889,20 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
       isKeyboardVisible = false;
     });
     FocusScope.of(context).unfocus();
-    widget.changeBottomOffset(true);
+    widget.changeBottomOffset(false);
     return;
   }
 
   Future<bool> onBackPress() {
     if (isEmojiVisible) {
-      toggleEmojiKeyboard();
+      setState(() {
+        isEmojiVisible = false;
+        isKeyboardVisible = false;
+      });
+
+      FocusScope.of(context).unfocus();
+      widget.changeBottomOffset(null);
+      return Future.value(false);
     } else {
       Navigator.pop(context);
     }
@@ -876,13 +910,12 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
     return Future.value(false);
   }
 
-  void onClickedEmoji() async {
-    toggleEmojiKeyboard();
-  }
-
   @override
   Widget build(BuildContext context) {
     dynamic streamedUser = widget.streamedUser;
+
+    final double keyboardHeight =
+        PersistentKeyboardHeight.of(context).keyboardHeight;
 
     assert(widget.groupDocument != null || widget.groupId != null);
     return WillPopScope(
@@ -914,7 +947,7 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                         ? Icons.keyboard_rounded
                                         : Icons.emoji_emotions_outlined,
                                     color: Colors.white),
-                                onTap: onClickedEmoji,
+                                onTap: toggleEmojiKeyboard,
                               )),
                           Container(
                             constraints: BoxConstraints(
@@ -1107,5 +1140,27 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
             ),
           ],
         ));
+  }
+}
+
+class OffstageOffsetWidget extends StatelessWidget {
+  final bool? kBottomOffset;
+  const OffstageOffsetWidget({Key? key, required this.kBottomOffset})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final double keyboardHeight =
+        PersistentKeyboardHeight.of(context).keyboardHeight;
+    return Offstage(
+      offstage: kBottomOffset == null ? true : !kBottomOffset!,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        height: keyboardHeight == 0
+            ? MediaQuery.of(context).size.height / 2.83
+            : keyboardHeight,
+        color: Colors.transparent,
+      ),
+    );
   }
 }
