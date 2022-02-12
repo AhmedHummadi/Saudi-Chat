@@ -15,7 +15,8 @@ Map filters = {};
 MyLocation? deviceLocation;
 
 class SearchNadis extends StatefulWidget {
-  const SearchNadis({Key? key}) : super(key: key);
+  final dynamic streamedUser;
+  const SearchNadis({Key? key, required this.streamedUser}) : super(key: key);
 
   @override
   _SearchNadisState createState() => _SearchNadisState();
@@ -101,7 +102,7 @@ class _SearchNadisState extends State<SearchNadis> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic streamedUser = Provider.of<UserAuth>(context);
+    dynamic streamedUser = widget.streamedUser;
     final controller = FloatingSearchBarController();
 
     return Theme(

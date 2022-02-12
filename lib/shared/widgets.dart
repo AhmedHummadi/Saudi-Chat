@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:saudi_chat/shared/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class MyTextField extends StatelessWidget {
   const MyTextField(
@@ -547,4 +548,29 @@ class NoGlowScrollBehaviour extends ScrollBehavior {
       BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
+}
+
+class EmojiPickerWidget extends StatelessWidget {
+  final ValueChanged<String> onEmojiSelected;
+  final double keyboardHeight;
+
+  const EmojiPickerWidget({
+    required this.onEmojiSelected,
+    required this.keyboardHeight,
+    Key? key,
+  }) : super(key: key);
+
+  final Config config = const Config(columns: 7);
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: ConstrainedBox(
+          constraints: BoxConstraints.loose(Size.fromHeight(keyboardHeight)),
+          child: EmojiPicker(
+            config: config,
+            onEmojiSelected: (category, emoji) => onEmojiSelected(emoji.emoji),
+          ),
+        ),
+      );
 }

@@ -1,6 +1,7 @@
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/control_panel.dart';
 import 'package:saudi_chat/pages/chat/chat_list.dart';
+import 'package:saudi_chat/pages/home/search/search_widget.dart';
 import 'package:saudi_chat/pages/news/news_list.dart';
 import 'package:saudi_chat/services/auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,18 @@ class _HomeState extends State<Home> {
     )
   ];
 
+  late OverlayEntry? _overlaySearch;
+
+  void createBottomLoadingOverlay(BuildContext context) {
+    return Overlay.of(context)!.insert(_overlaySearch!);
+  }
+
+  void removeBottomOverlayEntry(BuildContext context) {
+    if (_overlaySearch!.mounted) {
+      _overlaySearch!.remove();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final dynamic streamUser = Provider.of<UserAuth>(context);
@@ -50,7 +63,8 @@ class _HomeState extends State<Home> {
                 _currentIndex = index;
               });
             },
-            items: streamedUser.userClass == UserClass.moderator
+            items: streamedUser.userClass == UserClass.moderator ||
+                    streamedUser.userClass == UserClass.admin
                 ? navigationBaritems +
                     [
                       const BottomNavigationBarItem(
@@ -64,8 +78,8 @@ class _HomeState extends State<Home> {
             // is on home page
             // show add chat group button
             FloatingActionButton.extended(
-                onPressed: () {},
-                label: const Text("Add Group"),
+                onPressed: () => addGroup(streamUser),
+                label: const Text("Join a Club"),
                 icon: const Icon(
                   Icons.add,
                   size: 28,
@@ -86,7 +100,9 @@ class _HomeState extends State<Home> {
           index: _currentIndex,
           children: streamedUser.userClass == UserClass.moderator
               ? _pages + [const ControlPanelPage()]
-              : _pages,
+              : streamedUser.userClass == UserClass.admin
+                  ? _pages + [const AdminPanelPage()]
+                  : _pages,
         ),
       );
     } else {
@@ -96,6 +112,24 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+  }
+
+  void addGroup(dynamic streamedUser) {
+    // add the search bar at the top of everything to join the club
+
+    _overlaySearch = OverlayEntry(builder: (context) {
+      return Material(
+        color: Colors.black.withOpacity(0.5),
+        child: Stack(children: [
+          GestureDetector(onTap: () => removeBottomOverlayEntry(context)),
+          SearchNadis(
+            streamedUser: streamedUser,
+          )
+        ]),
+      );
+    });
+
+    createBottomLoadingOverlay(context);
   }
 
   Drawer buildDrawer() {

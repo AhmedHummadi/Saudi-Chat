@@ -2,6 +2,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
@@ -17,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:saudi_chat/services/device_storage.dart';
 import 'package:saudi_chat/shared/constants.dart';
 import 'package:gallery_saver/files.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,6 +48,8 @@ class _ChatPageState extends State<ChatPage> {
   bool isLoading = false;
 
   final StreamController widgetStream = StreamController();
+
+  bool? _kBottomOffset;
 
   @override
   void dispose() {
@@ -125,40 +128,9 @@ class _ChatPageState extends State<ChatPage> {
             widgetStream.sink.add(command);
 
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 toolbarHeight: 60,
-                // ignore: prefer_const_constructors
-                actions: [
-                  IconButton(
-                      onPressed: () => showCenterScreenMenu(
-                          context,
-                          CenterScreenOptionsMenu(
-                            items: [
-                              CenterScreenOptionsMenuItem(
-                                  text: "Delete a message",
-                                  value: 0,
-                                  height: 50),
-                              CenterScreenOptionsMenuItem(
-                                  text: "Kick/Ban a member",
-                                  value: 1,
-                                  height: 50),
-                            ],
-                            onSelected: (index) {
-                              switch (index) {
-                                case 0:
-                                  // Delete a message
-                                  break;
-                                case 1:
-                                  // Kick/Ban a member
-                                  break;
-                              }
-                            },
-                          )),
-                      icon: const Icon(
-                        Icons.admin_panel_settings,
-                        size: 30,
-                      ))
-                ],
                 title: GestureDetector(
                   onTap: () async {
                     QuerySnapshot membersCollection =
@@ -212,41 +184,67 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
               ),
-              body: Stack(fit: StackFit.expand, children: [
-                _ChatWidgets(
-                  document: snapshot.data!, // the documentSnapshot of the group
-                  streamedUser: streamedUser,
-                  widgetStream: widgetStream,
-                ),
-                BottomFieldBar(
-                    streamedUser: streamedUser,
-                    businessStream: bussinessStream,
-                    widgetStream: widgetStream,
-                    onLoadingStart: () {
-                      if (mounted) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                      }
-                    },
-                    onLoadingEnd: () {
-                      if (mounted) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    },
-                    groupDocument: widget.groupDocument,
-                    groupId: widget.groupId),
-                PendingBar(
-                    visible: isLoading,
-                    strokeWidth: 4,
-                    colors: [
-                      Colors.grey.shade200,
-                      Theme.of(context).colorScheme.secondaryVariant
-                    ],
-                    radius: 0)
-              ]),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: Stack(fit: StackFit.expand, children: [
+                      _ChatWidgets(
+                        keyboardOn: _kBottomOffset,
+                        document:
+                            snapshot.data!, // the documentSnapshot of the group
+                        streamedUser: streamedUser,
+                        widgetStream: widgetStream,
+                      ),
+                      BottomFieldBar(
+                          streamedUser: streamedUser,
+                          businessStream: bussinessStream,
+                          widgetStream: widgetStream,
+                          changeBottomOffset: (keyboardOn) {
+                            if (mounted) {
+                              setState(() {
+                                print(keyboardOn);
+                                _kBottomOffset = keyboardOn;
+                              });
+                            } else {
+                              print(keyboardOn);
+                              _kBottomOffset = keyboardOn;
+                            }
+                          },
+                          onLoadingStart: () {
+                            if (mounted) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                            }
+                          },
+                          onLoadingEnd: () {
+                            if (mounted) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
+                          groupDocument: widget.groupDocument,
+                          groupId: widget.groupId),
+                      PendingBar(
+                          visible: isLoading,
+                          strokeWidth: 4,
+                          colors: [
+                            Colors.grey.shade200,
+                            Theme.of(context).colorScheme.secondaryVariant
+                          ],
+                          radius: 0)
+                    ]),
+                  ),
+                  Offstage(
+                    offstage: _kBottomOffset == null ? true : !_kBottomOffset!,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 2.83,
+                      color: Colors.transparent,
+                    ),
+                  )
+                ],
+              ),
             );
           } else {
             return Container();
@@ -282,8 +280,10 @@ class _ChatWidgets extends StatefulWidget {
   final DocumentSnapshot document; // group Document
   final UserAuth streamedUser;
   final StreamController widgetStream;
+  final bool? keyboardOn;
   const _ChatWidgets(
       {Key? key,
+      required this.keyboardOn,
       required this.streamedUser,
       required this.widgetStream,
       required this.document})
@@ -505,8 +505,12 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                                 : 0,
                             columnChildren.length)
                         .toList()),
-                const SizedBox(
-                  height: 64.0,
+                SizedBox(
+                  height: widget.keyboardOn == null
+                      ? 64
+                      : widget.keyboardOn == true
+                          ? 64
+                          : MediaQuery.of(context).size.height / 2.83 + 64,
                 )
               ]),
             ),
@@ -734,11 +738,13 @@ class BottomFieldBar extends StatefulWidget {
   final dynamic streamedUser;
   final Stream<NadiData> businessStream;
   final StreamController widgetStream;
+  final Function(bool? keyboardOn) changeBottomOffset;
   const BottomFieldBar(
       {Key? key,
       this.groupId,
       required this.widgetStream,
       required this.onLoadingStart,
+      required this.changeBottomOffset,
       required this.onLoadingEnd,
       this.groupDocument,
       required this.streamedUser,
@@ -751,6 +757,14 @@ class BottomFieldBar extends StatefulWidget {
 
 class _BottomFieldBarState extends State<BottomFieldBar> {
   final controller = TextEditingController();
+
+  FocusNode focusNode = FocusNode();
+
+  // to show or hide the emoji keyboard
+  bool isEmojiVisible = false;
+  bool isKeyboardVisible = false;
+
+  double keyboardHeight = 0;
 
   Future<void> pickFile(streamedUser, pickType) async {
     try {
@@ -783,202 +797,315 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      print(visible);
+      if (visible) {
+        widget.changeBottomOffset(true);
+      } else if (isEmojiVisible) {
+        widget.changeBottomOffset(false);
+      } else {
+        widget.changeBottomOffset(null);
+      }
+      if (mounted) {
+        setState(() {
+          isKeyboardVisible = visible;
+        });
+      } else {
+        isKeyboardVisible = visible;
+      }
+
+      if (isKeyboardVisible && isEmojiVisible) {
+        setState(() {
+          isEmojiVisible = false;
+        });
+      }
+    });
+  }
+
+  void onEmojiSelected(String emoji) => setState(() {
+        controller.text = controller.text + emoji;
+      });
+
+  Future toggleEmojiKeyboard() async {
+    // if the emojiKeyboard is on, then switch to keyboard
+    // if the emojikeyboard is off, then switch to emoji keyboard
+    // if none are on, then open emoji keyboard
+
+    if (isEmojiVisible) {
+      setState(() {
+        isEmojiVisible = false;
+        isKeyboardVisible = true;
+      });
+
+      FocusScope.of(context).requestFocus();
+      widget.changeBottomOffset(true);
+      return;
+    }
+
+    if (!isEmojiVisible && isKeyboardVisible) {
+      setState(() {
+        isEmojiVisible = true;
+        isKeyboardVisible = false;
+      });
+
+      FocusScope.of(context).unfocus();
+      widget.changeBottomOffset(false);
+      return;
+    }
+
+    // if none are on
+    setState(() {
+      isEmojiVisible = true;
+      isKeyboardVisible = false;
+    });
+    FocusScope.of(context).unfocus();
+    widget.changeBottomOffset(true);
+    return;
+  }
+
+  Future<bool> onBackPress() {
+    if (isEmojiVisible) {
+      toggleEmojiKeyboard();
+    } else {
+      Navigator.pop(context);
+    }
+
+    return Future.value(false);
+  }
+
+  void onClickedEmoji() async {
+    toggleEmojiKeyboard();
+  }
+
+  @override
   Widget build(BuildContext context) {
     dynamic streamedUser = widget.streamedUser;
 
     assert(widget.groupDocument != null || widget.groupId != null);
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 15, 0, 15),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return WillPopScope(
+        onWillPop: () => onBackPress(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).colorScheme.surface),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: InkWell(
-                      child: Icon(
-                        Icons.emoji_emotions_outlined,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxHeight: 100,
-                        maxWidth: (MediaQuery.of(context).size.width / 2) - 20),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 3, 0, 3),
-                      child: Theme(
-                        data: ThemeData(
-                          primaryColor: Colors.white,
-                          colorScheme: ColorScheme.light(
-                              primary: Colors.grey.shade100,
-                              secondary: Colors.white),
-                        ),
-                        child: TextField(
-                            textInputAction: TextInputAction.send,
-                            onEditingComplete: () async {
-                              // ignore: unnecessary_null_comparison
-                              if (controller.text != null &&
-                                  controller.text.isNotEmpty) {
-                                if (streamedUser.displayName != null) {
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 15, 0, 15),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Theme.of(context).colorScheme.surface),
+                      child: Row(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              child: GestureDetector(
+                                child: Icon(
+                                    isEmojiVisible
+                                        ? Icons.keyboard_rounded
+                                        : Icons.emoji_emotions_outlined,
+                                    color: Colors.white),
+                                onTap: onClickedEmoji,
+                              )),
+                          Container(
+                            constraints: BoxConstraints(
+                                maxHeight: 100,
+                                maxWidth:
+                                    (MediaQuery.of(context).size.width / 2) -
+                                        20),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 3, 0, 3),
+                              child: Theme(
+                                data: ThemeData(
+                                  primaryColor: Colors.white,
+                                  colorScheme: ColorScheme.light(
+                                      primary: Colors.grey.shade100,
+                                      secondary: Colors.white),
+                                ),
+                                child: TextField(
+                                    focusNode: focusNode,
+                                    textInputAction: TextInputAction.send,
+                                    onEditingComplete: () async {
+                                      // ignore: unnecessary_null_comparison
+                                      if (controller.text != null &&
+                                          controller.text.isNotEmpty) {
+                                        if (streamedUser.displayName != null) {
+                                          MessageDatabase().addMessageToGroup(
+                                              message: Message(
+                                                  documentId: streamedUser.uid,
+                                                  message: controller.text,
+                                                  userName:
+                                                      streamedUser.displayName),
+                                              groupDocument:
+                                                  widget.groupDocument);
+
+                                          controller.clear();
+                                        }
+                                      }
+                                    },
+                                    style: const TextStyle(color: Colors.white),
+                                    showCursor: true,
+                                    controller: controller,
+                                    decoration: textInputDecoration.copyWith(
+                                        border: InputBorder.none,
+                                        hintText: "Message",
+                                        hintStyle: TextStyle(
+                                            color: Colors.white
+                                                .withOpacity(0.8)))),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              splashRadius: 20,
+                              color: Colors.white,
+                              onPressed: () async {
+                                // ignore: unnecessary_null_comparison
+                                if (controller.text != null &&
+                                    controller.text.isNotEmpty) {
+                                  if (streamedUser.displayName == null) {
+                                    setState(() {});
+                                  }
                                   MessageDatabase().addMessageToGroup(
                                       message: Message(
                                           documentId: streamedUser.uid,
                                           message: controller.text,
                                           userName: streamedUser.displayName),
                                       groupDocument: widget.groupDocument);
-
                                   controller.clear();
                                 }
-                              }
-                            },
-                            style: const TextStyle(color: Colors.white),
-                            showCursor: true,
-                            controller: controller,
-                            decoration: textInputDecoration.copyWith(
-                                border: InputBorder.none,
-                                hintText: "Message",
-                                hintStyle: TextStyle(
-                                    color: Colors.white.withOpacity(0.8)))),
+                              },
+                              icon: const Icon(Icons.send_rounded))
+                        ],
                       ),
                     ),
-                  ),
-                  IconButton(
-                      splashRadius: 20,
-                      color: Colors.white,
-                      onPressed: () async {
-                        // ignore: unnecessary_null_comparison
-                        if (controller.text != null &&
-                            controller.text.isNotEmpty) {
-                          if (streamedUser.displayName == null) {
-                            setState(() {});
-                          }
-                          MessageDatabase().addMessageToGroup(
-                              message: Message(
-                                  documentId: streamedUser.uid,
-                                  message: controller.text,
-                                  userName: streamedUser.displayName),
-                              groupDocument: widget.groupDocument);
-                          controller.clear();
-                        }
-                      },
-                      icon: const Icon(Icons.send_rounded))
-                ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
+                      child: Container(
+                        width: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).colorScheme.surface),
+                        child: IconButton(
+                            splashRadius: 26.3,
+                            color: Colors.white,
+                            onPressed: () async {
+                              String? type = await showModalBottomSheet(
+                                  context: context,
+                                  constraints: BoxConstraints.loose(
+                                      Size.fromHeight(
+                                          MediaQuery.of(context).size.height /
+                                                  6 +
+                                              12)),
+                                  enableDrag: false,
+                                  builder: (context) {
+                                    return Column(children: [
+                                      ScreenWidthCard(
+                                          highlightColor: Colors.grey[200],
+                                          splashColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.pop(context, "image"),
+                                          child: Row(children: [
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            Icon(
+                                              Icons.image_outlined,
+                                              size: 32,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .color,
+                                            ),
+                                            const SizedBox(
+                                              width: 26,
+                                            ),
+                                            Text(
+                                              "Pick an Image",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .copyWith(fontSize: 18),
+                                            )
+                                          ]),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              12),
+                                      ScreenWidthCard(
+                                          highlightColor: Colors.grey[200],
+                                          splashColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.pop(context, "video"),
+                                          child: Row(children: [
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            Icon(
+                                              Icons.slideshow_rounded,
+                                              size: 32,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .color,
+                                            ),
+                                            const SizedBox(
+                                              width: 26,
+                                            ),
+                                            Text(
+                                              "Pick a Video",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .copyWith(fontSize: 18),
+                                            )
+                                          ]),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              12),
+                                      const SizedBox(
+                                        height: 12,
+                                      )
+                                    ]);
+                                  });
+                              if (type != null) {
+                                await pickFile(streamedUser, type);
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.image_outlined,
+                              size: 26,
+                            )),
+                      ),
+                    ),
+                    MicrophoneButton(
+                        groupId: widget.groupId ?? widget.groupDocument!.id,
+                        streamedUser: streamedUser,
+                        onLoadingStart: widget.onLoadingStart,
+                        onLoadingEnd: widget.onLoadingEnd),
+                  ],
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
-              child: Container(
-                width: 50,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.surface),
-                child: IconButton(
-                    splashRadius: 26.3,
-                    color: Colors.white,
-                    onPressed: () async {
-                      String? type = await showModalBottomSheet(
-                          context: context,
-                          constraints: BoxConstraints.loose(Size.fromHeight(
-                              MediaQuery.of(context).size.height / 6 + 12)),
-                          enableDrag: false,
-                          builder: (context) {
-                            return Column(children: [
-                              ScreenWidthCard(
-                                  highlightColor: Colors.grey[200],
-                                  splashColor: Colors.transparent,
-                                  onTap: () => Navigator.pop(context, "image"),
-                                  child: Row(children: [
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Icon(
-                                      Icons.image_outlined,
-                                      size: 32,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .color,
-                                    ),
-                                    const SizedBox(
-                                      width: 26,
-                                    ),
-                                    Text(
-                                      "Pick an Image",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(fontSize: 18),
-                                    )
-                                  ]),
-                                  height:
-                                      MediaQuery.of(context).size.height / 12),
-                              ScreenWidthCard(
-                                  highlightColor: Colors.grey[200],
-                                  splashColor: Colors.transparent,
-                                  onTap: () => Navigator.pop(context, "video"),
-                                  child: Row(children: [
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Icon(
-                                      Icons.slideshow_rounded,
-                                      size: 32,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .color,
-                                    ),
-                                    const SizedBox(
-                                      width: 26,
-                                    ),
-                                    Text(
-                                      "Pick a Video",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .caption!
-                                          .copyWith(fontSize: 18),
-                                    )
-                                  ]),
-                                  height:
-                                      MediaQuery.of(context).size.height / 12),
-                              SizedBox(
-                                height: 12,
-                              )
-                            ]);
-                          });
-                      if (type != null) {
-                        await pickFile(streamedUser, type);
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.image_outlined,
-                      size: 26,
-                    )),
+            Offstage(
+              offstage: !isEmojiVisible,
+              child: EmojiPickerWidget(
+                onEmojiSelected: onEmojiSelected,
+                keyboardHeight: keyboardHeight == 0
+                    ? MediaQuery.of(context).size.height / 2.8
+                    : keyboardHeight,
               ),
             ),
-            MicrophoneButton(
-                groupId: widget.groupId ?? widget.groupDocument!.id,
-                streamedUser: streamedUser,
-                onLoadingStart: widget.onLoadingStart,
-                onLoadingEnd: widget.onLoadingEnd),
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
-
-List<AudioPlayer> currentAudioPlaying = [];
-
-// ignore: must_be_immutable
