@@ -14,10 +14,12 @@ MERGED from [:geolocator_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/ge
 MERGED from [:just_audio] /Users/ahmedhummadi/AppDev/saudi_chat/build/just_audio/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_session/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/release/AndroidManifest.xml:2:1-15:12
+MERGED from [:emoji_picker_flutter] /Users/ahmedhummadi/AppDev/saudi_chat/build/emoji_picker_flutter/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_storage/intermediates/library_manifest/release/AndroidManifest.xml:2:1-15:12
 MERGED from [:better_player] /Users/ahmedhummadi/AppDev/saudi_chat/build/better_player/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:wakelock] /Users/ahmedhummadi/AppDev/saudi_chat/build/wakelock/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:permission_handler] /Users/ahmedhummadi/AppDev/saudi_chat/build/permission_handler/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:flutter_keyboard_visibility] /Users/ahmedhummadi/AppDev/saudi_chat/build/flutter_keyboard_visibility/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:path_provider_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/path_provider_android/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:media_info] /Users/ahmedhummadi/AppDev/saudi_chat/build/media_info/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:2:1-15:12
@@ -311,6 +313,8 @@ MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_s
 MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_session/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:emoji_picker_flutter] /Users/ahmedhummadi/AppDev/saudi_chat/build/emoji_picker_flutter/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:emoji_picker_flutter] /Users/ahmedhummadi/AppDev/saudi_chat/build/emoji_picker_flutter/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_storage/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_storage/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:better_player] /Users/ahmedhummadi/AppDev/saudi_chat/build/better_player/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
@@ -319,6 +323,8 @@ MERGED from [:wakelock] /Users/ahmedhummadi/AppDev/saudi_chat/build/wakelock/int
 MERGED from [:wakelock] /Users/ahmedhummadi/AppDev/saudi_chat/build/wakelock/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] /Users/ahmedhummadi/AppDev/saudi_chat/build/permission_handler/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] /Users/ahmedhummadi/AppDev/saudi_chat/build/permission_handler/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_keyboard_visibility] /Users/ahmedhummadi/AppDev/saudi_chat/build/flutter_keyboard_visibility/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_keyboard_visibility] /Users/ahmedhummadi/AppDev/saudi_chat/build/flutter_keyboard_visibility/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:path_provider_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/path_provider_android/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:path_provider_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/path_provider_android/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:media_info] /Users/ahmedhummadi/AppDev/saudi_chat/build/media_info/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
