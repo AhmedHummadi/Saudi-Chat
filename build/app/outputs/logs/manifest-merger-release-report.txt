@@ -28,7 +28,9 @@ MERGED from [:shared_preferences_android] /Users/ahmedhummadi/AppDev/saudi_chat/
 MERGED from [:fluttertoast] /Users/ahmedhummadi/AppDev/saudi_chat/build/fluttertoast/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:sqflite] /Users/ahmedhummadi/AppDev/saudi_chat/build/sqflite/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:video_player] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_player/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/fafaeb85d5f24cee945e91ebd03d0b23/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/06251cc2b91fa06fc35825b3c44dfb9e/jetified-lifecycle-runtime-ktx-2.4.0-beta01/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:17:1-33:12
 MERGED from [com.google.firebase:firebase-analytics:20.0.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5a59c5633ed8d53729cb22ee62b54386/jetified-firebase-analytics-20.0.2/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-auth:21.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/55bb8c1959833c1e13c19307f7adf11c/jetified-firebase-auth-21.0.1/AndroidManifest.xml:17:1-83:12
 MERGED from [com.google.firebase:firebase-firestore:24.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e86c56d1ba617086a7bc785f2675a6e9/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:2:1-26:12
@@ -184,6 +186,8 @@ MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/fire
 MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_storage/intermediates/library_manifest/release/AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:7:5-13:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
 MERGED from [com.google.firebase:firebase-analytics:20.0.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5a59c5633ed8d53729cb22ee62b54386/jetified-firebase-analytics-20.0.2/AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-analytics:20.0.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5a59c5633ed8d53729cb22ee62b54386/jetified-firebase-analytics-20.0.2/AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-auth:21.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/55bb8c1959833c1e13c19307f7adf11c/jetified-firebase-auth-21.0.1/AndroidManifest.xml:26:5-81:19
@@ -342,8 +346,12 @@ MERGED from [:sqflite] /Users/ahmedhummadi/AppDev/saudi_chat/build/sqflite/inter
 MERGED from [:sqflite] /Users/ahmedhummadi/AppDev/saudi_chat/build/sqflite/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:video_player] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_player/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:video_player] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_player/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/fafaeb85d5f24cee945e91ebd03d0b23/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/fafaeb85d5f24cee945e91ebd03d0b23/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
 MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/06251cc2b91fa06fc35825b3c44dfb9e/jetified-lifecycle-runtime-ktx-2.4.0-beta01/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/06251cc2b91fa06fc35825b3c44dfb9e/jetified-lifecycle-runtime-ktx-2.4.0-beta01/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.firebase:firebase-analytics:20.0.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5a59c5633ed8d53729cb22ee62b54386/jetified-firebase-analytics-20.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-analytics:20.0.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5a59c5633ed8d53729cb22ee62b54386/jetified-firebase-analytics-20.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-auth:21.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/55bb8c1959833c1e13c19307f7adf11c/jetified-firebase-auth-21.0.1/AndroidManifest.xml:21:5-44
@@ -606,6 +614,18 @@ ADDED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase
 		ADDED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:11:17-82
 	android:name
 		ADDED from [:firebase_core] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:10:17-124
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/ddd0d20ac784547a9a7fdf7d007edba9/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from [com.google.firebase:firebase-auth:21.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/55bb8c1959833c1e13c19307f7adf11c/jetified-firebase-auth-21.0.1/AndroidManifest.xml:24:5-79
 MERGED from [com.google.firebase:firebase-firestore:24.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e86c56d1ba617086a7bc785f2675a6e9/jetified-firebase-firestore-24.0.0/AndroidManifest.xml:13:5-79
