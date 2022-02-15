@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:saudi_chat/models/location.dart';
-import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/services/chat.dart';
 import 'package:saudi_chat/services/database.dart';
@@ -9,14 +7,15 @@ import 'package:saudi_chat/services/location_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 Map filters = {};
 MyLocation? deviceLocation;
 
 class SearchNadis extends StatefulWidget {
   final dynamic streamedUser;
-  const SearchNadis({Key? key, required this.streamedUser}) : super(key: key);
+  final Function onPop;
+  const SearchNadis({Key? key, required this.streamedUser, required this.onPop})
+      : super(key: key);
 
   @override
   _SearchNadisState createState() => _SearchNadisState();
@@ -103,43 +102,49 @@ class _SearchNadisState extends State<SearchNadis> {
   @override
   Widget build(BuildContext context) {
     dynamic streamedUser = widget.streamedUser;
+    print(streamedUser);
     final controller = FloatingSearchBarController();
 
-    return Theme(
-      data: ThemeData(
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan[600])),
-      child: Stack(fit: StackFit.expand, children: [
-        FloatingSearchBar(
-          automaticallyImplyDrawerHamburger: false,
-          controller: controller,
-          progress: searching,
-          queryStyle: const TextStyle(color: Colors.black),
-          debounceDelay: const Duration(milliseconds: 200),
-          hint: "Search by Nadi name...",
-          onQueryChanged: (input) async {
-            if (input.length <= 2) {
-              _currentQuerySearchResults.sink.add(null);
-            } else {
-              setState(() {
-                searching = true;
-              });
-              List<DocumentSnapshot>? searchResults = await DataBaseService()
-                  .getSearchResultsFromBusinesses(
-                      userLocation: deviceLocation, queryText: input);
-              _currentQuerySearchResults.sink.add(searchResults!.length > 4
-                  ? searchResults.getRange(0, 3).toList()
-                  : searchResults);
-              setState(() {
-                searching = false;
-              });
-            }
-          },
-          builder: (context, animation) {
-            return buildItem(context, streamedUser, controller);
-          },
-        ),
-      ]),
+    return WillPopScope(
+      onWillPop: () => widget.onPop(),
+      child: Theme(
+        data: ThemeData(
+            colorScheme:
+                ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan[600])),
+        child: Stack(fit: StackFit.expand, children: [
+          FloatingSearchBar(
+            automaticallyImplyDrawerHamburger: false,
+            controller: controller,
+            progress: searching,
+            queryStyle: const TextStyle(color: Colors.black),
+            debounceDelay: const Duration(milliseconds: 200),
+            hint: "Search by Nadi name...",
+            onQueryChanged: (input) async {
+              if (input.length <= 2) {
+                _currentQuerySearchResults.sink.add(null);
+              } else {
+                setState(() {
+                  searching = true;
+                });
+                List<DocumentSnapshot>? searchResults = await DataBaseService()
+                    .getSearchResultsFromBusinesses(
+                        userLocation: deviceLocation, queryText: input);
+
+                print(searchResults);
+                _currentQuerySearchResults.sink.add(searchResults!.length > 4
+                    ? searchResults.getRange(0, 3).toList()
+                    : searchResults);
+                setState(() {
+                  searching = false;
+                });
+              }
+            },
+            builder: (context, animation) {
+              return buildItem(context, streamedUser, controller);
+            },
+          ),
+        ]),
+      ),
     );
   }
 
@@ -231,16 +236,23 @@ class _SearchNadisState extends State<SearchNadis> {
         // then we push the user to the chat screen of the group
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ChatPage(
-              groupDocument: groupDocument, bussinessDoc: search.reference);
+              streamedUser: streamedUser,
+              groupDocument: groupDocument,
+              bussinessDoc: search.reference);
         }));
+        widget.onPop();
       } else {
         // if yes then we simply push the user to the chat screen of the group
         DocumentReference documentReference =
             MessageDatabase().messagesCollection.doc(search.id);
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ChatPage(
-              groupDocument: documentReference, bussinessDoc: search.reference);
+            groupDocument: documentReference,
+            bussinessDoc: search.reference,
+            streamedUser: streamedUser,
+          );
         }));
+        widget.onPop();
       }
     }
   }

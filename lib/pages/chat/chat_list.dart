@@ -260,8 +260,8 @@ class _BuildHomeItem extends StatelessWidget {
             stream: unreadMessageBoolsController.stream,
             builder: (context, snapshot) {
               return GestureDetector(
-                onTap: () async {
-                  await onItemTap(context, streamedUser, groupDoc, nadiDoc);
+                onTap: () {
+                  onItemTap(context, streamedUser, groupDoc, nadiDoc);
                   unreadMessageBoolsController.sink.add(false);
                 },
                 child: Padding(
@@ -325,8 +325,8 @@ class _BuildHomeItem extends StatelessWidget {
   }
 }
 
-Future onItemTap(BuildContext context, dynamic streamedUser,
-    DocumentReference doc, DocumentReference bussinessDoc) async {
+onItemTap(BuildContext context, dynamic streamedUser, DocumentReference doc,
+    DocumentReference bussinessDoc) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return ChatPage(
         groupDocument: doc,

@@ -93,7 +93,7 @@ class MyDropdownField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-      style: TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
+      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
       validator: (val) => validatorText == null
           ? null
           : val == null
@@ -330,7 +330,7 @@ class PendingBar extends StatelessWidget {
                           colors: colors ??
                               [
                                 Colors.grey.shade200,
-                                Theme.of(context).colorScheme.secondaryVariant
+                                Theme.of(context).colorScheme.secondaryContainer
                               ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,

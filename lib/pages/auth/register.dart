@@ -30,7 +30,7 @@ class _RegisterState extends State<Register> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           elevation: 0.7,
           title: const Text("Register"),
           centerTitle: true,
@@ -61,7 +61,7 @@ class _RegisterState extends State<Register> {
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primaryVariant,
+                                            .primaryContainer,
                                         fontSize: 14),
                                     textAlign: TextAlign.center,
                                   ),

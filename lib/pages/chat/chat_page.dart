@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
@@ -233,7 +232,7 @@ class _ChatPageState extends State<ChatPage> {
                             strokeWidth: 4,
                             colors: [
                               Colors.grey.shade200,
-                              Theme.of(context).colorScheme.secondaryVariant
+                              Theme.of(context).colorScheme.secondaryContainer
                             ],
                             radius: 0)
                       ]),
@@ -412,6 +411,9 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
 
   @override
   Widget build(BuildContext context) {
+    final double keyboardHeight =
+        PersistentKeyboardHeight.of(context).keyboardHeight;
+
     return StreamBuilder(
         stream: widget.widgetStream.stream,
         builder: (context, snapshot) {
@@ -508,10 +510,10 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                         .toList()),
                 SizedBox(
                   height: widget.keyboardOn == null
-                      ? 64
+                      ? 75
                       : widget.keyboardOn == true
-                          ? 64
-                          : MediaQuery.of(context).size.height / 2.83 + 64,
+                          ? 75
+                          : keyboardHeight + 75,
                 )
               ]),
             ),
@@ -601,7 +603,7 @@ class MessageItem extends StatelessWidget {
             items: [PopupMenuItem(child: Text("Hi"))]);
       },*/
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 10, 16, 10),
+          padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
           child: Column(
             crossAxisAlignment: elementCheck ? myAlignment : theirAlignment,
             children: [
@@ -694,7 +696,8 @@ class MessageItem extends StatelessWidget {
               Visibility(
                   visible: i > 0
                       ? !(DateFormat.jm().format(times[i].toDate()) ==
-                          DateFormat.jm().format(times[(i - 1)].toDate()))
+                              DateFormat.jm().format(times[(i - 1)].toDate()) &&
+                          (userNames[i] == userNames[i - 1]))
                       : true,
                   child: Text(DateFormat.jm().format(times[i].toDate())))
             ],

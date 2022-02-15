@@ -27,7 +27,7 @@ class _SignInState extends State<SignIn> {
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           elevation: 0.7,
           title: const Text("Sign In"),
           centerTitle: true,

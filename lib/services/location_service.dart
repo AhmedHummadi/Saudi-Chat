@@ -64,7 +64,8 @@ class GeoLocation {
 
     Future getCoordinates = getDeviceCoordinates.catchError((error) async {
       if (error.toString() == "Location services are disabled.") {
-        Position? lastLocation = await Geolocator.getLastKnownPosition();
+        Position? lastLocation =
+            await Geolocator.getLastKnownPosition().catchError((error) => null);
         if (lastLocation == null) {
           SharedPreferences prefs = await sharedPreferences;
           if (prefs.containsKey("longitude")) {

@@ -45,9 +45,9 @@ class MyApp extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12))),
               colorScheme: const ColorScheme(
                   primary: Color(0xff009688),
-                  primaryVariant: Color(0xff00695C),
+                  primaryContainer: Color(0xff00695C),
                   secondary: Color(0xff00BCD4),
-                  secondaryVariant: Color(0xff45B4B2),
+                  secondaryContainer: Color(0xff45B4B2),
                   surface: Color(0xff26A69A),
                   background: Color(0xffF5F5F5),
                   error: Color(0xffEF5350),

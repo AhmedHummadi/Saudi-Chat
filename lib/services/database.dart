@@ -498,7 +498,8 @@ class DataBaseService {
                   doc2Location["longitude"]!.toDouble()));
         });
       } else {
-        Position? lastKnownPosition = await Geolocator.getLastKnownPosition();
+        Position? lastKnownPosition =
+            await Geolocator.getLastKnownPosition().catchError((error) => null);
         if (lastKnownPosition != null) {
           searchResults.sort((doc1, doc2) {
             Map doc1Location = doc1.get("location");

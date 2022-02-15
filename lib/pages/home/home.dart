@@ -7,6 +7,7 @@ import 'package:saudi_chat/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saudi_chat/shared/widgets.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -36,74 +37,90 @@ class _HomeState extends State<Home> {
     )
   ];
 
-  late OverlayEntry? _overlaySearch;
-
-  void createBottomLoadingOverlay(BuildContext context) {
-    return Overlay.of(context)!.insert(_overlaySearch!);
-  }
-
-  void removeBottomOverlayEntry(BuildContext context) {
-    if (_overlaySearch!.mounted) {
-      _overlaySearch!.remove();
-    }
-  }
+  bool showSearch = false;
 
   @override
   Widget build(BuildContext context) {
     final dynamic streamUser = Provider.of<UserAuth>(context);
     final UserAuth streamedUser = streamUser;
     if (streamedUser.groups != null && streamUser.displayName! != null) {
-      return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            unselectedItemColor: Colors.grey[600],
-            type: BottomNavigationBarType.shifting,
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            items: streamedUser.userClass == UserClass.moderator ||
-                    streamedUser.userClass == UserClass.admin
-                ? navigationBaritems +
-                    [
-                      const BottomNavigationBarItem(
-                          label: "Control Panel",
-                          icon: Icon(Icons.person_outline))
-                    ]
-                : navigationBaritems),
-        drawer: buildDrawer(),
-        floatingActionButton: _currentIndex == 0
-            ?
-            // is on home page
-            // show add chat group button
-            FloatingActionButton.extended(
-                onPressed: () => addGroup(streamUser),
-                label: const Text("Join a Club"),
-                icon: const Icon(
-                  Icons.add,
-                  size: 28,
+      return Material(
+        color: Colors.transparent,
+        child: Stack(children: [
+          Scaffold(
+            bottomNavigationBar: BottomNavigationBar(
+                unselectedItemColor: Colors.grey[600],
+                type: BottomNavigationBarType.shifting,
+                currentIndex: _currentIndex,
+                onTap: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                items: streamedUser.userClass == UserClass.moderator ||
+                        streamedUser.userClass == UserClass.admin
+                    ? navigationBaritems +
+                        [
+                          const BottomNavigationBarItem(
+                              label: "Control Panel",
+                              icon: Icon(Icons.person_outline))
+                        ]
+                    : navigationBaritems),
+            drawer: buildDrawer(),
+            floatingActionButton: _currentIndex == 0
+                ?
+                // is on home page
+                // show add chat group button
+                FloatingActionButton.extended(
+                    onPressed: () => toggleSearch(),
+                    label: const Text("Join a Club"),
+                    icon: const Icon(
+                      Icons.add,
+                      size: 28,
+                    ),
+                  )
+                : null,
+            appBar: AppBar(
+              title: Text(_currentIndex == 0
+                  ? "Home"
+                  : _currentIndex == 1
+                      ? "Chat"
+                      : _currentIndex == 2
+                          ? "Groups"
+                          : "Control Panel"),
+              centerTitle: true,
+            ),
+            body: IndexedStack(
+              index: _currentIndex,
+              children: streamedUser.userClass == UserClass.moderator
+                  ? _pages + [const ControlPanelPage()]
+                  : streamedUser.userClass == UserClass.admin
+                      ? _pages + [const AdminPanelPage()]
+                      : _pages,
+            ),
+          ),
+          Visibility(
+              visible: showSearch,
+              child: GestureDetector(
+                onTap: () => toggleSearch(),
+                child: PlayAnimation<double>(
+                  duration: const Duration(milliseconds: 150),
+                  tween: Tween(begin: 0.0, end: 0.4),
+                  builder: (context, child, value) => Container(
+                    color: Colors.black.withOpacity(value),
+                  ),
                 ),
-              )
-            : null,
-        appBar: AppBar(
-          title: Text(_currentIndex == 0
-              ? "Home"
-              : _currentIndex == 1
-                  ? "Chat"
-                  : _currentIndex == 2
-                      ? "Groups"
-                      : "Control Panel"),
-          centerTitle: true,
-        ),
-        body: IndexedStack(
-          index: _currentIndex,
-          children: streamedUser.userClass == UserClass.moderator
-              ? _pages + [const ControlPanelPage()]
-              : streamedUser.userClass == UserClass.admin
-                  ? _pages + [const AdminPanelPage()]
-                  : _pages,
-        ),
+              )),
+          Offstage(
+            offstage: !showSearch,
+            child: SearchNadis(
+              streamedUser: streamedUser,
+              onPop: () => showSearch
+                  ? setState(() => showSearch = false)
+                  : Future.value(true),
+            ),
+          )
+        ]),
       );
     } else {
       return const Scaffold(
@@ -114,22 +131,12 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void addGroup(dynamic streamedUser) {
+  void toggleSearch() {
     // add the search bar at the top of everything to join the club
-
-    _overlaySearch = OverlayEntry(builder: (context) {
-      return Material(
-        color: Colors.black.withOpacity(0.5),
-        child: Stack(children: [
-          GestureDetector(onTap: () => removeBottomOverlayEntry(context)),
-          SearchNadis(
-            streamedUser: streamedUser,
-          )
-        ]),
-      );
+    setState(() {
+      showSearch = !showSearch;
     });
-
-    createBottomLoadingOverlay(context);
+    print(showSearch);
   }
 
   Drawer buildDrawer() {
