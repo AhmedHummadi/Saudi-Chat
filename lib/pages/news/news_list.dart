@@ -88,36 +88,41 @@ class _NewsListState extends State<NewsList> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      displacement: 30,
-      onRefresh: () async => await findNews(),
-      child: ScrollConfiguration(
-        behavior: NoGlowScrollBehaviour(),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Column(
-                children: news
-                    .map((e) => NewsCard(
-                          news: e,
-                        ))
-                    .toList()
-                    .getRange(
-                        news.length > 8
-                            ? news.length - _kColumnChildrenViewLength
-                            : 0,
-                        news.length)
-                    .toList(),
-              ),
-              const SizedBox(
-                height: 20,
-              )
-            ],
+    if (news.isEmpty) {
+      return FutureBuilder(
+          future: findNews(), builder: (context, snapshot) => Container());
+    } else {
+      return RefreshIndicator(
+        displacement: 30,
+        onRefresh: () async => await findNews(),
+        child: ScrollConfiguration(
+          behavior: NoGlowScrollBehaviour(),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Column(
+                  children: news
+                      .map((e) => NewsCard(
+                            news: e,
+                          ))
+                      .toList()
+                      .getRange(
+                          news.length > 8
+                              ? news.length - _kColumnChildrenViewLength
+                              : 0,
+                          news.length)
+                      .toList(),
+                ),
+                const SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 
@@ -398,32 +403,21 @@ class NewsCardPreview extends StatelessWidget {
                   height: 200,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: ShaderMask(
-                      shaderCallback: (rect) {
-                        return const LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.black, Colors.transparent],
-                        ).createShader(
-                            Rect.fromLTRB(0, 0, rect.width, rect.height + 10));
-                      },
-                      blendMode: BlendMode.dstIn,
-                      child: news.previewImageP == null
-                          ? Container(
-                              color: Colors.white.withOpacity(0.8),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.image,
-                                  size: 30,
-                                ),
+                    child: news.previewImageP == null
+                        ? Container(
+                            color: Colors.white.withOpacity(0.8),
+                            child: const Center(
+                              child: Icon(
+                                Icons.image,
+                                size: 30,
                               ),
-                            )
-                          : Image(
-                              image: news.previewImageP!,
-                              width: MediaQuery.of(context).size.width - 40,
-                              fit: BoxFit.fitWidth,
                             ),
-                    ),
+                          )
+                        : Image(
+                            image: news.previewImageP!,
+                            width: MediaQuery.of(context).size.width - 40,
+                            fit: BoxFit.fitWidth,
+                          ),
                   ),
                 ),
                 const SizedBox(

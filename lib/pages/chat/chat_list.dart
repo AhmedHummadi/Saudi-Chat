@@ -250,7 +250,6 @@ class _BuildHomeItem extends StatelessWidget {
             if (Navigator.canPop(context)) {
               unreadMessageBoolsController.sink.add(false);
             } else {
-              print(isUnread.toString() + nadiDoc.id);
               unreadMessageBoolsController.sink.add(isUnread);
             }
           });

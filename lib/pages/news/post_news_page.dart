@@ -8,6 +8,7 @@ import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/news_form.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/news/news_list.dart';
+import 'package:saudi_chat/services/controls.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:saudi_chat/services/storage.dart';
 import 'package:saudi_chat/shared/loadingWidget.dart';
@@ -306,7 +307,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
           "title": postTitle
         };
 
-        await DataBaseService().postNews(details);
+        await ControlsService().postNews(details);
         return;
       } else {
         // upload the image first then get the url
@@ -333,7 +334,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
           "title": postTitle
         };
 
-        await DataBaseService().postNews(details);
+        await ControlsService().postNews(details);
         return;
       }
     } catch (e) {

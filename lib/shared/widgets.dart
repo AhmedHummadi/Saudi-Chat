@@ -101,6 +101,8 @@ class MyDropdownField extends StatelessWidget {
               : null,
       decoration: textInputDecoration.copyWith(
           border: border,
+          enabledBorder: border,
+          focusedBorder: border,
           filled: fillColor != null,
           fillColor: fillColor ?? Colors.white.withOpacity(0.8),
           labelText: labelText,

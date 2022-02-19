@@ -85,60 +85,6 @@ class DataBaseService {
   // stream of message collection
   Stream<QuerySnapshot> get messageStream => messagesCollection.snapshots();
 
-  Future<void> postNews(Map details) async {
-    try {
-      DocumentSnapshot nadiDoc =
-          await (details["nadiDoc"] as DocumentReference).get();
-
-      List newsData = nadiDoc.get("news");
-
-      // then add what we want to it
-      newsData.add(details);
-
-      // then update the existing list in the document with the updated list
-      await nadiDoc.reference.update({"news": newsData});
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future assignAdmin(
-      DocumentSnapshot userDoc, DocumentSnapshot groupDoc) async {
-    try {
-      // we will get first go into the groupDoc's Admin collection
-      // and add the userDoc there with any additional info
-      // then we will go to the usersDoc and then add the group
-      // document reference in the groupAdmins list
-
-      // add the doc into the admins collection
-      await groupDoc.reference.collection("admins").doc(userDoc.id).set(
-          userDoc.data() as Map<String, dynamic>
-            ..addAll({"doc_reference": userDoc.reference}));
-
-      // update the userClass in the user doc in the members collection
-      await groupDoc.reference
-          .collection("members")
-          .doc(userDoc.id)
-          .update({"userClass": "admin"});
-
-      List groupsAdmin = userDoc.get("groupsAdmin") as List;
-      groupsAdmin.add(groupDoc.reference);
-
-      userDoc.reference
-          .update({"groupsAdmin": groupsAdmin, "userClass": "admin"});
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future assignModerator(DocumentSnapshot userDoc) async {
-    try {
-      userDoc.reference.update({"userClass": "moderator"});
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future searchUsersByEmail(StreamController streamController, String input,
       QuerySnapshot userDocuments) async {
     try {
@@ -190,6 +136,7 @@ class DataBaseService {
     // and then presses it it will add him in the members
     // collection in the groups document by his id then add all
     // the required data in it
+
     DocumentSnapshot groupDocument =
         await messagesCollection.doc(groupId).get();
 

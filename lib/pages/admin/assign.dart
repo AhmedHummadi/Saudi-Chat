@@ -10,14 +10,18 @@ import 'package:saudi_chat/shared/widgets.dart';
 
 class AssignPage extends StatefulWidget {
   final UserAuth streamedUser;
-  final Future Function(DocumentSnapshot userDoc, DocumentSnapshot? groupDoc)?
-      assignFunction;
-  final bool? withGroup;
+  final Future<bool> Function(DocumentSnapshot userDoc,
+      DocumentSnapshot? groupDoc, UserClass? userClass)? function;
+  final bool withGroup;
+  final String appBarTitle;
+  final bool withClassDropdown;
   const AssignPage(
       {Key? key,
       required this.streamedUser,
-      this.assignFunction,
-      this.withGroup})
+      required this.appBarTitle,
+      this.function,
+      required this.withClassDropdown,
+      required this.withGroup})
       : super(key: key);
 
   @override
@@ -30,6 +34,8 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
   DocumentSnapshot? userDoc;
 
   DocumentSnapshot? groupDoc;
+
+  UserClass? dropDownClass;
 
   // this is the stream that will be controlling the search for the
   // users, every time a query is sent, it will look at all the docs
@@ -65,7 +71,7 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Assign Admin"),
+        title: Text(widget.appBarTitle),
         centerTitle: true,
       ),
       body: Padding(
@@ -132,7 +138,9 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                             child: ListTile(
                               textColor: Colors.white,
                               title: Text(userDoc!.get("email")),
-                              subtitle: Text(userDoc!.get("name")),
+                              subtitle: Text(widget.appBarTitle == "Demote User"
+                                  ? userDoc!.get("userClass")
+                                  : userDoc!.get("name")),
                             ),
                           ),
                           const SizedBox(
@@ -395,15 +403,71 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                         ),
                       ]),
                 ),
+                Visibility(
+                    visible: widget.withClassDropdown,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("To:",
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(fontSize: 20)),
+                        const SizedBox(
+                          height: 14,
+                        ),
+                        MyDropdownField(
+                            labelTextStyle: TextStyle(color: Colors.grey[700]),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    width: 1.4, color: Colors.grey.shade400)),
+                            itemsList: const [
+                              "Moderator",
+                              "Admin",
+                              "Co-Admin",
+                              "User"
+                            ],
+                            onChanged: (val) {
+                              setState(() {
+                                switch (val) {
+                                  case "Moderator":
+                                    setState(() {
+                                      dropDownClass = UserClass.moderator;
+                                    });
+                                    break;
+                                  case "Admin":
+                                    setState(() {
+                                      dropDownClass = UserClass.admin;
+                                    });
+                                    break;
+                                  case "Co-Admin":
+                                    setState(() {
+                                      dropDownClass = UserClass.coAdmin;
+                                    });
+                                    break;
+                                  case "User":
+                                    setState(() {
+                                      dropDownClass = UserClass.user;
+                                    });
+                                    break;
+                                  default:
+                                }
+                              });
+                            },
+                            labelText: "Class")
+                      ],
+                    )),
                 const SizedBox(
                   height: 30,
                 ),
                 Visibility(
-                    visible:
-                        (widget.withGroup == null || widget.withGroup == false
-                                ? true
-                                : groupDoc != null) &&
-                            userDoc != null,
+                    visible: (widget.withGroup == false
+                            ? widget.withClassDropdown == true
+                                ? dropDownClass != null
+                                : true
+                            : groupDoc != null) &&
+                        userDoc != null,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -428,38 +492,18 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                         ),
                         GestureDetector(
                             onTap: () async {
-                              // if he is already an admin/moderator
-                              if (widget.withGroup == true
-                                  ? ((userDoc!.get("groupsAdmin") as List)
-                                      .contains(groupDoc!.reference))
-                                  : (userDoc!.get("userClass") ==
-                                      "moderator")) {
-                                Fluttertoast.showToast(
-                                    msg: widget.withGroup == true
-                                        ? "User is already admin"
-                                        : "User is already a moderator");
-                                return;
-                              }
-                              // if he is not a member in the group yet
-                              if (widget.withGroup == true) {
-                                if (!(await groupDoc!.reference
-                                        .collection("members")
-                                        .get())
-                                    .docs
-                                    .any((element) =>
-                                        element.id == userDoc!.id)) {
-                                  Fluttertoast.showToast(
-                                      msg: "User is not a member in the group");
-                                  return;
-                                }
-                              }
                               createLoadingOverlay(context);
-                              await widget.assignFunction!(userDoc!, groupDoc)
-                                  .whenComplete(() {
+                              await widget.function!
+                                      (userDoc!, groupDoc, dropDownClass)
+                                  .then((success) {
                                 removeOverlayEntry(context);
-                                Navigator.pop(context);
-                                Fluttertoast.showToast(
-                                    msg: "User successfully promoted");
+                                if (success) {
+                                  Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: widget.withClassDropdown
+                                          ? "User successfully demoted"
+                                          : "User successfully promoted");
+                                }
                               });
                             },
                             child: Container(
@@ -468,10 +512,12 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: Theme.of(context).colorScheme.surface),
-                              child: const Center(
+                              child: Center(
                                 child: Text(
-                                  "Assign",
-                                  style: TextStyle(
+                                  (widget.withClassDropdown
+                                      ? "Demote"
+                                      : "Assign"),
+                                  style: const TextStyle(
                                       fontSize: 17, color: Colors.white),
                                 ),
                               ),

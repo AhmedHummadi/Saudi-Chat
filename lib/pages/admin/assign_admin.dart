@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/assign.dart';
-import 'package:saudi_chat/services/database.dart';
+import 'package:saudi_chat/services/controls.dart';
 
 class AssignAdmin extends StatelessWidget {
   final UserAuth streamedUser;
@@ -13,8 +12,10 @@ class AssignAdmin extends StatelessWidget {
     return AssignPage(
       streamedUser: streamedUser,
       withGroup: true,
-      assignFunction: (userDoc, groupDoc) async =>
-          await DataBaseService().assignAdmin(userDoc, groupDoc!),
+      withClassDropdown: false,
+      appBarTitle: "Assign Admin",
+      function: (userDoc, groupDoc, userCLass) async =>
+          await ControlsService().assignAdmin(userDoc, groupDoc!),
     );
   }
 }

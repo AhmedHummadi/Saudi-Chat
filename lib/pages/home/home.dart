@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
             body: IndexedStack(
               index: _currentIndex,
               children: streamedUser.userClass == UserClass.moderator
-                  ? _pages + [const ControlPanelPage()]
+                  ? _pages + [const ModeratorPanelPage()]
                   : streamedUser.userClass == UserClass.admin
                       ? _pages + [const AdminPanelPage()]
                       : _pages,
@@ -136,7 +136,6 @@ class _HomeState extends State<Home> {
     setState(() {
       showSearch = !showSearch;
     });
-    print(showSearch);
   }
 
   Drawer buildDrawer() {

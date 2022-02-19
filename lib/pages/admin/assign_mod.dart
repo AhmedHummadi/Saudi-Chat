@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saudi_chat/pages/admin/assign.dart';
-import 'package:saudi_chat/services/database.dart';
+import 'package:saudi_chat/services/controls.dart';
 
 class AssignMod extends StatefulWidget {
   final dynamic streamedUser;
@@ -17,8 +16,10 @@ class _AssignModState extends State<AssignMod> {
     return AssignPage(
       streamedUser: widget.streamedUser,
       withGroup: false,
-      assignFunction: (userDoc, groupDoc) async =>
-          await DataBaseService().assignModerator(userDoc),
+      function: (userDoc, groupDoc, userClass) async =>
+          await ControlsService().assignModerator(userDoc),
+      appBarTitle: "Assign Moderator",
+      withClassDropdown: false,
     );
   }
 }

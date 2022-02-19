@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum UserClass { moderator, admin, coAdmin, user }
 
 class UserAuth {
@@ -27,6 +25,23 @@ class UserAuth {
       this.cities,
       this.displayName,
       this.email});
+
+  static bool checkIfClassIsLower(
+      {required UserClass targetClass, required String rank}) {
+    switch (rank.toString()) {
+      case "moderator":
+        return targetClass == UserClass.admin ||
+            targetClass == UserClass.coAdmin ||
+            targetClass == UserClass.user;
+      case "admin":
+        return targetClass == UserClass.coAdmin ||
+            targetClass == UserClass.user;
+      case "coAdmin":
+        return targetClass == UserClass.user;
+      default:
+        return false;
+    }
+  }
 
   static UserClass parseUserClass(Object rank) {
     switch (rank.toString()) {
