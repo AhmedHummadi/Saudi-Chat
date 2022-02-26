@@ -15,10 +15,10 @@ library {
   maven_library {
     groupId: "io.flutter"
     artifactId: "flutter_embedding_release"
-    version: "1.0.0-ab46186b246f5a36bd1f3f295d14a43abb1e2f38"
+    version: "1.0.0-a83ed0e5e3b9cd2b5e2f07ef31c72f43c55e93b7"
   }
   digests {
-    sha256: "\253\341a\031`\2133, \241\333\356\233K\214\2257-\231\004U\3014\205W\3123\021\252\305\233\301"
+    sha256: "\261\t\275\324;h\302\002\0175\033\321E\232}01\177k\260\336\362I\332\235\315\321v\t\327S+"
   }
 }
 library {
@@ -1269,35 +1269,35 @@ library {
   maven_library {
     groupId: "io.flutter"
     artifactId: "armeabi_v7a_release"
-    version: "1.0.0-ab46186b246f5a36bd1f3f295d14a43abb1e2f38"
+    version: "1.0.0-a83ed0e5e3b9cd2b5e2f07ef31c72f43c55e93b7"
   }
   digests {
-    sha256: "\205g\343\335\347\272lW\233\25748\212u\375\366\324\261S\260\244\021\306$\216R\0277\033D~\332"
+    sha256: "\244_Z\360\234\3742b\216\301\035:\315U\350;i\037\021\353\236\027Y[\033Ne\030\\\302\305\323"
   }
 }
 library {
   maven_library {
     groupId: "io.flutter"
     artifactId: "arm64_v8a_release"
-    version: "1.0.0-ab46186b246f5a36bd1f3f295d14a43abb1e2f38"
+    version: "1.0.0-a83ed0e5e3b9cd2b5e2f07ef31c72f43c55e93b7"
   }
   digests {
-    sha256: "\036u\031\026\230\330r\r\214=\237\274w3\371M\t\277c\200\240s+O\006\355\315\232\270\347\033\270"
+    sha256: "\324\312\362\371|$\323M\016\357\034F\247\v\320\361m\200P\371fq\234\037\365\336\n\033T99%"
   }
 }
 library {
   maven_library {
     groupId: "io.flutter"
     artifactId: "x86_64_release"
-    version: "1.0.0-ab46186b246f5a36bd1f3f295d14a43abb1e2f38"
+    version: "1.0.0-a83ed0e5e3b9cd2b5e2f07ef31c72f43c55e93b7"
   }
   digests {
-    sha256: "\253t\204\220\327|\367`\177Ua7\332\031U\234Q\334E\275h\266&P-\366;u\344z\372\335"
+    sha256: "\344\003\352\306\004\363o\341\213=\232\312@\005\253$k\253\020xQ\261\332(\356X\256\372\004Z\376N"
   }
 }
 library {
   digests {
-    sha256: "\253\360\355\315\256W`\366\345\246\316^\355\253W\214\333\3759&\345.\356\243P\364\320\207QT\032\326"
+    sha256: "\372\307\b\373\261\377f\352\323\f\275\026\233O\305\227\252I<\242\246\352~d\327\303\255\367 \224\354\264"
   }
 }
 library_dependencies {
