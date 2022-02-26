@@ -246,7 +246,7 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                   height: 12,
                 ),
                 Visibility(
-                  visible: widget.withGroup == null || widget.withGroup == true,
+                  visible: widget.withGroup == true,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

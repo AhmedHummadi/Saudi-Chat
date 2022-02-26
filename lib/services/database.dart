@@ -91,7 +91,7 @@ class DataBaseService {
       streamController.sink.add(ConnectionState.waiting);
 
       List<QueryDocumentSnapshot> matchingDocs = userDocuments.docs
-          .where((doc) => checkForInputMatch(
+          .where((doc) => checkForInputMatchStartOnly(
               input: input, name: doc.get("email").toString()))
           .toList();
       if (matchingDocs.isEmpty) {
@@ -259,6 +259,29 @@ class DataBaseService {
       print(e.toString());
       return Future.error(DataBaseServiceException.create_user_data_exception);
     }
+  }
+
+  bool checkForInputMatchStartOnly(
+      {required String input, required String name}) {
+    // this is the algorithm that will be used to give the results of
+    // the search, it takes the input and the nadi name and does all these
+    // bool expressions to see if the input should match the name and give
+    // the nadi as the result of the searchz
+
+    return name.startsWith(input) ||
+        name == input ||
+        name.toLowerCase() == input ||
+        name.toLowerCase() == input.toLowerCase() ||
+        name.trim() == input ||
+        name.startsWith(input.toLowerCase()) ||
+        name.startsWith(input) ||
+        name.startsWith(input.trim()) ||
+        name.startsWith(input.trim().toLowerCase()) ||
+        name.toLowerCase().startsWith(input.toLowerCase()) ||
+        input.startsWith(name) ||
+        input.toLowerCase() == name ||
+        input.trim() == name ||
+        input.trim() == name.trim();
   }
 
   bool checkForInputMatch({

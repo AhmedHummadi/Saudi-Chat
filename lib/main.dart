@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
               fontFamily: "Roboto",
               primaryColor: const Color(0xff009688),
               backgroundColor: Colors.white.withOpacity(0.7),
-              primaryColorDark: const Color(0xff004d40),
+              primaryColorDark: const Color(0xFF004D40),
               primaryColorLight: const Color(0xffB2DFDB),
               popupMenuTheme: PopupMenuThemeData(
                 textStyle: const TextStyle(fontSize: 16),
@@ -47,9 +47,11 @@ class MyApp extends StatelessWidget {
                   primary: Color(0xff009688),
                   primaryContainer: Color(0xff00695C),
                   secondary: Color(0xff00BCD4),
-                  secondaryContainer: Color(0xff45B4B2),
+                  secondaryContainer: Color(0xffE2FEC6),
                   surface: Color(0xff26A69A),
+                  surfaceVariant: Color.fromARGB(255, 197, 231, 229),
                   background: Color(0xffF5F5F5),
+                  onSurfaceVariant: Color.fromARGB(255, 231, 231, 231),
                   error: Color(0xffEF5350),
                   onPrimary: Color(0xffffffff),
                   onSecondary: Color(0xffffffff),
@@ -65,8 +67,14 @@ class MyApp extends StatelessWidget {
                   caption: TextStyle(color: Colors.grey[700]),
                   bodyText1: const TextStyle(fontSize: 26),
                   bodyText2: TextStyle(
-                      color: Colors
-                          .grey.shade800), // for text message names and time
+                      color: Colors.grey.shade800), // for text message names
+                  headline5: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic), // for text message time,
+                  headline6: TextStyle(
+                      color: Colors.grey[900],
+                      fontSize: 16), // for text messages
                   headline2: TextStyle(color: Colors.teal.shade700),
                   headline3: const TextStyle(
                       fontSize: 21,

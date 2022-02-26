@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
 import 'package:intl/intl.dart';
@@ -125,7 +126,13 @@ class _ChatPageState extends State<ChatPage> {
                     messages: messages,
                     times: times));
 
-            widgetStream.sink.add(command);
+            if (messages.contains(command.message.message) &&
+                times.contains(command.message.time) &&
+                userNames.contains(command.message.userName)) {
+              // a brand new message
+
+              widgetStream.sink.add(command);
+            }
 
             return PersistentKeyboardHeightProvider(
               child: Scaffold(
@@ -579,6 +586,52 @@ class MessageItem extends StatelessWidget {
       image = null;
     }
 
+    bool checkBeforeTime() {
+      List<String> stringList =
+          times.map((e) => DateFormat.jm().format(e.toDate())).toList();
+
+      if (i > 0 && stringList[i] == stringList[i - 1]) {
+        if (i + 1 < stringList.length) {
+          if (stringList[i] == stringList[i + 1]) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else if (i + 1 < stringList.length) {
+        if (stringList[i] == stringList[i + 1]) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
+
+    EdgeInsets messagePadding() {
+      // this function will help stick the message that are from the same user together
+      if (i > 0) {
+        Message m1 = Message(
+            message: messages[i], time: times[i], userName: userNames[i]);
+
+        Message m2 = Message(
+            message: messages[i - 1],
+            time: times[i - 1],
+            userName: userNames[i - 1]);
+
+        if (m1.userName == m2.userName) {
+          return const EdgeInsets.fromLTRB(16, 0, 16, 0);
+        } else {
+          return const EdgeInsets.fromLTRB(16.0, 16, 16, 0);
+        }
+      } else {
+        return const EdgeInsets.fromLTRB(16.0, 16, 16, 0);
+      }
+    }
+
     return Align(
       alignment: elementCheck ? myAlign : theirAlign,
       child: GestureDetector(
@@ -603,15 +656,16 @@ class MessageItem extends StatelessWidget {
             items: [PopupMenuItem(child: Text("Hi"))]);
       },*/
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
+          padding: messagePadding(),
           child: Column(
             crossAxisAlignment: elementCheck ? myAlignment : theirAlignment,
             children: [
               Visibility(
-                visible: elementCheck
-                    ? false
-                    // ignore: prefer_const_constructors
-                    : true,
+                visible: (elementCheck
+                        ? false
+                        // ignore: prefer_const_constructors
+                        : true) &&
+                    messagePadding().top == 16,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
                   child: Text(
@@ -628,78 +682,184 @@ class MessageItem extends StatelessWidget {
                 elevation: 1.4,
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: elementCheck
-                          ? Theme.of(context).colorScheme.surface
-                          : Theme.of(context).colorScheme.onBackground),
-                  // ignore: prefer_const_constructors
-                  constraints: BoxConstraints.loose(Size.fromWidth(240)),
-                  child: Padding(
-                    padding: isImage
-                        ? isVideo
-                            ? const EdgeInsets.all(4.0)
-                            : isAudio
-                                ? const EdgeInsets.all(4)
-                                : const EdgeInsets.all(6.0)
-                        : const EdgeInsets.all(8.0),
-                    child: isImage
-                        ? isVideo
-                            ? Hero(
-                                tag: (image! as ViewVideo).url,
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    child: image),
-                              )
-                            : isAudio
-                                ? image
-                                : GestureDetector(
-                                    child: Hero(
-                                      tag: (image! as CachedNetworkImage)
-                                          .imageUrl,
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          child: image),
-                                    ),
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailScreen(
-                                                    isVideo: isVideo,
-                                                    videoPosition: null,
-                                                    storagePath: messages[i]
-                                                        ["storage_path"],
-                                                    tag: (image
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: elementCheck
+                            ? Theme.of(context).colorScheme.surfaceVariant
+                            : Theme.of(context).colorScheme.onSurfaceVariant),
+                    // ignore: prefer_const_constructors
+                    constraints: BoxConstraints.loose(Size.fromWidth(240)),
+                    child: Padding(
+                      padding: isImage
+                          ? isVideo
+                              ? const EdgeInsets.all(4.0)
+                              : isAudio
+                                  ? const EdgeInsets.all(4)
+                                  : const EdgeInsets.all(6.0)
+                          : const EdgeInsets.all(8.0),
+                      child: messages[i].toString().length > 28
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: elementCheck
+                                  ? CrossAxisAlignment.end
+                                  : CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                    height: messages[i].toString().length > 28
+                                        ? 6
+                                        : 0),
+                                Text(
+                                  DateFormat.jm().format(times[i].toDate()),
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              ]..insert(
+                                  0,
+                                  (isImage
+                                      ? isVideo
+                                          ? Hero(
+                                              tag: (image! as ViewVideo).url,
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  child: image),
+                                            )
+                                          : isAudio
+                                              ? image
+                                              : GestureDetector(
+                                                  child: Hero(
+                                                    tag: (image!
                                                             as CachedNetworkImage)
                                                         .imageUrl,
-                                                    imageUrl: image.imageUrl,
-                                                  )));
-                                    },
-                                  )
-                        : SelectableText(
-                            messages[i],
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
-                            textAlign: elementCheck
-                                ? myTextAlignment
-                                : theirTextAlignment,
-                          ),
-                  ),
-                ),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                        child: image),
+                                                  ),
+                                                  onTap: () async {
+                                                    await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    DetailScreen(
+                                                                      isVideo:
+                                                                          isVideo,
+                                                                      videoPosition:
+                                                                          null,
+                                                                      storagePath:
+                                                                          messages[i]
+                                                                              [
+                                                                              "storage_path"],
+                                                                      tag: (image
+                                                                              as CachedNetworkImage)
+                                                                          .imageUrl,
+                                                                      imageUrl:
+                                                                          image
+                                                                              .imageUrl,
+                                                                    )));
+                                                  },
+                                                )
+                                      : SelectableText(
+                                          messages[i],
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                          textAlign: messages[i]
+                                                      .contains("ل") ||
+                                                  messages[i].contains("ب") ||
+                                                  messages[i].contains("ت") ||
+                                                  messages[i].contains("د")
+                                              ? TextAlign.right
+                                              : TextAlign.left,
+                                        )) as Widget))
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  height: messages[i].toString().length > 28
+                                      ? 6
+                                      : 0,
+                                  width: messages[i].toString().length > 28
+                                      ? 0
+                                      : elementCheck
+                                          ? 6
+                                          : 8,
+                                ),
+                              ]
+                                ..insert(
+                                    elementCheck ? 0 : 1,
+                                    (isImage
+                                        ? isVideo
+                                            ? Hero(
+                                                tag: (image! as ViewVideo).url,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                    child: image),
+                                              )
+                                            : isAudio
+                                                ? image
+                                                : GestureDetector(
+                                                    child: Hero(
+                                                      tag: (image!
+                                                              as CachedNetworkImage)
+                                                          .imageUrl,
+                                                      child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                          child: image),
+                                                    ),
+                                                    onTap: () async {
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      DetailScreen(
+                                                                        isVideo:
+                                                                            isVideo,
+                                                                        videoPosition:
+                                                                            null,
+                                                                        storagePath:
+                                                                            messages[i]["storage_path"],
+                                                                        tag: (image
+                                                                                as CachedNetworkImage)
+                                                                            .imageUrl,
+                                                                        imageUrl:
+                                                                            image.imageUrl,
+                                                                      )));
+                                                    },
+                                                  )
+                                        : SelectableText(
+                                            messages[i],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6,
+                                            textAlign: elementCheck
+                                                ? myTextAlignment
+                                                : theirTextAlignment,
+                                          )) as Widget)
+                                ..insert(
+                                  elementCheck ? 2 : 0,
+                                  Text(
+                                    DateFormat.jm().format(times[i].toDate()),
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                )),
+                    )),
               ),
               const SizedBox(
                 height: 5,
-              ),
-              Visibility(
-                  visible: i > 0
-                      ? !(DateFormat.jm().format(times[i].toDate()) ==
-                              DateFormat.jm().format(times[(i - 1)].toDate()) &&
-                          (userNames[i] == userNames[i - 1]))
-                      : true,
-                  child: Text(DateFormat.jm().format(times[i].toDate())))
+              )
             ],
           ),
         ),
@@ -929,208 +1089,217 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
           children: [
             Align(
               alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 15, 0, 15),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Theme.of(context).colorScheme.surface),
-                      child: Row(
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: GestureDetector(
-                                child: Icon(
-                                    isEmojiVisible
-                                        ? Icons.keyboard_rounded
-                                        : Icons.emoji_emotions_outlined,
-                                    color: Colors.white),
-                                onTap: toggleEmojiKeyboard,
-                              )),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxHeight: 100,
-                                maxWidth:
-                                    (MediaQuery.of(context).size.width / 2) -
-                                        20),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 3, 0, 3),
-                              child: Theme(
-                                data: ThemeData(
-                                  primaryColor: Colors.white,
-                                  colorScheme: ColorScheme.light(
-                                      primary: Colors.grey.shade100,
-                                      secondary: Colors.white),
-                                ),
-                                child: TextField(
-                                    focusNode: focusNode,
-                                    textInputAction: TextInputAction.send,
-                                    onEditingComplete: () async {
-                                      // ignore: unnecessary_null_comparison
-                                      if (controller.text != null &&
-                                          controller.text.isNotEmpty) {
-                                        if (streamedUser.displayName != null) {
-                                          MessageDatabase().addMessageToGroup(
-                                              message: Message(
-                                                  documentId: streamedUser.uid,
-                                                  message: controller.text,
-                                                  userName:
-                                                      streamedUser.displayName),
-                                              groupDocument:
-                                                  widget.groupDocument);
+              child: Stack(alignment: Alignment.bottomCenter, children: [
+                Container(
+                  height: 72,
+                  color: Colors.white,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 15, 0, 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Theme.of(context).colorScheme.surface),
+                        child: Row(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: GestureDetector(
+                                  child: Icon(
+                                      isEmojiVisible
+                                          ? Icons.keyboard_rounded
+                                          : Icons.emoji_emotions_outlined,
+                                      color: Colors.white),
+                                  onTap: toggleEmojiKeyboard,
+                                )),
+                            Container(
+                              constraints: BoxConstraints(
+                                  maxHeight: 100,
+                                  maxWidth:
+                                      (MediaQuery.of(context).size.width / 2) -
+                                          20),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 3, 0, 3),
+                                child: Theme(
+                                  data: ThemeData(
+                                    primaryColor: Colors.white,
+                                    colorScheme: ColorScheme.light(
+                                        primary: Colors.grey.shade100,
+                                        secondary: Colors.white),
+                                  ),
+                                  child: TextField(
+                                      focusNode: focusNode,
+                                      textInputAction: TextInputAction.send,
+                                      onEditingComplete: () async {
+                                        // ignore: unnecessary_null_comparison
+                                        if (controller.text != null &&
+                                            controller.text.isNotEmpty) {
+                                          if (streamedUser.displayName !=
+                                              null) {
+                                            MessageDatabase().addMessageToGroup(
+                                                message: Message(
+                                                    documentId:
+                                                        streamedUser.uid,
+                                                    message: controller.text,
+                                                    userName: streamedUser
+                                                        .displayName),
+                                                groupDocument:
+                                                    widget.groupDocument);
 
-                                          controller.clear();
+                                            controller.clear();
+                                          }
                                         }
-                                      }
-                                    },
-                                    style: const TextStyle(color: Colors.white),
-                                    showCursor: true,
-                                    controller: controller,
-                                    decoration: textInputDecoration.copyWith(
-                                        border: InputBorder.none,
-                                        hintText: "Message",
-                                        hintStyle: TextStyle(
-                                            color: Colors.white
-                                                .withOpacity(0.8)))),
+                                      },
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      showCursor: true,
+                                      controller: controller,
+                                      decoration: textInputDecoration.copyWith(
+                                          border: InputBorder.none,
+                                          hintText: "Message",
+                                          hintStyle: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.8)))),
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                              splashRadius: 20,
+                            IconButton(
+                                splashRadius: 20,
+                                color: Colors.white,
+                                onPressed: () async {
+                                  // ignore: unnecessary_null_comparison
+                                  if (controller.text != null &&
+                                      controller.text.isNotEmpty) {
+                                    if (streamedUser.displayName == null) {
+                                      setState(() {});
+                                    }
+                                    MessageDatabase().addMessageToGroup(
+                                        message: Message(
+                                            documentId: streamedUser.uid,
+                                            message: controller.text,
+                                            userName: streamedUser.displayName),
+                                        groupDocument: widget.groupDocument);
+                                    controller.clear();
+                                  }
+                                },
+                                icon: const Icon(Icons.send_rounded))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
+                        child: Container(
+                          width: 50,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.surface),
+                          child: IconButton(
+                              splashRadius: 26.3,
                               color: Colors.white,
                               onPressed: () async {
-                                // ignore: unnecessary_null_comparison
-                                if (controller.text != null &&
-                                    controller.text.isNotEmpty) {
-                                  if (streamedUser.displayName == null) {
-                                    setState(() {});
-                                  }
-                                  MessageDatabase().addMessageToGroup(
-                                      message: Message(
-                                          documentId: streamedUser.uid,
-                                          message: controller.text,
-                                          userName: streamedUser.displayName),
-                                      groupDocument: widget.groupDocument);
-                                  controller.clear();
+                                String? type = await showModalBottomSheet(
+                                    context: context,
+                                    constraints: BoxConstraints.loose(
+                                        Size.fromHeight(
+                                            MediaQuery.of(context).size.height /
+                                                    6 +
+                                                12)),
+                                    enableDrag: false,
+                                    builder: (context) {
+                                      return Column(children: [
+                                        ScreenWidthCard(
+                                            highlightColor: Colors.grey[200],
+                                            splashColor: Colors.transparent,
+                                            onTap: () =>
+                                                Navigator.pop(context, "image"),
+                                            child: Row(children: [
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                              Icon(
+                                                Icons.image_outlined,
+                                                size: 32,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .color,
+                                              ),
+                                              const SizedBox(
+                                                width: 26,
+                                              ),
+                                              Text(
+                                                "Pick an Image",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .copyWith(fontSize: 18),
+                                              )
+                                            ]),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                12),
+                                        ScreenWidthCard(
+                                            highlightColor: Colors.grey[200],
+                                            splashColor: Colors.transparent,
+                                            onTap: () =>
+                                                Navigator.pop(context, "video"),
+                                            child: Row(children: [
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                              Icon(
+                                                Icons.slideshow_rounded,
+                                                size: 32,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .color,
+                                              ),
+                                              const SizedBox(
+                                                width: 26,
+                                              ),
+                                              Text(
+                                                "Pick a Video",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .copyWith(fontSize: 18),
+                                              )
+                                            ]),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                12),
+                                        const SizedBox(
+                                          height: 12,
+                                        )
+                                      ]);
+                                    });
+                                if (type != null) {
+                                  await pickFile(streamedUser, type);
                                 }
                               },
-                              icon: const Icon(Icons.send_rounded))
-                        ],
+                              icon: const Icon(
+                                Icons.image_outlined,
+                                size: 26,
+                              )),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
-                      child: Container(
-                        width: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context).colorScheme.surface),
-                        child: IconButton(
-                            splashRadius: 26.3,
-                            color: Colors.white,
-                            onPressed: () async {
-                              String? type = await showModalBottomSheet(
-                                  context: context,
-                                  constraints: BoxConstraints.loose(
-                                      Size.fromHeight(
-                                          MediaQuery.of(context).size.height /
-                                                  6 +
-                                              12)),
-                                  enableDrag: false,
-                                  builder: (context) {
-                                    return Column(children: [
-                                      ScreenWidthCard(
-                                          highlightColor: Colors.grey[200],
-                                          splashColor: Colors.transparent,
-                                          onTap: () =>
-                                              Navigator.pop(context, "image"),
-                                          child: Row(children: [
-                                            const SizedBox(
-                                              width: 12,
-                                            ),
-                                            Icon(
-                                              Icons.image_outlined,
-                                              size: 32,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .color,
-                                            ),
-                                            const SizedBox(
-                                              width: 26,
-                                            ),
-                                            Text(
-                                              "Pick an Image",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .copyWith(fontSize: 18),
-                                            )
-                                          ]),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              12),
-                                      ScreenWidthCard(
-                                          highlightColor: Colors.grey[200],
-                                          splashColor: Colors.transparent,
-                                          onTap: () =>
-                                              Navigator.pop(context, "video"),
-                                          child: Row(children: [
-                                            const SizedBox(
-                                              width: 12,
-                                            ),
-                                            Icon(
-                                              Icons.slideshow_rounded,
-                                              size: 32,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .color,
-                                            ),
-                                            const SizedBox(
-                                              width: 26,
-                                            ),
-                                            Text(
-                                              "Pick a Video",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .copyWith(fontSize: 18),
-                                            )
-                                          ]),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              12),
-                                      const SizedBox(
-                                        height: 12,
-                                      )
-                                    ]);
-                                  });
-                              if (type != null) {
-                                await pickFile(streamedUser, type);
-                              }
-                            },
-                            icon: const Icon(
-                              Icons.image_outlined,
-                              size: 26,
-                            )),
-                      ),
-                    ),
-                    MicrophoneButton(
-                        groupId: widget.groupId ?? widget.groupDocument!.id,
-                        streamedUser: streamedUser,
-                        onLoadingStart: widget.onLoadingStart,
-                        onLoadingEnd: widget.onLoadingEnd),
-                  ],
+                      MicrophoneButton(
+                          groupId: widget.groupId ?? widget.groupDocument!.id,
+                          streamedUser: streamedUser,
+                          onLoadingStart: widget.onLoadingStart,
+                          onLoadingEnd: widget.onLoadingEnd),
+                    ],
+                  ),
                 ),
-              ),
+              ]),
             ),
             Offstage(
               offstage: !isEmojiVisible,

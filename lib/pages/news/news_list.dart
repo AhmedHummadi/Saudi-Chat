@@ -128,7 +128,7 @@ class _NewsListState extends State<NewsList> {
 
 class NewsCard extends StatelessWidget {
   final NewsForm news;
-  const NewsCard({required this.news, Key? key}) : super(key: key);
+  NewsCard({required this.news, Key? key}) : super(key: key);
 
   String dateCreated() {
     DateTime now = DateTime.now();
@@ -184,80 +184,90 @@ class NewsCard extends StatelessWidget {
                 }));
               },
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          flex: 5,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 32,
-                                child: Text(
-                                  news.title!,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.grey[900]
-                                          : Colors.white),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(news.description!,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.grey[600]
-                                          : Colors.white)),
-                            ],
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                          child: Text(
+                              // this algorithm will see if the date created is more than 24 hours ago
+                              // if yes it will show either "Yesterday" or "* Days ago"
+
+                              dateCreated(),
+                              style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.grey[800]
+                                    : Colors.white,
+                              )),
                         ),
-                        Flexible(
-                          flex: 1,
-                          child: CircleAvatar(
-                            radius:
-                                (MediaQuery.of(context).size.height / 2.2) / 14,
-                            backgroundImage: Image.asset(
-                              "assets/new_nadi_profile_pic.jpg",
-                            ).image,
-                          ),
+                        Row(
+                          children: [
+                            Text(news.nadi!.nadiName!),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            CircleAvatar(
+                              radius:
+                                  (MediaQuery.of(context).size.height / 2.2) /
+                                      16,
+                              backgroundImage: Image.asset(
+                                "assets/new_nadi_profile_pic.jpg",
+                              ).image,
+                            ),
+                          ],
                         ),
                       ],
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 4,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
+                    SizedBox(
+                      width: Size.infinite.width,
+                      child: Text(
+                        news.title!,
+                        textAlign: news.title!.contains("ل") ||
+                                news.title!.contains("ب") ||
+                                news.title!.contains("ت") ||
+                                news.title!.contains("د")
+                            ? TextAlign.right
+                            : TextAlign.left,
+                        style: TextStyle(
+                            fontSize: 22,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.grey[900]
+                                    : Colors.white),
                       ),
-                      height: (MediaQuery.of(context).size.height / 2.2) - 126,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: CachedNetworkImage(
-                          width: MediaQuery.of(context).size.width - 40,
-                          imageUrl: news.imageUrl!,
-                          filterQuality: FilterQuality.low,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(
-                                Icons.image,
-                                size: 30,
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height:
+                            (MediaQuery.of(context).size.height / 2.2) - 126,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: CachedNetworkImage(
+                            width: MediaQuery.of(context).size.width - 40,
+                            imageUrl: news.imageUrl!,
+                            filterQuality: FilterQuality.low,
+                            fit: BoxFit.fitWidth,
+                            placeholder: (context, url) => Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(
+                                  Icons.image,
+                                  size: 30,
+                                ),
                               ),
                             ),
                           ),
@@ -265,36 +275,8 @@ class NewsCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 6,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                            // this algorithm will see if the date created is more than 24 hours ago
-                            // if yes it will show either "Yesterday" or "* Days ago"
-                            dateCreated(),
-                            style: TextStyle(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Colors.grey[800]
-                                  : Colors.white,
-                            )),
-                        Text(
-                          "Show Details",
-                          style: TextStyle(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Colors.grey[800]
-                                  : Colors.white,
-                              decoration: TextDecoration.underline),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    )
                   ],
                 ),
               ),

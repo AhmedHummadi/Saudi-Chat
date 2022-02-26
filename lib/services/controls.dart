@@ -36,12 +36,18 @@ class ControlsService {
         Fluttertoast.showToast(msg: "User is already admin");
         return false;
       }
-      // if he is not a member in the group yet
 
+      // if he is not a member in the group yet
       if (!(await groupDoc.reference.collection("members").get())
           .docs
           .any((element) => element.id == userDoc.id)) {
         Fluttertoast.showToast(msg: "User is not a member in the group");
+        return false;
+      }
+
+      // if he is a moderator and can't be admin
+      if (userDoc.get("userClass") == "moderator") {
+        Fluttertoast.showToast(msg: "User is an moderator and can't be admin");
         return false;
       }
 
@@ -82,11 +88,22 @@ class ControlsService {
       }
 
       if (userDoc.get("userClass") == "moderator") {
-        Fluttertoast.showToast(msg: "User is alreade a moderator");
+        Fluttertoast.showToast(msg: "User is already a moderator");
         return false;
       }
 
-      userDoc.reference.update({"userClass": "moderator"});
+      await userDoc.reference.update({"userClass": "moderator"});
+      List userGroups = userDoc.get("groups") as List;
+
+      for (var group in userGroups) {
+        DocumentReference ref =
+            DataBaseService().messagesCollection.doc(group["nadiReference"].id);
+
+        QuerySnapshot snapshot = await ref.collection("members").get();
+        DocumentSnapshot userDocInGroup =
+            snapshot.docs.where((element) => element.id == userDoc.id).single;
+        userDocInGroup.reference.update({"userClass": "moderator"});
+      }
       return true;
     } catch (e) {
       rethrow;

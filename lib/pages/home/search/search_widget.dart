@@ -86,7 +86,6 @@ class _SearchNadisState extends State<SearchNadis> {
             ),
           );
         });
-        Overlay.of(context)!.insert(_locationPermissionOverlayEntry!);
       } else {
         deviceLocation = loc;
       }
