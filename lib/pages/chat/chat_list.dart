@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
@@ -12,7 +13,9 @@ import 'package:saudi_chat/services/device_storage.dart';
 
 class ChatList extends StatefulWidget {
   final bool? isHomeStyle;
-  const ChatList({Key? key, this.isHomeStyle}) : super(key: key);
+  final Function onAddGroupTapped;
+  const ChatList({Key? key, this.isHomeStyle, required this.onAddGroupTapped})
+      : super(key: key);
 
   @override
   _ChatListState createState() => _ChatListState();
@@ -50,7 +53,7 @@ class _ChatListState extends State<ChatList> {
                 return groups.contains(element.id);
               }).toList();
 
-              if (docs.length != widgetsList.length) {
+              if (docs.length > widgetsList.length) {
                 findDocuments(
                     docs, (snapshot.data as QuerySnapshot), streamedUser,
                     (widgets) {
@@ -65,9 +68,45 @@ class _ChatListState extends State<ChatList> {
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: widgetsList),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: widgetsList),
+                        GestureDetector(
+                          onTap: () => widget.onAddGroupTapped(),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(19, 10, 0, 0),
+                            child: ConstrainedBox(
+                              constraints:
+                                  BoxConstraints.tight(const Size(66, 66)),
+                              child: Transform.rotate(
+                                angle: 0.2725,
+                                child: DottedBorder(
+                                    strokeWidth: 3,
+                                    borderType: BorderType.Circle,
+                                    radius: const Radius.circular(82),
+                                    padding: EdgeInsets.zero,
+                                    dashPattern: const [((82 * 3.14) / 7), 20],
+                                    color: Colors.grey.shade700,
+                                    strokeCap: StrokeCap.round,
+                                    child: Transform.rotate(
+                                      angle: 12.3,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.grey.shade700,
+                                          size: 36,
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : SingleChildScrollView(
                     child: Column(
@@ -80,7 +119,7 @@ class _ChatListState extends State<ChatList> {
                 child: Text(
                   "Loading...",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.grey,
                       fontSize: 30,
                       fontWeight: FontWeight.w500),
                 ),
@@ -300,11 +339,12 @@ class _BuildHomeItem extends StatelessWidget {
                       ),
                       SizedBox(
                         width: kContainerRadius,
-                        height: 14,
+                        height: 16,
                         child: Center(
                           child: Text(
                             data.nadiName!,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1!

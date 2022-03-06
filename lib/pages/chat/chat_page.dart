@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
 import 'package:intl/intl.dart';
@@ -697,7 +696,8 @@ class MessageItem extends StatelessWidget {
                                   ? const EdgeInsets.all(4)
                                   : const EdgeInsets.all(6.0)
                           : const EdgeInsets.all(8.0),
-                      child: messages[i].toString().length > 28
+                      child: messages[i].toString().length > 28 ||
+                              messages[i] is Map
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: elementCheck
@@ -775,86 +775,109 @@ class MessageItem extends StatelessWidget {
                                               ? TextAlign.right
                                               : TextAlign.left,
                                         )) as Widget))
-                          : Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: messages[i].toString().length > 28
-                                      ? 6
-                                      : 0,
-                                  width: messages[i].toString().length > 28
-                                      ? 0
-                                      : elementCheck
+                          : SizedBox(
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height: messages[i].toString().length > 28
                                           ? 6
-                                          : 8,
-                                ),
-                              ]
-                                ..insert(
-                                    elementCheck ? 0 : 1,
-                                    (isImage
-                                        ? isVideo
-                                            ? Hero(
-                                                tag: (image! as ViewVideo).url,
-                                                child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                    child: image),
-                                              )
-                                            : isAudio
-                                                ? image
-                                                : GestureDetector(
-                                                    child: Hero(
-                                                      tag: (image!
-                                                              as CachedNetworkImage)
-                                                          .imageUrl,
-                                                      child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      5.0),
-                                                          child: image),
-                                                    ),
-                                                    onTap: () async {
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      DetailScreen(
-                                                                        isVideo:
-                                                                            isVideo,
-                                                                        videoPosition:
-                                                                            null,
-                                                                        storagePath:
-                                                                            messages[i]["storage_path"],
-                                                                        tag: (image
-                                                                                as CachedNetworkImage)
-                                                                            .imageUrl,
-                                                                        imageUrl:
-                                                                            image.imageUrl,
-                                                                      )));
-                                                    },
+                                          : 0,
+                                      width: messages[i].toString().length > 28
+                                          ? 0
+                                          : elementCheck
+                                              ? 6
+                                              : 8,
+                                    ),
+                                  ]
+                                    ..insert(
+                                        elementCheck ? 0 : 1,
+                                        (isImage
+                                            ? isVideo
+                                                ? Hero(
+                                                    tag: (image! as ViewVideo)
+                                                        .url,
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                        child: image),
                                                   )
-                                        : SelectableText(
-                                            messages[i],
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
-                                            textAlign: elementCheck
-                                                ? myTextAlignment
-                                                : theirTextAlignment,
-                                          )) as Widget)
-                                ..insert(
-                                  elementCheck ? 2 : 0,
-                                  Text(
-                                    DateFormat.jm().format(times[i].toDate()),
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                )),
+                                                : isAudio
+                                                    ? image
+                                                    : GestureDetector(
+                                                        child: Hero(
+                                                          tag: (image!
+                                                                  as CachedNetworkImage)
+                                                              .imageUrl,
+                                                          child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5.0),
+                                                              child: image),
+                                                        ),
+                                                        onTap: () async {
+                                                          await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          DetailScreen(
+                                                                            isVideo:
+                                                                                isVideo,
+                                                                            videoPosition:
+                                                                                null,
+                                                                            storagePath:
+                                                                                messages[i]["storage_path"],
+                                                                            tag:
+                                                                                (image as CachedNetworkImage).imageUrl,
+                                                                            imageUrl:
+                                                                                image.imageUrl,
+                                                                          )));
+                                                        },
+                                                      )
+                                            : SizedBox(
+                                                height: 21,
+                                                child: Text(
+                                                  messages[i],
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6!
+                                                      .copyWith(
+                                                          fontSize: messages[i]
+                                                                      .contains(
+                                                                          "ل") ||
+                                                                  messages[i]
+                                                                      .contains(
+                                                                          "ب") ||
+                                                                  messages[i]
+                                                                      .contains(
+                                                                          "ت") ||
+                                                                  messages[i]
+                                                                      .contains(
+                                                                          "د")
+                                                              ? 15
+                                                              : 16),
+                                                  textAlign: elementCheck
+                                                      ? myTextAlignment
+                                                      : theirTextAlignment,
+                                                ),
+                                              )) as Widget)
+                                    ..insert(
+                                      elementCheck ? 2 : 0,
+                                      Text(
+                                        DateFormat.jm()
+                                            .format(times[i].toDate()),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                    )),
+                            ),
                     )),
               ),
               const SizedBox(

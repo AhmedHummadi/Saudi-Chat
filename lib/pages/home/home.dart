@@ -20,11 +20,6 @@ class _HomeState extends State<Home> {
   // ignore: unused_field, prefer_final_fields
   int _currentIndex = 0;
   // ignore: unused_field, prefer_const_constructors
-  final List<Widget> _pages = const [
-    HomePage(),
-    ChatPage(),
-    GroupsPage(),
-  ];
 
   List<BottomNavigationBarItem> navigationBaritems = const [
     BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
@@ -41,8 +36,18 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      HomePage(
+        toggleSearch: toggleSearch,
+      ),
+      ChatPage(toggleSearch: toggleSearch),
+      const GroupsPage(),
+    ];
+
     final dynamic streamUser = Provider.of<UserAuth>(context);
+
     final UserAuth streamedUser = streamUser;
+
     if (streamedUser.groups != null && streamUser.displayName! != null) {
       return Material(
         color: Colors.transparent,
@@ -66,37 +71,47 @@ class _HomeState extends State<Home> {
                               icon: Icon(Icons.person_outline))
                         ]
                     : navigationBaritems),
-            drawer: buildDrawer(),
-            floatingActionButton: _currentIndex == 0
-                ?
-                // is on home page
-                // show add chat group button
-                FloatingActionButton.extended(
-                    onPressed: () => toggleSearch(),
-                    label: const Text("Join a Club"),
-                    icon: const Icon(
-                      Icons.add,
-                      size: 28,
-                    ),
-                  )
-                : null,
-            appBar: AppBar(
-              title: Text(_currentIndex == 0
-                  ? "Home"
-                  : _currentIndex == 1
-                      ? "Chat"
-                      : _currentIndex == 2
-                          ? "Groups"
-                          : "Control Panel"),
-              centerTitle: true,
-            ),
+            drawer: buildDrawer(streamedUser),
             body: IndexedStack(
               index: _currentIndex,
-              children: streamedUser.userClass == UserClass.moderator
-                  ? _pages + [const ModeratorPanelPage()]
-                  : streamedUser.userClass == UserClass.admin
-                      ? _pages + [const AdminPanelPage()]
-                      : _pages,
+              children: (streamedUser.userClass == UserClass.moderator
+                      ? _pages + [const ModeratorPanelPage()]
+                      : streamedUser.userClass == UserClass.admin
+                          ? _pages + [const AdminPanelPage()]
+                          : _pages)
+                  .map((e) => SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            AppBar(
+                              title: Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: Text(_currentIndex == 0
+                                    ? "Home"
+                                    : _currentIndex == 1
+                                        ? "Chat"
+                                        : _currentIndex == 2
+                                            ? "Groups"
+                                            : "Control Panel"),
+                              ),
+                              actions: [
+                                Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: GestureDetector(
+                                    onTap: () => toggleSearch(),
+                                    child: const Icon(
+                                      Icons.search_rounded,
+                                      color: Colors.white,
+                                      size: 23,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            e
+                          ],
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           Visibility(
@@ -138,26 +153,73 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Drawer buildDrawer() {
+  Drawer buildDrawer(UserAuth streamedUser) {
     return Drawer(
-      child: ListView(
-        children: [
-          const DrawerHeader(
-              child: Text(
-            "Settings",
-          )),
-          ListTile(
-            onTap: () async {
-              Navigator.pop(context);
-              await AuthService().signOut();
-            },
-            tileColor: Theme.of(context).colorScheme.surface,
-            title: const Text(
-              "Sign Out",
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          )
-        ],
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+            0, MediaQuery.of(context).size.height / 11, 0, 0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 44,
+                backgroundImage: Image.asset(
+                  "assets/new_nadi_profile_pic.jpg",
+                ).image,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text(
+                      streamedUser.displayName!,
+                      style: TextStyle(color: Colors.grey[800], fontSize: 20),
+                    ),
+                    Text(
+                      streamedUser.email!,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                    ),
+                  ],
+                )),
+              ),
+              const Divider(
+                color: Colors.grey,
+                indent: 20,
+                endIndent: 20,
+                height: 20,
+              ),
+              InkWell(
+                splashColor: Colors.grey[100],
+                onTap: () async {
+                  Navigator.pop(context);
+                  await AuthService().signOut();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout,
+                          color: Theme.of(context).colorScheme.onBackground),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        "Sign Out",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.onBackground),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -175,16 +237,20 @@ class GroupsPage extends StatelessWidget {
 }
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final Function? toggleSearch;
+  const ChatPage({Key? key, this.toggleSearch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const ChatList();
+    return ChatList(
+      onAddGroupTapped: toggleSearch!,
+    );
   }
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final Function? toggleSearch;
+  const HomePage({Key? key, this.toggleSearch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -202,12 +268,13 @@ class HomePage extends StatelessWidget {
             ),
             ScrollConfiguration(
               behavior: NoGlowScrollBehaviour(),
-              child: const SingleChildScrollView(
+              child: SingleChildScrollView(
                 clipBehavior: Clip.antiAlias,
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: ChatList(
+                    onAddGroupTapped: toggleSearch!,
                     isHomeStyle: true,
                   ),
                 ),

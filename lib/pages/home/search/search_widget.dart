@@ -101,7 +101,6 @@ class _SearchNadisState extends State<SearchNadis> {
   @override
   Widget build(BuildContext context) {
     dynamic streamedUser = widget.streamedUser;
-    print(streamedUser);
     final controller = FloatingSearchBarController();
 
     return WillPopScope(
@@ -129,7 +128,6 @@ class _SearchNadisState extends State<SearchNadis> {
                     .getSearchResultsFromBusinesses(
                         userLocation: deviceLocation, queryText: input);
 
-                print(searchResults);
                 _currentQuerySearchResults.sink.add(searchResults!.length > 4
                     ? searchResults.getRange(0, 3).toList()
                     : searchResults);

@@ -27,6 +27,11 @@ class MyApp extends StatelessWidget {
           title: 'Saudi Chat',
           themeMode: ThemeMode.system,
           theme: ThemeData(
+              appBarTheme: const AppBarTheme(
+                elevation: 0,
+                titleTextStyle: TextStyle(fontSize: 18),
+                backgroundColor: Colors.teal,
+              ),
               fontFamily: "Roboto",
               primaryColor: const Color(0xff009688),
               backgroundColor: Colors.white.withOpacity(0.7),
@@ -49,7 +54,7 @@ class MyApp extends StatelessWidget {
                   secondary: Color(0xff00BCD4),
                   secondaryContainer: Color(0xffE2FEC6),
                   surface: Color(0xff26A69A),
-                  surfaceVariant: Color.fromARGB(255, 197, 231, 229),
+                  surfaceVariant: Color.fromARGB(255, 207, 230, 228),
                   background: Color(0xffF5F5F5),
                   onSurfaceVariant: Color.fromARGB(255, 231, 231, 231),
                   error: Color(0xffEF5350),
