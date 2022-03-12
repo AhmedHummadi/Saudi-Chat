@@ -1,4 +1,4 @@
-#Sun Mar 06 13:53:18 AEDT 2022
+#Sat Mar 12 20:38:08 AEDT 2022
 base.0=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
