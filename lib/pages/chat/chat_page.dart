@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/message.dart';
 import 'package:saudi_chat/models/user.dart';
@@ -25,6 +25,38 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
 import 'package:saudi_chat/shared/widgets.dart';
+
+final List<String> arabicLetters = [
+  "ز",
+  "ظ",
+  "ط",
+  "د",
+  "ج",
+  "ح",
+  "خ",
+  "ه",
+  "ق",
+  "ع",
+  "ف",
+  "غ",
+  "ض",
+  "ص",
+  "ث",
+  "ا",
+  "ل",
+  "ب",
+  "و",
+  "ة",
+  "ى",
+  "لا",
+  "ر",
+  "ؤ",
+  "ء",
+  "ئ",
+  "ت",
+  "ن",
+  "ي"
+];
 
 class ChatPage extends StatefulWidget {
   final DocumentReference? groupDocument;
@@ -456,7 +488,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
             // in columnChildren is not the same, because the data added
             // in the stream sometimes gets repeated twice, so this method
             // helps prevent the user from seeing two of the same messages
-
+            print(e == null ? "" : e.message);
             return (e == null
                 ? columnChildren
                 // ignore: unnecessary_type_check
@@ -614,10 +646,16 @@ class MessageItem extends StatelessWidget {
       // this function will help stick the message that are from the same user together
       if (i > 0) {
         Message m1 = Message(
-            message: messages[i], time: times[i], userName: userNames[i]);
+            message: messages[i] is! String
+                ? messages[i]["storage_path"]
+                : messages[i],
+            time: times[i],
+            userName: userNames[i]);
 
         Message m2 = Message(
-            message: messages[i - 1],
+            message: messages[i - 1] is! String
+                ? messages[i - 1]["storage_path"]
+                : messages[i - 1],
             time: times[i - 1],
             userName: userNames[i - 1]);
 
@@ -698,83 +736,184 @@ class MessageItem extends StatelessWidget {
                           : const EdgeInsets.all(8.0),
                       child: messages[i].toString().length > 28 ||
                               messages[i] is Map
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: elementCheck
-                                  ? CrossAxisAlignment.end
-                                  : CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                    height: messages[i].toString().length > 28
-                                        ? 6
-                                        : 0),
-                                Text(
-                                  DateFormat.jm().format(times[i].toDate()),
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                              ]..insert(
-                                  0,
-                                  (isImage
-                                      ? isVideo
-                                          ? Hero(
-                                              tag: (image! as ViewVideo).url,
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                  child: image),
-                                            )
-                                          : isAudio
-                                              ? image
-                                              : GestureDetector(
-                                                  child: Hero(
-                                                    tag: (image!
-                                                            as CachedNetworkImage)
-                                                        .imageUrl,
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5.0),
-                                                        child: image),
-                                                  ),
-                                                  onTap: () async {
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    DetailScreen(
-                                                                      isVideo:
-                                                                          isVideo,
-                                                                      videoPosition:
-                                                                          null,
-                                                                      storagePath:
-                                                                          messages[i]
-                                                                              [
-                                                                              "storage_path"],
-                                                                      tag: (image
-                                                                              as CachedNetworkImage)
-                                                                          .imageUrl,
-                                                                      imageUrl:
-                                                                          image
-                                                                              .imageUrl,
-                                                                    )));
-                                                  },
+                          ? messages[i] is Map &&
+                                  (messages[i] as Map).containsKey("duration")
+                              ? Stack(
+                                  alignment: elementCheck
+                                      ? Alignment.bottomRight
+                                      : Alignment.bottomLeft,
+                                  children: [
+                                    Text(
+                                      DateFormat.jm().format(times[i].toDate()),
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    ),
+                                  ]..insert(
+                                      0,
+                                      (isImage
+                                          ? isVideo
+                                              ? Hero(
+                                                  tag:
+                                                      (image! as ViewVideo).url,
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0),
+                                                      child: image),
                                                 )
-                                      : SelectableText(
-                                          messages[i],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
-                                          textAlign: messages[i]
-                                                      .contains("ل") ||
-                                                  messages[i].contains("ب") ||
-                                                  messages[i].contains("ت") ||
-                                                  messages[i].contains("د")
-                                              ? TextAlign.right
-                                              : TextAlign.left,
-                                        )) as Widget))
+                                              : isAudio
+                                                  ? image
+                                                  : GestureDetector(
+                                                      child: Hero(
+                                                        tag: (image!
+                                                                as CachedNetworkImage)
+                                                            .imageUrl,
+                                                        child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
+                                                            child: image),
+                                                      ),
+                                                      onTap: () async {
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetailScreen(
+                                                                          isVideo:
+                                                                              isVideo,
+                                                                          videoPosition:
+                                                                              null,
+                                                                          storagePath:
+                                                                              messages[i]["storage_path"],
+                                                                          tag: (image as CachedNetworkImage)
+                                                                              .imageUrl,
+                                                                          imageUrl:
+                                                                              image.imageUrl,
+                                                                        )));
+                                                      },
+                                                    )
+                                          : Text(
+                                              messages[i],
+                                              maxLines: null,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                              textDirection: messages[i]
+                                                      .toString()
+                                                      .characters
+                                                      .any((element) =>
+                                                          arabicLetters.any(
+                                                              (arabicLetter) =>
+                                                                  arabicLetter ==
+                                                                  element))
+                                                  ? TextDirection.rtl
+                                                  : TextDirection.ltr,
+                                              textAlign: messages[i]
+                                                      .toString()
+                                                      .characters
+                                                      .any((element) =>
+                                                          arabicLetters.any(
+                                                              (arabicLetter) =>
+                                                                  arabicLetter ==
+                                                                  element))
+                                                  ? TextAlign.right
+                                                  : TextAlign.left,
+                                            )) as Widget))
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: elementCheck
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                        height:
+                                            messages[i].toString().length > 28
+                                                ? 6
+                                                : 0),
+                                    Text(
+                                      DateFormat.jm().format(times[i].toDate()),
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    ),
+                                  ]..insert(
+                                      0,
+                                      (isImage
+                                          ? isVideo
+                                              ? Hero(
+                                                  tag:
+                                                      (image! as ViewVideo).url,
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0),
+                                                      child: image),
+                                                )
+                                              : isAudio
+                                                  ? image
+                                                  : GestureDetector(
+                                                      child: Hero(
+                                                        tag: (image!
+                                                                as CachedNetworkImage)
+                                                            .imageUrl,
+                                                        child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
+                                                            child: image),
+                                                      ),
+                                                      onTap: () async {
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetailScreen(
+                                                                          isVideo:
+                                                                              isVideo,
+                                                                          videoPosition:
+                                                                              null,
+                                                                          storagePath:
+                                                                              messages[i]["storage_path"],
+                                                                          tag: (image as CachedNetworkImage)
+                                                                              .imageUrl,
+                                                                          imageUrl:
+                                                                              image.imageUrl,
+                                                                        )));
+                                                      },
+                                                    )
+                                          : Text(
+                                              messages[i],
+                                              maxLines: null,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                              textDirection: messages[i]
+                                                      .toString()
+                                                      .characters
+                                                      .any((element) =>
+                                                          arabicLetters.any(
+                                                              (arabicLetter) =>
+                                                                  arabicLetter ==
+                                                                  element))
+                                                  ? TextDirection.rtl
+                                                  : TextDirection.ltr,
+                                              textAlign: messages[i]
+                                                      .toString()
+                                                      .characters
+                                                      .any((element) =>
+                                                          arabicLetters.any(
+                                                              (arabicLetter) =>
+                                                                  arabicLetter ==
+                                                                  element))
+                                                  ? TextAlign.right
+                                                  : TextAlign.left,
+                                            )) as Widget))
                           : SizedBox(
                               child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -840,32 +979,34 @@ class MessageItem extends StatelessWidget {
                                                                           )));
                                                         },
                                                       )
-                                            : SizedBox(
-                                                height: 21,
-                                                child: Text(
-                                                  messages[i],
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6!
-                                                      .copyWith(
-                                                          fontSize: messages[i]
-                                                                      .contains(
-                                                                          "ل") ||
-                                                                  messages[i]
-                                                                      .contains(
-                                                                          "ب") ||
-                                                                  messages[i]
-                                                                      .contains(
-                                                                          "ت") ||
-                                                                  messages[i]
-                                                                      .contains(
-                                                                          "د")
-                                                              ? 15
-                                                              : 16),
-                                                  textAlign: elementCheck
-                                                      ? myTextAlignment
-                                                      : theirTextAlignment,
-                                                ),
+                                            : Text(
+                                                messages[i],
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6!
+                                                    .copyWith(
+                                                        fontSize: messages[i]
+                                                                .toString()
+                                                                .characters
+                                                                .any((element) =>
+                                                                    arabicLetters.any((arabicLetter) =>
+                                                                        arabicLetter ==
+                                                                        element))
+                                                            ? 15
+                                                            : 16),
+                                                textDirection: messages[i]
+                                                        .toString()
+                                                        .characters
+                                                        .any((element) =>
+                                                            arabicLetters.any(
+                                                                (arabicLetter) =>
+                                                                    arabicLetter ==
+                                                                    element))
+                                                    ? TextDirection.rtl
+                                                    : TextDirection.ltr,
+                                                textAlign: elementCheck
+                                                    ? myTextAlignment
+                                                    : theirTextAlignment,
                                               )) as Widget)
                                     ..insert(
                                       elementCheck ? 2 : 0,
@@ -955,6 +1096,8 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
 
   bool wasFocused = false;
 
+  String currentText = "";
+
   Future<void> pickFile(streamedUser, pickType) async {
     try {
       final XFile? insertedFile = pickType == "image"
@@ -1002,6 +1145,13 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
     // this will keep updating every time the user has opened the keyboard
     // it will change the offset for the chat messages and hidden box
     // and remove the moji keyboard if its on
+
+    controller.addListener(() => mounted
+        ? setState(() {
+            currentText = controller.text;
+            print(currentText);
+          })
+        : currentText = controller.text);
 
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (visible) {
@@ -1112,217 +1262,245 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
           children: [
             Align(
               alignment: Alignment.bottomCenter,
-              child: Stack(alignment: Alignment.bottomCenter, children: [
-                Container(
-                  height: 72,
-                  color: Colors.white,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 15, 0, 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Theme.of(context).colorScheme.surface),
-                        child: Row(
-                          children: [
-                            Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                child: GestureDetector(
-                                  child: Icon(
-                                      isEmojiVisible
-                                          ? Icons.keyboard_rounded
-                                          : Icons.emoji_emotions_outlined,
-                                      color: Colors.white),
-                                  onTap: toggleEmojiKeyboard,
-                                )),
-                            Container(
-                              constraints: BoxConstraints(
-                                  maxHeight: 100,
-                                  maxWidth:
-                                      (MediaQuery.of(context).size.width / 2) -
-                                          20),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 3, 0, 3),
-                                child: Theme(
-                                  data: ThemeData(
-                                    primaryColor: Colors.white,
-                                    colorScheme: ColorScheme.light(
-                                        primary: Colors.grey.shade100,
-                                        secondary: Colors.white),
-                                  ),
-                                  child: TextField(
-                                      focusNode: focusNode,
-                                      textInputAction: TextInputAction.send,
-                                      onEditingComplete: () async {
-                                        // ignore: unnecessary_null_comparison
-                                        if (controller.text != null &&
-                                            controller.text.isNotEmpty) {
-                                          if (streamedUser.displayName !=
-                                              null) {
-                                            MessageDatabase().addMessageToGroup(
-                                                message: Message(
-                                                    documentId:
-                                                        streamedUser.uid,
-                                                    message: controller.text,
-                                                    userName: streamedUser
-                                                        .displayName),
-                                                groupDocument:
-                                                    widget.groupDocument);
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                    color: Theme.of(context).colorScheme.background,
+                    height: 67,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Theme.of(context).colorScheme.surface),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 0, 0, 15),
+                                  child: GestureDetector(
+                                    child: Icon(
+                                        isEmojiVisible
+                                            ? Icons.keyboard_rounded
+                                            : Icons.emoji_emotions_outlined,
+                                        color: Colors.white),
+                                    onTap: toggleEmojiKeyboard,
+                                  )),
+                              Container(
+                                constraints: BoxConstraints(
+                                    maxHeight: 100,
+                                    maxWidth:
+                                        (MediaQuery.of(context).size.width /
+                                                2) -
+                                            20),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 3, 0, 3),
+                                  child: Theme(
+                                    data: ThemeData(
+                                      primaryColor: Colors.white,
+                                      colorScheme: ColorScheme.light(
+                                          primary: Colors.grey.shade100,
+                                          secondary: Colors.white),
+                                    ),
+                                    child: TextField(
+                                        textAlign:
+                                            currentText.characters.any((element) => arabicLetters.any((arabicLetter) => arabicLetter == element))
+                                                ? TextAlign.right
+                                                : TextAlign.left,
+                                        textDirection: currentText
+                                                .toString()
+                                                .characters
+                                                .any((element) => arabicLetters
+                                                    .any((arabicLetter) =>
+                                                        arabicLetter ==
+                                                        element))
+                                            ? TextDirection.rtl
+                                            : TextDirection.ltr,
+                                        focusNode: focusNode,
+                                        keyboardType: TextInputType.multiline,
+                                        textInputAction:
+                                            TextInputAction.newline,
+                                        onEditingComplete: () async {
+                                          // ignore: unnecessary_null_comparison
+                                          if (controller.text != null &&
+                                              controller.text.isNotEmpty) {
+                                            if (streamedUser.displayName !=
+                                                null) {
+                                              MessageDatabase()
+                                                  .addMessageToGroup(
+                                                      message: Message(
+                                                          documentId:
+                                                              streamedUser.uid,
+                                                          message:
+                                                              controller.text,
+                                                          userName: streamedUser
+                                                              .displayName),
+                                                      groupDocument:
+                                                          widget.groupDocument);
 
-                                            controller.clear();
+                                              controller.clear();
+                                            }
                                           }
-                                        }
-                                      },
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                      showCursor: true,
-                                      controller: controller,
-                                      decoration: textInputDecoration.copyWith(
-                                          border: InputBorder.none,
-                                          hintText: "Message",
-                                          hintStyle: TextStyle(
-                                              color: Colors.white
-                                                  .withOpacity(0.8)))),
+                                        },
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                        showCursor: true,
+                                        controller: controller,
+                                        maxLines: null,
+                                        decoration: textInputDecoration.copyWith(
+                                            border: InputBorder.none,
+                                            hintText: "Message",
+                                            hintStyle:
+                                                TextStyle(color: Colors.white.withOpacity(0.8)))),
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconButton(
-                                splashRadius: 20,
+                              IconButton(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                                  splashRadius: 20,
+                                  color: Colors.white,
+                                  onPressed: () async {
+                                    // ignore: unnecessary_null_comparison
+                                    if (controller.text != null &&
+                                        controller.text.isNotEmpty) {
+                                      if (streamedUser.displayName == null) {
+                                        setState(() {});
+                                      }
+                                      MessageDatabase().addMessageToGroup(
+                                          message: Message(
+                                              documentId: streamedUser.uid,
+                                              message: controller.text,
+                                              userName:
+                                                  streamedUser.displayName),
+                                          groupDocument: widget.groupDocument);
+                                      controller.clear();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.send_rounded))
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
+                          child: Container(
+                            width: 50,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.surface),
+                            child: IconButton(
+                                splashRadius: 26.3,
                                 color: Colors.white,
                                 onPressed: () async {
-                                  // ignore: unnecessary_null_comparison
-                                  if (controller.text != null &&
-                                      controller.text.isNotEmpty) {
-                                    if (streamedUser.displayName == null) {
-                                      setState(() {});
-                                    }
-                                    MessageDatabase().addMessageToGroup(
-                                        message: Message(
-                                            documentId: streamedUser.uid,
-                                            message: controller.text,
-                                            userName: streamedUser.displayName),
-                                        groupDocument: widget.groupDocument);
-                                    controller.clear();
+                                  String? type = await showModalBottomSheet(
+                                      context: context,
+                                      constraints: BoxConstraints.loose(
+                                          Size.fromHeight(MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  6 +
+                                              12)),
+                                      enableDrag: false,
+                                      builder: (context) {
+                                        return Column(children: [
+                                          ScreenWidthCard(
+                                              highlightColor: Colors.grey[200],
+                                              splashColor: Colors.transparent,
+                                              onTap: () => Navigator.pop(
+                                                  context, "image"),
+                                              child: Row(children: [
+                                                const SizedBox(
+                                                  width: 12,
+                                                ),
+                                                Icon(
+                                                  Icons.image_outlined,
+                                                  size: 32,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .caption!
+                                                      .color,
+                                                ),
+                                                const SizedBox(
+                                                  width: 26,
+                                                ),
+                                                Text(
+                                                  "Pick an Image",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .caption!
+                                                      .copyWith(fontSize: 18),
+                                                )
+                                              ]),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  12),
+                                          ScreenWidthCard(
+                                              highlightColor: Colors.grey[200],
+                                              splashColor: Colors.transparent,
+                                              onTap: () => Navigator.pop(
+                                                  context, "video"),
+                                              child: Row(children: [
+                                                const SizedBox(
+                                                  width: 12,
+                                                ),
+                                                Icon(
+                                                  Icons.slideshow_rounded,
+                                                  size: 32,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .caption!
+                                                      .color,
+                                                ),
+                                                const SizedBox(
+                                                  width: 26,
+                                                ),
+                                                Text(
+                                                  "Pick a Video",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .caption!
+                                                      .copyWith(fontSize: 18),
+                                                )
+                                              ]),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  12),
+                                          const SizedBox(
+                                            height: 12,
+                                          )
+                                        ]);
+                                      });
+                                  if (type != null) {
+                                    await pickFile(streamedUser, type);
                                   }
                                 },
-                                icon: const Icon(Icons.send_rounded))
-                          ],
+                                icon: const Icon(
+                                  Icons.image_outlined,
+                                  size: 26,
+                                )),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 2.5),
-                        child: Container(
-                          width: 50,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context).colorScheme.surface),
-                          child: IconButton(
-                              splashRadius: 26.3,
-                              color: Colors.white,
-                              onPressed: () async {
-                                String? type = await showModalBottomSheet(
-                                    context: context,
-                                    constraints: BoxConstraints.loose(
-                                        Size.fromHeight(
-                                            MediaQuery.of(context).size.height /
-                                                    6 +
-                                                12)),
-                                    enableDrag: false,
-                                    builder: (context) {
-                                      return Column(children: [
-                                        ScreenWidthCard(
-                                            highlightColor: Colors.grey[200],
-                                            splashColor: Colors.transparent,
-                                            onTap: () =>
-                                                Navigator.pop(context, "image"),
-                                            child: Row(children: [
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                              Icon(
-                                                Icons.image_outlined,
-                                                size: 32,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .color,
-                                              ),
-                                              const SizedBox(
-                                                width: 26,
-                                              ),
-                                              Text(
-                                                "Pick an Image",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(fontSize: 18),
-                                              )
-                                            ]),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                12),
-                                        ScreenWidthCard(
-                                            highlightColor: Colors.grey[200],
-                                            splashColor: Colors.transparent,
-                                            onTap: () =>
-                                                Navigator.pop(context, "video"),
-                                            child: Row(children: [
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                              Icon(
-                                                Icons.slideshow_rounded,
-                                                size: 32,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .color,
-                                              ),
-                                              const SizedBox(
-                                                width: 26,
-                                              ),
-                                              Text(
-                                                "Pick a Video",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(fontSize: 18),
-                                              )
-                                            ]),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                12),
-                                        const SizedBox(
-                                          height: 12,
-                                        )
-                                      ]);
-                                    });
-                                if (type != null) {
-                                  await pickFile(streamedUser, type);
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.image_outlined,
-                                size: 26,
-                              )),
-                        ),
-                      ),
-                      MicrophoneButton(
-                          groupId: widget.groupId ?? widget.groupDocument!.id,
-                          streamedUser: streamedUser,
-                          onLoadingStart: widget.onLoadingStart,
-                          onLoadingEnd: widget.onLoadingEnd),
-                    ],
+                        MicrophoneButton(
+                            groupId: widget.groupId ?? widget.groupDocument!.id,
+                            streamedUser: streamedUser,
+                            onLoadingStart: widget.onLoadingStart,
+                            onLoadingEnd: widget.onLoadingEnd),
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
             Offstage(
               offstage: !isEmojiVisible,

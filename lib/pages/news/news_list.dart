@@ -128,7 +128,7 @@ class _NewsListState extends State<NewsList> {
 
 class NewsCard extends StatelessWidget {
   final NewsForm news;
-  NewsCard({required this.news, Key? key}) : super(key: key);
+  const NewsCard({required this.news, Key? key}) : super(key: key);
 
   String dateCreated() {
     DateTime now = DateTime.now();

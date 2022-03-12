@@ -30,7 +30,6 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (!widget.isVideo) {
-      print(widget.imageUrl);
       return Scaffold(
         body: Stack(children: <Widget>[
           Center(

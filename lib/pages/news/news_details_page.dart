@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:saudi_chat/models/news_form.dart';
+import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
 
 class NewsDetailsPage extends StatelessWidget {
@@ -21,11 +22,14 @@ class NewsDetailsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(DateFormat.yMMMd()
-                    .format(news.dateCreated!.toDate())
-                    .toString()),
+                        .format(news.dateCreated!.toDate())
+                        .toString() +
+                    ", ${DateFormat.jm().format(news.dateCreated!.toDate()).toString()}"),
                 Row(
                   children: [
-                    Text(news.nadi!.nadiName!),
+                    Text(
+                      news.nadi!.nadiName!,
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -39,17 +43,24 @@ class NewsDetailsPage extends StatelessWidget {
                 )
               ],
             ),
-            Divider(
-              color: Colors.grey[400],
-              thickness: 1,
-              height: 20,
-            ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
-            Text(
-              news.title!,
-              style: const TextStyle(color: Colors.black, fontSize: 24),
+            SizedBox(
+              width: Size.infinite.width,
+              child: Text(
+                news.title!,
+                textAlign: news.title!.characters.any((element) => arabicLetters
+                        .any((arabicLetter) => arabicLetter == element))
+                    ? TextAlign.right
+                    : TextAlign.left,
+                textDirection: news.title!.toString().characters.any(
+                        (element) => arabicLetters
+                            .any((arabicLetter) => arabicLetter == element))
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                style: const TextStyle(color: Colors.black, fontSize: 26),
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -58,7 +69,7 @@ class NewsDetailsPage extends StatelessWidget {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DetailScreen(
+                      builder: (d) => DetailScreen(
                             isVideo: false,
                             imageUrl: news.imageUrl,
                             tag: news.imageUrl,
@@ -97,16 +108,19 @@ class NewsDetailsPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const Text(
-              "Description:",
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
             Text(
               news.description!,
-              style: TextStyle(color: Colors.grey[800]),
+              textAlign: news.description!.characters.any((element) =>
+                      arabicLetters
+                          .any((arabicLetter) => arabicLetter == element))
+                  ? TextAlign.right
+                  : TextAlign.left,
+              textDirection: news.description!.toString().characters.any(
+                      (element) => arabicLetters
+                          .any((arabicLetter) => arabicLetter == element))
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
+              style: TextStyle(color: Colors.grey[800], fontSize: 20),
             )
           ],
         ),

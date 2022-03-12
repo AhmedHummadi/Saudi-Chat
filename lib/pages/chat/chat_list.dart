@@ -72,6 +72,7 @@ class _ChatListState extends State<ChatList> {
                       children: [
                         Row(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
                             children: widgetsList),
                         GestureDetector(
@@ -339,10 +340,10 @@ class _BuildHomeItem extends StatelessWidget {
                       ),
                       SizedBox(
                         width: kContainerRadius,
-                        height: 16,
                         child: Center(
                           child: Text(
                             data.nadiName!,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)

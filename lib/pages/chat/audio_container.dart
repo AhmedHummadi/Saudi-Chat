@@ -219,7 +219,7 @@ class _AudioContainerState extends State<AudioContainer>
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints.tight(const Size(240, 50)),
+        constraints: BoxConstraints.tight(const Size(240, 55)),
         child: Row(
           children: [
             SeekBarSlider(
@@ -236,7 +236,7 @@ class _AudioContainerState extends State<AudioContainer>
                     _audio.seek(duration);
                   });
                 },
-                timerColor: Colors.white),
+                timerColor: Colors.grey.shade400),
             GestureDetector(
               onTap: () {
                 if (_audio.playing) {
@@ -249,18 +249,21 @@ class _AudioContainerState extends State<AudioContainer>
                   }
                 }
               },
-              child: isInitialized == false
-                  ? const SpinKitRing(
-                      lineWidth: 3.5,
-                      color: Colors.white,
-                      size: 30,
-                    )
-                  : AnimatedIcon(
-                      icon: AnimatedIcons.play_pause,
-                      size: 34,
-                      progress: _animationController,
-                      color: Colors.white,
-                    ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                child: isInitialized == false
+                    ? SpinKitRing(
+                        lineWidth: 3.5,
+                        color: Colors.grey.shade500,
+                        size: 30,
+                      )
+                    : AnimatedIcon(
+                        icon: AnimatedIcons.play_pause,
+                        size: 34,
+                        progress: _animationController,
+                        color: Colors.grey[500],
+                      ),
+              ),
             ),
           ],
         ));
@@ -302,9 +305,9 @@ class _SeekBarSliderState extends State<SeekBarSlider> {
           ConstrainedBox(
             constraints: BoxConstraints.loose(const Size(180, 20)),
             child: Slider(
-              thumbColor: Colors.white,
-              inactiveColor: Colors.white.withOpacity(0.5),
-              activeColor: Colors.white,
+              thumbColor: Colors.grey[600],
+              inactiveColor: Colors.grey.shade400.withOpacity(0.5),
+              activeColor: Colors.grey[400],
               min: 0.0,
               max: widget.total!.inMilliseconds.toDouble() + 1,
               onChanged: (duration) {

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/wrapper.dart';
 import 'package:saudi_chat/services/auth.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
                   secondaryContainer: Color(0xffE2FEC6),
                   surface: Color(0xff26A69A),
                   surfaceVariant: Color.fromARGB(255, 207, 230, 228),
-                  background: Color(0xffF5F5F5),
+                  background: Color(0xffFBFBFB),
                   onSurfaceVariant: Color.fromARGB(255, 231, 231, 231),
                   error: Color(0xffEF5350),
                   onPrimary: Color(0xffffffff),

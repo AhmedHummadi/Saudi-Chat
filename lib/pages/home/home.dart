@@ -81,34 +81,7 @@ class _HomeState extends State<Home> {
                           : _pages)
                   .map((e) => SingleChildScrollView(
                         child: Column(
-                          children: [
-                            AppBar(
-                              title: Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                child: Text(_currentIndex == 0
-                                    ? "Home"
-                                    : _currentIndex == 1
-                                        ? "Chat"
-                                        : _currentIndex == 2
-                                            ? "Groups"
-                                            : "Control Panel"),
-                              ),
-                              actions: [
-                                Padding(
-                                  padding: const EdgeInsets.all(14.0),
-                                  child: GestureDetector(
-                                    onTap: () => toggleSearch(),
-                                    child: const Icon(
-                                      Icons.search_rounded,
-                                      color: Colors.white,
-                                      size: 23,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            e
-                          ],
+                          children: [AppBar(), e],
                         ),
                       ))
                   .toList(),
@@ -194,10 +167,51 @@ class _HomeState extends State<Home> {
               ),
               InkWell(
                 splashColor: Colors.grey[100],
-                onTap: () async {
-                  Navigator.pop(context);
-                  await AuthService().signOut();
-                },
+                onTap: () async => await onProfileTapped(),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.person,
+                          color: Theme.of(context).colorScheme.onBackground),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        "Profile",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.onBackground),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                splashColor: Colors.grey[100],
+                onTap: () async => await onSettingsTapped(),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.settings_rounded,
+                          color: Theme.of(context).colorScheme.onBackground),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        "Settings",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.onBackground),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                splashColor: Colors.grey[100],
+                onTap: () async => await onSignoutTapped(),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
                   child: Row(
@@ -216,13 +230,21 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
+  Future<void> onSignoutTapped() async {
+    Navigator.pop(context);
+    await AuthService().signOut();
+  }
+
+  Future<void> onSettingsTapped() async {}
+  Future<void> onProfileTapped() async {}
 }
 
 class GroupsPage extends StatelessWidget {
