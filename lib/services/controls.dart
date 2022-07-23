@@ -11,13 +11,17 @@ class ControlsService {
       DocumentSnapshot nadiDoc =
           await (details["nadiDoc"] as DocumentReference).get();
 
-      List newsData = nadiDoc.get("news");
+      CollectionReference newsCollection = nadiDoc.reference.collection("News");
 
-      // then add what we want to it
-      newsData.add(details);
-
-      // then update the existing list in the document with the updated list
-      await nadiDoc.reference.update({"news": newsData});
+      await newsCollection.doc().set({
+        "dateCreated": details["dateCreated"],
+        "imageUrl": details["imageUrl"],
+        "created_by": details["created_by"],
+        "nadi": details["nadi"],
+        "nadiDoc": details["nadiDoc"],
+        "description": details["description"],
+        "title": details["title"],
+      });
     } catch (e) {
       rethrow;
     }

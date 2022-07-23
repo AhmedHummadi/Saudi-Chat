@@ -21,10 +21,25 @@ class NewsDetailsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(DateFormat.yMMMd()
-                        .format(news.dateCreated!.toDate())
-                        .toString() +
-                    ", ${DateFormat.jm().format(news.dateCreated!.toDate()).toString()}"),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat.yMMMd()
+                              .format(news.dateCreated!.toDate())
+                              .toString() +
+                          ", ${DateFormat.jm().format(news.dateCreated!.toDate()).toString()}",
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "Created by: " + news.created_by!,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                    ),
+                  ],
+                ),
                 Row(
                   children: [
                     Text(
@@ -121,7 +136,7 @@ class NewsDetailsPage extends StatelessWidget {
                   ? TextDirection.rtl
                   : TextDirection.ltr,
               style: TextStyle(color: Colors.grey[800], fontSize: 20),
-            )
+            ),
           ],
         ),
       ),

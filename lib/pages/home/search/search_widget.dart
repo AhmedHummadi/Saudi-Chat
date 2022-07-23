@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:saudi_chat/models/location.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/services/chat.dart';
@@ -26,7 +27,7 @@ class _SearchNadisState extends State<SearchNadis> {
       StreamController();
 
   bool searching = false;
-  List<String> filterCatagories = filters.isNotEmpty
+  List<String> filterCatxagories = filters.isNotEmpty
       ? filters.entries
           .firstWhere((element) => element.key == "catagories")
           .value as List<String>
@@ -224,22 +225,32 @@ class _SearchNadisState extends State<SearchNadis> {
       Navigator.pushNamed(context, "/login");
     } else {
       // first we check if the selected group is already opened by the user
+
       bool isChatboxOpen = await MessageDatabase().checkIfChatboxIsOpen(
           groupId: search.id, userGroups: userDoc.get("groups"));
       if (!isChatboxOpen) {
         // if no we add the user to the group
-        DocumentReference groupDocument =
-            await DataBaseService().addUserToNadiGroup(streamedUser, search.id);
-        // then we push the user to the chat screen of the group
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatPage(
-              streamedUser: streamedUser,
-              groupDocument: groupDocument,
-              bussinessDoc: search.reference);
-        }));
-        widget.onPop();
+
+        if ((search.get("blockedUsers") as List).contains(streamedUser.uid)) {
+          widget.onPop();
+          Fluttertoast.showToast(msg: "You are blocked from this group");
+          return;
+        } else {
+          DocumentReference groupDocument = await DataBaseService()
+              .addUserToNadiGroup(streamedUser, search.id);
+          // then we push the user to the chat screen of the group
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ChatPage(
+                streamedUser: streamedUser,
+                groupDocument: groupDocument,
+                bussinessDoc: search.reference);
+          }));
+          widget.onPop();
+        }
       } else {
         // if yes then we simply push the user to the chat screen of the group
+
         DocumentReference documentReference =
             MessageDatabase().messagesCollection.doc(search.id);
         Navigator.push(context, MaterialPageRoute(builder: (context) {

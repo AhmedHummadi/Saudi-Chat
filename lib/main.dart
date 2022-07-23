@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/wrapper.dart';
 import 'package:saudi_chat/services/auth.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

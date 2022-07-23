@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saudi_chat/models/news_form.dart';
 import 'package:saudi_chat/models/user.dart';
+import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/pages/news/news_details_page.dart';
 import 'package:saudi_chat/shared/widgets.dart';
 
@@ -60,11 +61,11 @@ class _NewsListState extends State<NewsList> {
 
     // get the news from each nadi and then add them to the news list
     for (var nadi in nadis) {
-      final Map data = await nadi.get().then((value) => value.data() as Map);
-      final List nadiNews = data["news"];
+      final QuerySnapshot newsCollection = await nadi.collection("News").get();
 
-      final List<NewsForm> finalNews =
-          nadiNews.map((nadiNew) => NewsForm.parse(nadiNew)).toList();
+      final List<NewsForm> finalNews = newsCollection.docs
+          .map((newsDoc) => NewsForm.parse(newsDoc.data() as Map))
+          .toList();
 
       _news.addAll(finalNews);
     }
@@ -230,17 +231,21 @@ class NewsCard extends StatelessWidget {
                       width: Size.infinite.width,
                       child: Text(
                         news.title!,
-                        textAlign: news.title!.contains("ل") ||
-                                news.title!.contains("ب") ||
-                                news.title!.contains("ت") ||
-                                news.title!.contains("د")
+                        textAlign: news.title!.characters.any((element) =>
+                                arabicLetters.any(
+                                    (arabicLetter) => arabicLetter == element))
                             ? TextAlign.right
                             : TextAlign.left,
+                        textDirection: news.title!.toString().characters.any(
+                                (element) => arabicLetters.any(
+                                    (arabicLetter) => arabicLetter == element))
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
                         style: TextStyle(
                             fontSize: 22,
                             color:
                                 Theme.of(context).brightness == Brightness.light
-                                    ? Colors.grey[900]
+                                    ? Colors.grey[800]
                                     : Colors.white),
                       ),
                     ),
@@ -260,7 +265,7 @@ class NewsCard extends StatelessWidget {
                             width: MediaQuery.of(context).size.width - 40,
                             imageUrl: news.imageUrl!,
                             filterQuality: FilterQuality.low,
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
                               color: Colors.grey[300],
                               child: const Center(
@@ -318,116 +323,127 @@ class NewsCardPreview extends StatelessWidget {
                 ?
                 // more than an hour ago
                 "${differenceDatetime.inHours} hours ago"
-                : differenceDatetime.inMinutes == 0
-                    ? "now"
-                    :
-                    // less than an hour ago
-                    "${differenceDatetime.inMinutes} minutes ago";
+                :
+                // less than an hour ago
+                "${differenceDatetime.inMinutes} minutes ago";
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        elevation: 2,
-        color: Theme.of(context).colorScheme.surface,
+    return Column(children: [
+      const SizedBox(
+        height: 10,
+      ),
+      Center(
         child: SizedBox(
-          width: MediaQuery.of(context).size.width - 20,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            news.title!.isEmpty ? "Preview" : news.title!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 22),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            news.description!.isEmpty
-                                ? "This is what your post should look like"
-                                : news.description!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+          width: MediaQuery.of(context).size.width -
+              (MediaQuery.of(context).size.width / 20),
+          height: MediaQuery.of(context).size.height / 2.2 + 4,
+          child: Card(
+            elevation: 2,
+            color: Theme.of(context).brightness == Brightness.light
+                ? const Color(0xffECF0F0)
+                : Colors.grey[800],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                        child: Text(
+                            // this algorithm will see if the date created is more than 24 hours ago
+                            // if yes it will show either "Yesterday" or "* Days ago"
+
+                            dateCreated(),
                             style: TextStyle(
-                                color: Colors.grey[300], fontSize: 13),
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.grey[800]
+                                  : Colors.white,
+                            )),
+                      ),
+                      Row(
+                        children: [
+                          Text(news.nadi!.nadiName!),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          CircleAvatar(
+                            radius:
+                                (MediaQuery.of(context).size.height / 2.2) / 16,
+                            backgroundImage: Image.asset(
+                              "assets/new_nadi_profile_pic.jpg",
+                            ).image,
                           ),
                         ],
                       ),
-                    ),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundImage: Image.asset(
-                        "assets/new_nadi_profile_pic.jpg",
-                      ).image,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    ],
                   ),
-                  height: 200,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: news.previewImageP == null
-                        ? Container(
-                            color: Colors.white.withOpacity(0.8),
-                            child: const Center(
-                              child: Icon(
-                                Icons.image,
-                                size: 30,
-                              ),
-                            ),
-                          )
-                        : Image(
-                            image: news.previewImageP!,
-                            width: MediaQuery.of(context).size.width - 40,
-                            fit: BoxFit.fitWidth,
-                          ),
+                  const SizedBox(
+                    height: 4,
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        // this algorithm will see if the date created is more than 24 hours ago
-                        // if yes it will show either "Yesterday" or "* Days ago"
-                        dateCreated(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                        )),
-                    const Text(
-                      "Show Details",
+                  SizedBox(
+                    width: Size.infinite.width,
+                    child: Text(
+                      news.title == null || news.title.toString().isEmpty
+                          ? "Preview"
+                          : news.title!,
+                      textAlign: news.title!.characters.any((element) =>
+                              arabicLetters.any(
+                                  (arabicLetter) => arabicLetter == element))
+                          ? TextAlign.right
+                          : TextAlign.left,
+                      textDirection: news.title!.toString().characters.any(
+                              (element) => arabicLetters.any(
+                                  (arabicLetter) => arabicLetter == element))
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
                       style: TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.underline),
-                    )
-                  ],
-                )
-              ],
+                          fontSize: 22,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.grey[800]
+                                  : Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: (MediaQuery.of(context).size.height / 2.2) - 126,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: news.previewImageP == null
+                              ? Container(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.image,
+                                      size: 45,
+                                      color: Colors.grey[200],
+                                    ),
+                                  ),
+                                )
+                              : Image(image: news.previewImageP!)),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      )
+    ]);
   }
 }

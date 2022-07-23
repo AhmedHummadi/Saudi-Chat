@@ -178,7 +178,7 @@ class ModeratorPanelPage extends StatelessWidget {
         demoteUser: true,
         assignAdmin: true,
         assignModerator: true,
-        postNews: false);
+        postNews: true);
   }
 }
 

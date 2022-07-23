@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -705,10 +706,53 @@ class MessageItem extends StatelessWidget {
                     messagePadding().top == 16,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: Text(
-                    elementCheck ? "" : userNames[i],
-                    textAlign:
-                        elementCheck ? myTextAlignment : theirTextAlignment,
+                  child: InkWell(
+                    splashColor: Colors.grey.shade300.withOpacity(0.6),
+                    highlightColor: Colors.grey.shade300.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () {
+                      List items = streamedUser.userClass == UserClass.admin ||
+                              streamedUser.userClass == UserClass.coAdmin ||
+                              streamedUser.userClass == UserClass.moderator
+                          ? ["Block user"]
+                          : [];
+                      showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.background,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: items
+                                    .map((e) => InkWell(
+                                          child: SizedBox(
+                                            height: 56,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2.2,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      12, 18, 0, 0),
+                                              child: Text(
+                                                e.toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6,
+                                              ),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                              )));
+                    },
+                    child: Text(
+                      elementCheck ? "" : userNames[i],
+                      textAlign:
+                          elementCheck ? myTextAlignment : theirTextAlignment,
+                    ),
                   ),
                 ),
               ),
@@ -741,7 +785,9 @@ class MessageItem extends StatelessWidget {
                               ? Stack(
                                   alignment: elementCheck
                                       ? Alignment.bottomRight
-                                      : Alignment.bottomLeft,
+                                      : isAudio
+                                          ? Alignment.bottomRight
+                                          : Alignment.bottomLeft,
                                   children: [
                                     Text(
                                       DateFormat.jm().format(times[i].toDate()),

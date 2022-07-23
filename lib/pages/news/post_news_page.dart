@@ -43,16 +43,16 @@ class _AddNewsPageState extends State<AddNewsPage> {
         SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))),
-                  child: Form(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: Column(
+                children: [
+                  Form(
                     key: _formKey,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -70,14 +70,18 @@ class _AddNewsPageState extends State<AddNewsPage> {
                             ),
                             Visibility(
                               visible:
-                                  widget.streamedUser.groupsAdmin.length > 1,
+                                  widget.streamedUser.groupsAdmin.length > 1 ||
+                                      widget.streamedUser.userClass ==
+                                          UserClass.moderator,
                               child: const SizedBox(
                                 height: 10,
                               ),
                             ),
                             Visibility(
                               visible:
-                                  widget.streamedUser.groupsAdmin.length > 1,
+                                  widget.streamedUser.groupsAdmin.length > 1 ||
+                                      widget.streamedUser.userClass ==
+                                          UserClass.moderator,
                               child: FutureBuilder(
                                   future: getGroupsAdminNames(),
                                   builder: (context, snapshot) {
@@ -90,7 +94,9 @@ class _AddNewsPageState extends State<AddNewsPage> {
                             ),
                             Visibility(
                               visible:
-                                  widget.streamedUser.groupsAdmin.length > 1,
+                                  widget.streamedUser.groupsAdmin.length > 1 ||
+                                      widget.streamedUser.userClass ==
+                                          UserClass.moderator,
                               child: const SizedBox(
                                 height: 16,
                               ),
@@ -133,38 +139,42 @@ class _AddNewsPageState extends State<AddNewsPage> {
                           ]),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: NewsCardPreview(
-                      news: NewsForm(
-                          dateCreated: Timestamp.fromDate(DateTime.now()),
-                          title: postTitle,
-                          description: postDescription,
-                          nadiDoc: DataBaseService()
-                              .nadiCollection
-                              .doc("vLBRRym1i3MoZHa65FBm"),
-                          nadi: NadiData(
-                              email: "gg@gmail.com",
-                              nadiName: "Sydney Nadi",
-                              phoneNum: "+61423010463",
-                              location: "Sydney",
-                              id: "vLBRRym1i3MoZHa65FBm"),
-                          previewImageP:
-                              postImage != null ? postImage!.image : null)),
-                ),
-                SizedBox(
-                  height: postTitle!.isNotEmpty &&
-                          postImage != null &&
-                          postDescription!.isNotEmpty
-                      ? 90
-                      : 15,
-                )
-              ],
+                  FutureBuilder<QuerySnapshot>(
+                    future: DataBaseService()
+                        .nadiCollection
+                        .where("name", isEqualTo: groupName.toString())
+                        .get(),
+                    builder: (context, snapshot) => NewsCardPreview(
+                        news: NewsForm(
+                            dateCreated: Timestamp.fromDate(DateTime.now()),
+                            title: postTitle,
+                            description: postDescription,
+                            nadiDoc: snapshot.hasData &&
+                                    snapshot.data!.docs.isNotEmpty
+                                ? snapshot.data!.docs.single.reference
+                                : null,
+                            nadi: snapshot.hasData &&
+                                    snapshot.data!.docs.isNotEmpty
+                                ? NadiData.parse(
+                                    snapshot.data!.docs.single.data() as Map)
+                                : NadiData(
+                                    email: "gg@gmail.com",
+                                    nadiName: "name",
+                                    phoneNum: "+61423010463",
+                                    location: "Sydney",
+                                    id: "vLBRRym1i3MoZHa65FBm"),
+                            previewImageP:
+                                postImage != null ? postImage!.image : null)),
+                  ),
+                  SizedBox(
+                    height: postTitle!.isNotEmpty &&
+                            postImage != null &&
+                            postDescription!.isNotEmpty
+                        ? 90
+                        : 15,
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -256,11 +266,28 @@ class _AddNewsPageState extends State<AddNewsPage> {
   Future<List<String>> getGroupsAdminNames() async {
     // ignore: avoid_single_cascade_in_expression_statements
     List<String> names = [];
-    List groups = widget.streamedUser.groupsAdmin;
+
+    if (widget.streamedUser.userClass == UserClass.moderator) {
+      Future<String> getGroupName(DocumentSnapshot snapshot) async {
+        return snapshot.get("name");
+      }
+
+      List<DocumentSnapshot> groups =
+          (await DataBaseService().nadiCollection.get()).docs;
+
+      for (var item in groups) {
+        names.add(await getGroupName(item));
+      }
+      print(names);
+      return names;
+    }
+
     Future<String> getGroupName(DocumentReference ref) async {
       var snapshot = await ref.get();
       return snapshot.get("nadi_data")["name"];
     }
+
+    List groups = widget.streamedUser.groupsAdmin;
 
     for (var item in groups) {
       names.add(await getGroupName(item));
@@ -273,6 +300,45 @@ class _AddNewsPageState extends State<AddNewsPage> {
       // upload the image into firebase storage and get the url then
       // gather all the details into a map and add them
       // to the news list in the nadis document
+
+      // if the user is a moderator then give him accesss to all the nadis
+      // and post news to whichever nadi it wants
+      if (streamedUser.userClass == UserClass.moderator) {
+        DocumentReference groupDoc = DataBaseService().messagesCollection.doc(
+            (await DataBaseService()
+                    .nadiCollection
+                    .where("name", isEqualTo: groupName)
+                    .get())
+                .docs
+                .single
+                .id);
+
+        // upload the image first then get the url
+        String url = await FireStorage()
+            .uploadImageForNews(File(postImagePath!), groupDoc);
+
+        // parse the nadi doc into a map for the details
+
+        DocumentReference nadiDoc =
+            DataBaseService().nadiCollection.doc(groupDoc.id);
+
+        Map nadiData = (await nadiDoc.get()).data() as Map;
+
+        // convert the details into a map then upload it to firestore
+        Map details = {
+          "dateCreated": Timestamp.now(),
+          "imageUrl": url,
+          "created_by": streamedUser.displayName,
+          "nadi": nadiData,
+          "nadiDoc": nadiDoc,
+          "description": postDescription,
+          "title": postTitle
+        };
+
+        await ControlsService().postNews(details);
+        return;
+      }
+
       if (streamedUser.groupsAdmin!.length > 1) {
         List<DocumentSnapshot> groups = [];
         for (var groupDoc in streamedUser.groupsAdmin!) {
@@ -294,8 +360,6 @@ class _AddNewsPageState extends State<AddNewsPage> {
             DataBaseService().nadiCollection.doc(groupDoc.id);
 
         Map nadiData = (await nadiDoc.get()).data() as Map;
-
-        nadiData.remove("news");
 
         // convert the details into a map then upload it to firestore
         Map details = {
@@ -322,13 +386,12 @@ class _AddNewsPageState extends State<AddNewsPage> {
 
         Map nadiData = (await nadiDoc.get()).data() as Map;
 
-        nadiData.remove("news");
-
         // convert the details into a map then upload it to firestore
         Map details = {
           "dateCreated": Timestamp.now(),
           "imageUrl": url,
           "nadi": nadiData,
+          "created_by": streamedUser.displayName,
           "nadiDoc": nadiDoc,
           "description": postDescription,
           "title": postTitle
@@ -338,7 +401,8 @@ class _AddNewsPageState extends State<AddNewsPage> {
         return;
       }
     } catch (e) {
-      rethrow;
+      print(e);
+      Fluttertoast.showToast(msg: "an unknown error has occured");
     }
   }
 
@@ -452,6 +516,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
     return MyTextField(
         formKey: _formKey,
         maxLines: 2,
+        cursorColor: Colors.grey[500],
         hintText: "Title...",
         hintTextStyle: const TextStyle(color: Colors.grey),
         backgroundColor: Colors.white.withOpacity(0.8),
@@ -477,6 +542,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
     return MyTextField(
         formKey: _formKey,
         maxLines: 8,
+        cursorColor: Colors.grey[500],
         hintText: "Description...",
         hintTextStyle: const TextStyle(color: Colors.grey),
         backgroundColor: Colors.white.withOpacity(0.8),

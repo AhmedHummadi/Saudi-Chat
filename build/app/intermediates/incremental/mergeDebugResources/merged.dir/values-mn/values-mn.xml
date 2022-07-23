@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
+    <string-array name="exo_controls_playback_speeds">
+    <item>0.25x</item>
+    <item>0.5x</item>
+    <item>0.75x</item>
+    <item>Энгийн</item>
+    <item>1.25x</item>
+    <item>1.5x</item>
+    <item>2x</item>
+  </string-array>
     <plurals name="exo_controls_fastforward_by_amount_description">
     <item quantity="one">%d секундээр хурдан урагшлуулах</item>
     <item quantity="other">%d секундээр хурдан урагшлуулах</item>
@@ -8,25 +17,26 @@
     <item quantity="one">%d секунд ухраах</item>
     <item quantity="other">%d секунд ухраах</item>
   </plurals>
-    <string msgid="8585111718777012708" name="common_google_play_services_enable_button">"Идэвхжүүлэх"</string>
-    <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> нь Google Play үйлчилгээг идэвхжүүлэх хүртэл ажиллахгүй."</string>
-    <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"Google Play үйлчилгээг идэвхжүүлэх"</string>
-    <string msgid="9115728400623041681" name="common_google_play_services_install_button">"Суулгах"</string>
-    <string msgid="8179894293032530091" name="common_google_play_services_install_text">"Таны төхөөрөмжид Google Play үйлчилгээ байхгүй тул <ns1:g id="APP_NAME">%1$s</ns1:g> ажиллахгүй."</string>
-    <string msgid="7442193194585196676" name="common_google_play_services_install_title">"Google Play үйлчилгээг авах"</string>
-    <string msgid="4293541511340436975" name="common_google_play_services_notification_channel_name">"Google Play-н үйлчилгээнүүдийн боломжит байдал"</string>
-    <string msgid="180394615667698242" name="common_google_play_services_notification_ticker">"Google Наадаан үйлчилгээний алдаа"</string>
+    <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Идэвхжүүлэх</string>
+    <string msgid="227660514972886228" name="common_google_play_services_enable_text">%1$s нь Google Play үйлчилгээг идэвхжүүлэх хүртэл ажиллахгүй.</string>
+    <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Google Play үйлчилгээг идэвхжүүлэх</string>
+    <string msgid="7153882981874058840" name="common_google_play_services_install_button">Суулгах</string>
+    <string name="common_google_play_services_install_text">Таны төхөөрөмжид Google Play үйлчилгээ байхгүй тул %1$s ажиллахгүй.</string>
+    <string msgid="7215213145546190223" name="common_google_play_services_install_title">Google Play үйлчилгээг авах</string>
+    <string name="common_google_play_services_notification_channel_name">Google Play-н үйлчилгээнүүдийн боломжит байдал</string>
+    <string name="common_google_play_services_notification_ticker">Google Наадаан үйлчилгээний алдаа</string>
     <string name="common_google_play_services_unknown_issue">%1$s-г Google Play-н үйлчилгээгээр ашиглахад асуудал гарлаа. Дахин оролдоно уу.</string>
-    <string msgid="5501187292256987189" name="common_google_play_services_unsupported_text">"Таны төхөөрөмж Google Play үйлчилгээг дэмждэггүй учир <ns1:g id="APP_NAME">%1$s</ns1:g> ажиллахгүй."</string>
-    <string msgid="8172070149091615356" name="common_google_play_services_update_button">"Шинэчлэх"</string>
-    <string msgid="7773943415006962566" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> нь таныг Google Play үйлчилгээнүүдийг шинэчлэхээс нааш ажиллахгүй."</string>
-    <string msgid="8706675115216073244" name="common_google_play_services_update_title">"Google Play үйлчилгээг шинэчлэх"</string>
-    <string msgid="7894275749778928941" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> нь одоогоор шинэчилж буй Google Play үйлчилгээгүйгээр ажиллахгүй."</string>
-    <string msgid="2804989272736383918" name="common_google_play_services_wear_update_text">"Google Play үйлчилгээний шинэ хувилбар хэрэгтэй. Энэ нь удахгүй өөрөө өөрийгөө шинэчлэх болно."</string>
-    <string msgid="5201977337835724196" name="common_open_on_phone">"Утсаар нээх"</string>
-    <string msgid="3441753203274453993" name="common_signin_button_text">"Нэвтрэх"</string>
-    <string msgid="669893613918351210" name="common_signin_button_text_long">"Google-р нэвтрэх:"</string>
-    <string msgid="6743534657295236036" name="default_notification_channel_name">"Now playing"</string>
+    <string name="common_google_play_services_unsupported_text">Таны төхөөрөмж Google Play үйлчилгээг дэмждэггүй учир %1$s ажиллахгүй.</string>
+    <string msgid="6556509956452265614" name="common_google_play_services_update_button">Шинэчлэх</string>
+    <string msgid="9053896323427875356" name="common_google_play_services_update_text">%1$s нь таныг Google Play үйлчилгээнүүдийг шинэчлэхээс нааш ажиллахгүй.</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">Google Play үйлчилгээг шинэчлэх</string>
+    <string name="common_google_play_services_updating_text">%1$s нь одоогоор шинэчилж буй Google Play үйлчилгээгүйгээр ажиллахгүй.</string>
+    <string name="common_google_play_services_wear_update_text">Google Play үйлчилгээний шинэ хувилбар хэрэгтэй. Энэ нь удахгүй өөрөө өөрийгөө шинэчлэх болно.</string>
+    <string name="common_open_on_phone">Утсаар нээх</string>
+    <string name="common_signin_button_text">Нэвтрэх</string>
+    <string name="common_signin_button_text_long">Google-р нэвтрэх:</string>
+    <string msgid="3260749812566568062" name="copy_toast_msg">"Холбоосыг түр санах ойд хуулсан"</string>
+    <string msgid="7213672915724563695" name="default_notification_channel_name">"Одоо тоглуулж байна"</string>
     <string name="exo_controls_cc_disabled_description">Хадмалыг идэвхжүүлэх</string>
     <string name="exo_controls_cc_enabled_description">Хадмалыг идэвхгүй болгох</string>
     <string name="exo_controls_fastforward_description">Хурдан урагшлуулах</string>
@@ -39,7 +49,6 @@
     <string name="exo_controls_pause_description">Түр зогсоох</string>
     <string name="exo_controls_play_description">Тоглуулах</string>
     <string name="exo_controls_playback_speed">Хурд</string>
-    <string name="exo_controls_playback_speed_normal">Хэвийн</string>
     <string name="exo_controls_previous_description">Өмнөх</string>
     <string name="exo_controls_repeat_all_description">Бүгдийг нь дахин тоглуулах</string>
     <string name="exo_controls_repeat_off_description">Алийг нь ч дахин тоглуулахгүй</string>
@@ -57,6 +66,9 @@
     <string name="exo_download_downloading">Татаж байна</string>
     <string name="exo_download_failed">Татаж чадсангүй</string>
     <string name="exo_download_notification_channel_name">Татaлт</string>
+    <string name="exo_download_paused">Таталтуудыг түр зогсоосон</string>
+    <string name="exo_download_paused_for_network">Таталтууд сүлжээг хүлээж байна</string>
+    <string name="exo_download_paused_for_wifi">Таталтууд Wi-Fi-г хүлээж байна</string>
     <string name="exo_download_removing">Татаж авсан файлыг хасаж байна</string>
     <string name="exo_item_list">%1$s, %2$s</string>
     <string name="exo_media_action_repeat_all_description">Бүгдийг нь дахин тоглуулах</string>
@@ -79,9 +91,12 @@
     <string name="exo_track_surround_5_point_1">5.1 орчин тойрны дуу</string>
     <string name="exo_track_surround_7_point_1">7.1 орчин тойрны дуу</string>
     <string name="exo_track_unknown">Үл мэдэгдэх</string>
-    <string msgid="4221330012095125431" name="pause_button_content_description">"Түр зогсоох"</string>
-    <string msgid="6034272287948142298" name="play_button_content_description">"Тоглох"</string>
-    <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"Дараагийн зүйл рүү очих"</string>
-    <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"Өмнөх зүйл рүү очих"</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Холбоосыг хуулах"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Хөтчид нээх"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Холбоосыг хуваалцах"</string>
+    <string msgid="3510124037191104584" name="pause_button_content_description">"Түр зогсоох"</string>
+    <string msgid="963503759453979404" name="play_button_content_description">"Тоглуулах"</string>
+    <string msgid="6034072145387511457" name="skip_to_next_item_button_content_description">"Дараагийн зүйл рүү алгасах"</string>
+    <string msgid="4352480799561670760" name="skip_to_previous_item_button_content_description">"Өмнөх зүйл рүү алгасах"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

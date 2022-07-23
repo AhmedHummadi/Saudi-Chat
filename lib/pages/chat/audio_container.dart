@@ -45,7 +45,7 @@ class _AudioContainerState extends State<AudioContainer>
         } else {
           isInitialized = false;
         }
-        // get the video form firebase storage
+        // get the video from firebase storage
         final response = await get(Uri.parse(widget.audioUrl));
 
         // create the cache directory in which the video
@@ -250,7 +250,7 @@ class _AudioContainerState extends State<AudioContainer>
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
                 child: isInitialized == false
                     ? SpinKitRing(
                         lineWidth: 3.5,
@@ -259,7 +259,7 @@ class _AudioContainerState extends State<AudioContainer>
                       )
                     : AnimatedIcon(
                         icon: AnimatedIcons.play_pause,
-                        size: 34,
+                        size: 36,
                         progress: _animationController,
                         color: Colors.grey[500],
                       ),

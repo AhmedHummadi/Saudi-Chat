@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
+    <string-array name="exo_controls_playback_speeds">
+    <item>أسرع بـ 0.25 مرة</item>
+    <item>أسرع بـ 0.5 مرات</item>
+    <item>أسرع بـ 0.75 مرة</item>
+    <item>عادية</item>
+    <item>أسرع بـ 1.25 مرة</item>
+    <item>أسرع بـ 1.5 مرة</item>
+    <item>أسرع بمرتين</item>
+  </string-array>
     <plurals name="exo_controls_fastforward_by_amount_description">
     <item quantity="zero">تقديم سريع للفيديو بمقدار %d ثانية</item>
     <item quantity="one">تقديم سريع للفيديو بمقدار ثانية واحدة (%d)</item>
@@ -16,25 +25,26 @@
     <item quantity="many">ترجيع الفيديو بمقدار %d ثانية</item>
     <item quantity="other">ترجيع الفيديو بمقدار %d ثانية</item>
   </plurals>
-    <string msgid="8585111718777012708" name="common_google_play_services_enable_button">"تفعيل"</string>
-    <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"‏لن يعمل <ns1:g id="APP_NAME">%1$s</ns1:g> ما لم يتم تفعيل خدمات Google Play."</string>
-    <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"‏تفعيل خدمات Google Play"</string>
-    <string msgid="9115728400623041681" name="common_google_play_services_install_button">"تثبيت"</string>
-    <string msgid="8179894293032530091" name="common_google_play_services_install_text">"‏لن يتم تشغيل <ns1:g id="APP_NAME">%1$s</ns1:g> بدون خدمات Google Play، والتي لا تتوفر على جهازك."</string>
-    <string msgid="7442193194585196676" name="common_google_play_services_install_title">"‏الحصول على خدمات Google Play"</string>
-    <string msgid="4293541511340436975" name="common_google_play_services_notification_channel_name">"‏مدى توفّر خدمات Google Play"</string>
-    <string msgid="180394615667698242" name="common_google_play_services_notification_ticker">"‏خطأ في خدمات Google Play"</string>
+    <string msgid="2523291102206661146" name="common_google_play_services_enable_button">تفعيل</string>
+    <string msgid="227660514972886228" name="common_google_play_services_enable_text">‏لن يعمل %1$s ما لم يتم تفعيل خدمات Google Play.</string>
+    <string msgid="5122002158466380389" name="common_google_play_services_enable_title">‏تفعيل خدمات Google Play</string>
+    <string msgid="7153882981874058840" name="common_google_play_services_install_button">تثبيت</string>
+    <string name="common_google_play_services_install_text">‏لن يتم تشغيل %1$s بدون خدمات Google Play، والتي لا تتوفر على جهازك.</string>
+    <string msgid="7215213145546190223" name="common_google_play_services_install_title">‏الحصول على خدمات Google Play</string>
+    <string name="common_google_play_services_notification_channel_name">‏مدى توفّر خدمات Google Play</string>
+    <string name="common_google_play_services_notification_ticker">‏خطأ في خدمات Google Play</string>
     <string name="common_google_play_services_unknown_issue">‏لدى %1$s مشكلة في خدمات Google Play. يُرجى إعادة المحاولة.</string>
-    <string msgid="5501187292256987189" name="common_google_play_services_unsupported_text">"‏لن يتم تشغيل <ns1:g id="APP_NAME">%1$s</ns1:g> بدون خدمات Google Play التي لا يوفرها جهازك."</string>
-    <string msgid="8172070149091615356" name="common_google_play_services_update_button">"تحديث"</string>
-    <string msgid="7773943415006962566" name="common_google_play_services_update_text">"‏لن يتم تشغيل <ns1:g id="APP_NAME">%1$s</ns1:g> ما لم يتم تحديث خدمات Google Play."</string>
-    <string msgid="8706675115216073244" name="common_google_play_services_update_title">"‏تحديث خدمات Google Play"</string>
-    <string msgid="7894275749778928941" name="common_google_play_services_updating_text">"‏لن يتم تشغيل <ns1:g id="APP_NAME">%1$s</ns1:g> بدون خدمات Google Play، والتي يتم تحديثها حاليًا."</string>
-    <string msgid="2804989272736383918" name="common_google_play_services_wear_update_text">"‏يجب توفر إصدار جديد من خدمات Google Play. سيتم تحديثها تلقائيًا قريبًا."</string>
-    <string msgid="5201977337835724196" name="common_open_on_phone">"فتح على الهاتف"</string>
-    <string msgid="3441753203274453993" name="common_signin_button_text">"تسجل الدخول"</string>
-    <string msgid="669893613918351210" name="common_signin_button_text_long">"‏تسجيل الدخول عبر Google"</string>
-    <string msgid="6743534657295236036" name="default_notification_channel_name">"التشغيل الآن"</string>
+    <string name="common_google_play_services_unsupported_text">‏لن يتم تشغيل %1$s بدون خدمات Google Play التي لا يوفرها جهازك.</string>
+    <string msgid="6556509956452265614" name="common_google_play_services_update_button">تحديث</string>
+    <string msgid="9053896323427875356" name="common_google_play_services_update_text">‏لن يتم تشغيل %1$s ما لم يتم تحديث خدمات Google Play.</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">‏تحديث خدمات Google Play</string>
+    <string name="common_google_play_services_updating_text">‏لن يتم تشغيل %1$s بدون خدمات Google Play، والتي يتم تحديثها حاليًا.</string>
+    <string name="common_google_play_services_wear_update_text">‏يجب توفر إصدار جديد من خدمات Google Play. سيتم تحديثها تلقائيًا قريبًا.</string>
+    <string name="common_open_on_phone">فتح على الهاتف</string>
+    <string name="common_signin_button_text">تسجل الدخول</string>
+    <string name="common_signin_button_text_long">‏تسجيل الدخول عبر Google</string>
+    <string msgid="3260749812566568062" name="copy_toast_msg">"تم نسخ الرابط إلى الحافظة."</string>
+    <string msgid="7213672915724563695" name="default_notification_channel_name">"التعرف التلقائي على الوسائط"</string>
     <string name="exo_controls_cc_disabled_description">تفعيل الترجمة</string>
     <string name="exo_controls_cc_enabled_description">إيقاف الترجمة</string>
     <string name="exo_controls_fastforward_description">تقديم سريع</string>
@@ -47,7 +57,6 @@
     <string name="exo_controls_pause_description">إيقاف مؤقت</string>
     <string name="exo_controls_play_description">تشغيل</string>
     <string name="exo_controls_playback_speed">السرعة</string>
-    <string name="exo_controls_playback_speed_normal">عادية</string>
     <string name="exo_controls_previous_description">السابق</string>
     <string name="exo_controls_repeat_all_description">تكرار الكل</string>
     <string name="exo_controls_repeat_off_description">عدم التكرار</string>
@@ -65,6 +74,9 @@
     <string name="exo_download_downloading">جارٍ التنزيل.</string>
     <string name="exo_download_failed">تعذّر التنزيل</string>
     <string name="exo_download_notification_channel_name">عمليات التنزيل</string>
+    <string name="exo_download_paused">تمّ إيقاف عمليات التنزيل مؤقتًا.</string>
+    <string name="exo_download_paused_for_network">عمليات التنزيل في انتظار الاتصال بالشبكة</string>
+    <string name="exo_download_paused_for_wifi">عمليات التنزيل في انتظار اتصال Wi-Fi.</string>
     <string name="exo_download_removing">تجري إزالة المحتوى الذي تم تنزيله</string>
     <string name="exo_item_list">%1$s، %2$s</string>
     <string name="exo_media_action_repeat_all_description">تكرار الكل</string>
@@ -87,9 +99,12 @@
     <string name="exo_track_surround_5_point_1">صوت مجسّم 5.1</string>
     <string name="exo_track_surround_7_point_1">صوت مجسّم 7.1</string>
     <string name="exo_track_unknown">غير معروف</string>
-    <string msgid="4221330012095125431" name="pause_button_content_description">"إيقاف مؤقت"</string>
-    <string msgid="6034272287948142298" name="play_button_content_description">"تشغيل"</string>
-    <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"التخطي إلى العنصر التالي"</string>
-    <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"التخطي إلى العنصر السابق"</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"نسخ الرابط"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"فتح في المتصفح"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"مشاركة الرابط"</string>
+    <string msgid="3510124037191104584" name="pause_button_content_description">"إيقاف مؤقت"</string>
+    <string msgid="963503759453979404" name="play_button_content_description">"تشغيل"</string>
+    <string msgid="6034072145387511457" name="skip_to_next_item_button_content_description">"التخطي إلى العنصر التالي"</string>
+    <string msgid="4352480799561670760" name="skip_to_previous_item_button_content_description">"التخطي إلى العنصر السابق"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

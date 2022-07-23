@@ -7,6 +7,7 @@ class NadiData {
   late final String? location;
   late String? nadiName;
   late List? news;
+
   late String? phoneNum;
   late String? email;
 
@@ -35,12 +36,14 @@ class GroupData {
   late final List? time_of_messages;
   late final List? users_doc_references;
   late final List? users_name;
+  late List<DocumentReference>? blockedUsers;
   late final DocumentReference? reference;
 
   GroupData(
       {this.messages,
       this.nadiData,
       this.reference,
+      this.blockedUsers,
       this.time_of_messages,
       this.users_doc_references,
       this.users_name});
@@ -48,6 +51,7 @@ class GroupData {
   static GroupData parse(Map map) {
     return GroupData(
         messages: map["messages"],
+        blockedUsers: map["blockedUsers"],
         time_of_messages: map["time_of_messages"],
         users_doc_references: map["users_doc_reference"],
         users_name: map["users_name"],

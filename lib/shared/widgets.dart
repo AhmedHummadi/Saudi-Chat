@@ -19,6 +19,7 @@ class MyTextField extends StatelessWidget {
       this.maxLines,
       this.formKey,
       this.labelStyle,
+      this.cursorColor,
       this.focusedBorder,
       this.backgroundColor,
       this.maxLength,
@@ -40,6 +41,7 @@ class MyTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextStyle? hintTextStyle;
   final TextStyle? inputStyle;
+  final Color? cursorColor;
   final Function(String? val) onChangedVal;
   final GlobalKey<FormState>? formKey;
   final Function(String? val, String errorText) validateCondition;
@@ -51,6 +53,7 @@ class MyTextField extends StatelessWidget {
         obscureText: obscureText ?? false,
         maxLines: maxLines ?? 1,
         maxLength: maxLength,
+        cursorColor: cursorColor,
         style: inputStyle ?? const TextStyle(color: Colors.white),
         decoration: textInputDecoration.copyWith(
             hintText: hintText,
@@ -510,7 +513,7 @@ class _CSOMKickBanAMemberState extends State<CSOMKickBanAMember> {
 class CenterScreenOptionsMenuItem extends CSOM {
   final String text;
   CenterScreenOptionsMenuItem(
-      {required this.text, dynamic value, double? height})
+      {required this.text, required dynamic value, required double? height})
       : super(value: value, height: height);
 
   @override
