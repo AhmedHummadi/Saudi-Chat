@@ -1,4 +1,4 @@
-#Wed Jul 20 19:34:52 AEST 2022
+#Sat Jul 23 11:03:48 AEST 2022
 base.10=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_14.dex
 base.9=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_13.dex
 base.8=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_12.dex

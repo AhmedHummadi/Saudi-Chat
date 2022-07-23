@@ -463,15 +463,15 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
           /// use widgetStream to send all of the new messages down the stream and add them
           /// to the widget list instead of updating all of the widgets list
 
-          NewMessageCommand? e;
+          NewMessageCommand? nmc;
 
           if (snapshot.hasData) {
-            e = snapshot.data as NewMessageCommand?;
+            nmc = snapshot.data as NewMessageCommand?;
 
-            commands.contains(e) ? null : commands.add(e!);
+            commands.contains(nmc) ? null : commands.add(nmc!);
 
             // should be the last message in the chat list
-            lastMessage = e!.message;
+            lastMessage = nmc!.message;
           }
 
           List<Widget> getColumnChildren() {
@@ -489,38 +489,40 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
             // in columnChildren is not the same, because the data added
             // in the stream sometimes gets repeated twice, so this method
             // helps prevent the user from seeing two of the same messages
-            print(e == null ? "" : e.message);
-            return (e == null
+            print(nmc == null ? "" : nmc.message);
+            return (nmc == null
                 ? columnChildren
                 // ignore: unnecessary_type_check
-                : e.message is ImageMessage ||
-                        e.message is VoiceMessage ||
-                        e.message is VideoMessage
-                    ? columnChildren.last == e.widget
+                : nmc.message is ImageMessage ||
+                        nmc.message is VoiceMessage ||
+                        nmc.message is VideoMessage
+                    ? columnChildren.last == nmc.widget
                         ? columnChildren
-                        : columnChildren.contains(e.widget)
+                        : columnChildren.contains(nmc.widget)
                             ? columnChildren
                             : columnChildren.any((element) {
                                 var elem = element as MessageItem;
-                                return e!.message.time == times[elem.i] &&
-                                    e.message.userName == userNames[elem.i] &&
-                                    e.message.documentId == userDocs[elem.i].id;
+                                return nmc!.message.time == times[elem.i] &&
+                                    nmc.message.userName == userNames[elem.i] &&
+                                    nmc.message.documentId ==
+                                        userDocs[elem.i].id;
                               })
                                 ? columnChildren
-                                : (columnChildren..add(e.widget))
+                                : (columnChildren..add(nmc.widget))
                     : messages.length == columnChildren.length &&
-                            columnChildren.last == e.widget
+                            columnChildren.last == nmc.widget
                         ? columnChildren
-                        : columnChildren.contains(e.widget)
+                        : columnChildren.contains(nmc.widget)
                             ? columnChildren
                             : columnChildren.any((element) {
                                 var elem = element as MessageItem;
-                                return e!.message.time == times[elem.i] &&
-                                    e.message.userName == userNames[elem.i] &&
-                                    e.message.documentId == userDocs[elem.i].id;
+                                return nmc!.message.time == times[elem.i] &&
+                                    nmc.message.userName == userNames[elem.i] &&
+                                    nmc.message.documentId ==
+                                        userDocs[elem.i].id;
                               })
                                 ? columnChildren
-                                : (columnChildren..add(e.widget)));
+                                : (columnChildren..add(nmc.widget)));
           }
 
           return ScrollConfiguration(
