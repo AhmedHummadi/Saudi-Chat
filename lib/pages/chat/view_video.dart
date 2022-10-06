@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saudi_chat/shared/photo_viewer.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewVideo extends StatefulWidget {
@@ -24,6 +24,7 @@ class ViewVideo extends StatefulWidget {
 
 class _ViewVideoState extends State<ViewVideo> {
   VideoPlayerController? videoPlayerController;
+  ChewieController? chewieController;
   bool isInitialized = false;
 
   final key = GlobalKey<_PausePlayVideoState>();
@@ -34,22 +35,24 @@ class _ViewVideoState extends State<ViewVideo> {
   // that there is a video file then it will return it and
   // initialize the controller then load the video in
 
-  Future initialize() async {
+  Future initializeVideo() async {
     // get the cache directory
     final Directory filePath = (await getTemporaryDirectory());
 
     if (!(await File("${filePath.path}/${widget.storagePath}").exists())) {
       // get the video form firebase storage
-      final response = await get(Uri.parse(widget.url));
+      final Response response = await get(Uri.parse(widget.url));
 
       // create the cache directory in which the video
       // file will be saved in
-      final File fileForVideo =
-          await File("${filePath.path}/${widget.storagePath}")
-              .create(recursive: true);
+      final fileForVideo = await File("${filePath.path}/${widget.storagePath}")
+          .create(recursive: true);
 
-      // read the video as bytes and create he video
+      // read the video as bytes and create the video
       // in the file at the caches directory
+
+      print(response.statusCode);
+
       final File videoMaker =
           await fileForVideo.writeAsBytes(response.bodyBytes);
       // TODO: Buffer the video on play, better space optimization
@@ -57,39 +60,44 @@ class _ViewVideoState extends State<ViewVideo> {
       // assign the videoPlayerController to a controller which
       // will be made form the file in which we created earlier
       videoPlayerController = VideoPlayerController.file(videoMaker);
-      await videoPlayerController!.initialize();
 
-      if (videoPlayerController!.value.isInitialized) {
-        if (mounted) {
-          setState(() {
-            isInitialized = true;
-          });
-        } else {
-          isInitialized = true;
-        }
-      }
+      // videoPlayerController =
+      //     VideoPlayerController.network("${Uri.parse(widget.url)}");
+      await videoPlayerController!.initialize();
     } else {
       videoPlayerController = VideoPlayerController.file(
           File("${filePath.path}/${widget.storagePath}"));
       await videoPlayerController!.initialize();
-      if (videoPlayerController!.value.isInitialized) {
-        if (mounted) {
-          setState(() {
-            isInitialized = true;
-          });
-        } else {
+    }
+
+    // all the controls for the video will be here
+    chewieController = ChewieController(
+        aspectRatio: videoPlayerController!.value.size.width /
+            videoPlayerController!.value.size.height,
+        videoPlayerController: videoPlayerController!);
+
+    if (chewieController!.videoPlayerController.value.isInitialized) {
+      if (mounted) {
+        setState(() {
           isInitialized = true;
-        }
+        });
+      } else {
+        isInitialized = true;
       }
     }
+
     if (widget.videoPosition != null) {
       videoPlayerController!.seekTo(widget.videoPosition!);
     }
+
+    return;
   }
+
+  Future initializeThumbnail() async {}
 
   @override
   void initState() {
-    initialize();
+    initializeVideo();
     super.initState();
   }
 
@@ -105,61 +113,42 @@ class _ViewVideoState extends State<ViewVideo> {
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
     if (isInitialized) {
-      return Stack(children: [
-        GestureDetector(
-          child: Center(
+      return Stack(alignment: Alignment.bottomRight, children: [
+        Center(
+          child: AspectRatio(
+            aspectRatio: videoPlayerController!.value.size.width /
+                videoPlayerController!.value.size.height,
             child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                height: videoPlayerController!.value.size.height,
-                width: videoPlayerController!.value.size.width,
-                child: VideoPlayer(videoPlayerController!),
+                fit: BoxFit.cover,
+                child: Chewie(controller: chewieController!)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: GestureDetector(
+              onTap: () {
+                chewieController!.enterFullScreen();
+              },
+              child: const Icon(
+                Icons.fullscreen,
+                color: Colors.white,
+                size: 20,
               ),
             ),
           ),
-          onTap: () async {
-            final Duration? videoPosition =
-                await videoPlayerController!.position;
-            if (context.findAncestorWidgetOfExactType<DetailScreen>() == null) {
-              videoPlayerController!.pause();
-              setState(() {
-                key.currentState!.pauseVideo();
-              });
-              Duration? vidPos = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailScreen(
-                          isVideo: true,
-                          videoPosition: videoPosition,
-                          storagePath: widget.storagePath,
-                          tag: widget.url,
-                          imageUrl: widget.url)));
-              if (vidPos != null) {
-                await videoPlayerController!.seekTo(vidPos);
-              }
-
-              // TODO: Fix video image not updating after seeking!
-              /*void updateVidState() async {
-                await videoPlayerController!.setVolume(0.0);
-                await videoPlayerController!.play();
-                await videoPlayerController!.pause();
-                await videoPlayerController!.setVolume(1.0);
-              }
-
-              updateVidState();*/
-              setState(() {});
-            } else {
-              Navigator.pop(context, await videoPlayerController!.position);
-            }
-          },
         ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-              0, videoPlayerController!.value.size.height / 12, 0, 0),
-          child: Center(
-              child: PausePlayVideo(
-                  key: key, videoPlayerController: videoPlayerController!)),
-        )
+        // Padding(
+        //   padding: EdgeInsets.fromLTRB(
+        //       0, videoPlayerController!.value.size.height / 12, 0, 0),
+        //   child: Center(
+        //       child: IconButton(
+        //           onPressed: () async {
+        //             videoPlayerController.
+        //           },
+        //           icon: const Icon(Icons.play_circle_outline_rounded))),
+        // )
       ]);
     } else {
       return const SizedBox(
@@ -191,12 +180,12 @@ class _PausePlayVideoState extends State<PausePlayVideo>
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
+    // _animationController = AnimationController(
+    //     vsync: this, duration: const Duration(milliseconds: 300));
 
-    widget.videoPlayerController.addListener(() {
-      listener();
-    });
+    // widget.videoPlayerController.addListener(() {
+    //   listener();
+    // });
     super.initState();
   }
 
@@ -239,19 +228,19 @@ class _PausePlayVideoState extends State<PausePlayVideo>
 
   void onTap() async {
     if (widget.videoPlayerController.value.isPlaying) {
-      if (!_visible) {
-        setState(() {
-          _visible = true;
-        });
-      }
-      final Duration pos = (await widget.videoPlayerController.position)!;
-      setState(() {
-        startVideoPisition = pos;
-      });
-      _animationController.reverse();
+      // if (!_visible) {
+      //   setState(() {
+      //     _visible = true;
+      //   });
+      // }
+      // final Duration pos = (await widget.videoPlayerController.position)!;
+      // setState(() {
+      //   startVideoPisition = pos;
+      // });
+      // _animationController.reverse();
       widget.videoPlayerController.pause();
     } else {
-      _animationController.forward();
+      // _animationController.forward();
       widget.videoPlayerController.play();
     }
   }
@@ -272,13 +261,13 @@ class _PausePlayVideoState extends State<PausePlayVideo>
           decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.circular(20)),
-          child: Center(
-            child: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              progress: _animationController,
-              color: Colors.white.withOpacity(0.6),
-            ),
-          ),
+          // child: Center(
+          //   child: AnimatedIcon(
+          //     icon: AnimatedIcons.play_pause,
+          //     progress: _animationController,
+          //     color: Colors.white.withOpacity(0.6),
+          //   ),
+          // ),
         ),
       ),
     );

@@ -183,6 +183,55 @@ class DataBaseService {
     return groupDocument.reference;
   }
 
+  Future<bool> removeUserFromGroup(
+      {required UserAuth streamedUser, required NadiData nadi}) async {
+    DocumentReference usersDocument = authUsersCollection.doc(streamedUser.uid);
+
+    DocumentReference groupDocument = messagesCollection.doc(nadi.id);
+    try {
+      /// We want to first remove the group from the users groups
+      /// list so that it updates everything that the viewer sees
+      /// in the app. [removeGroupFromUsersJoinedGroups()]
+      /// Then we want to delete the users document from the members
+      /// collection in the groups document
+
+      Future removeGroupFromUsersJoinedGroups() async {
+        // First we will get the groups list
+        List updatedGroupList = streamedUser.groups!
+          ..removeWhere((item) => item["nadi_id"] == nadi.id);
+
+        // Then we will update the user document
+        return await usersDocument.update({"groups": updatedGroupList});
+      }
+
+      Future kickUserFromGroupsMembersList() async {
+        //?? This will not remove the users messages from the group
+
+        // We will simply get a reference to the users document in the members collection then delete it
+        CollectionReference membersCollectionReference =
+            groupDocument.collection("members");
+
+        return await membersCollectionReference.doc(streamedUser.uid).delete();
+      }
+
+      await removeGroupFromUsersJoinedGroups();
+      await kickUserFromGroupsMembersList();
+    } catch (e) {
+      print(e);
+    }
+    if ((await groupDocument
+            .collection("members")
+            .where("doc_reference", isEqualTo: usersDocument)
+            .get())
+        .docs
+        .isNotEmpty) {
+      // If the document still exists then return false
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   // update user auth data
   Future createUserAuthData({UserAuth? userAuth}) async {
     try {
@@ -201,14 +250,11 @@ class DataBaseService {
         "lastSignInTime": userAuth.lastSignInTime
       });
       return await messagesCollection.get().then((collection) async {
-        print(userAuth.cities);
         List<QueryDocumentSnapshot> filteredGorups = collection.docs
             .where((groups) => userAuth.cities!
                 .any((city) => groups.get("nadi_data")["location"] == city))
             .toList();
-        print(filteredGorups);
         for (var group in filteredGorups) {
-          print(group);
           // for each message group that matches the users cities preferences
 
           Future addGroupToUserDoc() async {

@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_persistent_keyboard_height/flutter_persistent_keyboard_height.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -63,14 +62,14 @@ class ChatPage extends StatefulWidget {
   final DocumentReference? groupDocument;
   final String? groupId;
   final dynamic streamedUser;
-  final DocumentReference bussinessDoc;
+  final DocumentReference nadiDocument;
 
   const ChatPage(
       {Key? key,
       this.groupDocument,
       this.groupId,
       this.streamedUser,
-      required this.bussinessDoc})
+      required this.nadiDocument})
       : super(key: key);
 
   @override
@@ -158,11 +157,15 @@ class _ChatPageState extends State<ChatPage> {
                     messages: messages,
                     times: times));
 
-            if (messages.contains(command.message.message) &&
+            if ((command.message.message != null &&
+                        command.message.message!.isNotEmpty
+                    ? messages.contains(command.message.message)
+                    : true) &&
                 times.contains(command.message.time) &&
                 userNames.contains(command.message.userName)) {
               // a brand new message
 
+              print(command.message is ImageMessage);
               widgetStream.sink.add(command);
             }
 
@@ -301,7 +304,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Stream<NadiData> get bussinessStream {
-    return widget.bussinessDoc.snapshots().map((event) => NadiData(
+    return widget.nadiDocument.snapshots().map((event) => NadiData(
           id: event.id,
           phoneNum: event.get("phoneNum"),
           nadiName: event.get("nadiName"),
@@ -458,7 +461,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
         builder: (context, snapshot) {
           /// this is the StreamBuilder that will keep updating with
           /// every new data passing in, it will not update all of the
-          /// widget like all the old method, but it will build all of the
+          /// widget like all the old method, instead it will build all of the
           /// widgets at the start with initState and buildWidgets, then we will
           /// use widgetStream to send all of the new messages down the stream and add them
           /// to the widget list instead of updating all of the widgets list
@@ -489,7 +492,6 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
             // in columnChildren is not the same, because the data added
             // in the stream sometimes gets repeated twice, so this method
             // helps prevent the user from seeing two of the same messages
-            print(nmc == null ? "" : nmc.message);
             return (nmc == null
                 ? columnChildren
                 // ignore: unnecessary_type_check
@@ -1197,7 +1199,6 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
     controller.addListener(() => mounted
         ? setState(() {
             currentText = controller.text;
-            print(currentText);
           })
         : currentText = controller.text);
 

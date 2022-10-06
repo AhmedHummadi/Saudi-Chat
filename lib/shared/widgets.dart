@@ -1,10 +1,22 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:saudi_chat/models/nadi.dart';
+import 'package:saudi_chat/models/user.dart';
+import 'package:saudi_chat/pages/chat/chat_page.dart';
+import 'package:saudi_chat/pages/home/home.dart';
+import 'package:saudi_chat/services/chat.dart';
+import 'package:saudi_chat/services/database.dart';
 import 'package:saudi_chat/shared/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+
+import '../pages/chat/nadi_details.dart';
 
 class MyTextField extends StatelessWidget {
   const MyTextField(
@@ -583,6 +595,323 @@ class EmojiPickerWidget extends StatelessWidget {
           onEmojiSelected: (category, emoji) => onEmojiSelected(emoji.emoji),
         ),
       ),
+    );
+  }
+}
+
+class GroupInfoCard extends StatelessWidget {
+  final Map groupData;
+  // groupData is the group information map that is on the users groups list
+  const GroupInfoCard({Key? key, required this.groupData}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _kOutsideContainerSize = Size(MediaQuery.of(context).size.width - 20,
+        MediaQuery.of(context).size.height / 9);
+
+    dynamic streamedUser = Provider.of<UserAuth>(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 18, 10, 0),
+      child: Container(
+          height: _kOutsideContainerSize.height,
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: _kOutsideContainerSize.height,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        width: _kOutsideContainerSize.height / 3 * 2,
+                        child: CircleAvatar(
+                            radius: _kOutsideContainerSize.height / 3,
+                            backgroundImage: Image.asset(
+                              "assets/new_nadi_profile_pic.jpg",
+                            ).image),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.2,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Flexible(
+                                child: LanguageTypeText(
+                                  groupData["name"],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      letterSpacing: 0.2,
+                                      fontSize: calculateAutoscaleFontSize(
+                                          groupData["name"],
+                                          const TextStyle(letterSpacing: 0.2),
+                                          18,
+                                          30,
+                                          MediaQuery.of(context).size.width /
+                                              2.4),
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        await onMessageIconTapped(context, streamedUser);
+                      },
+                      child: const Icon(
+                        Icons.messenger_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await onInfoIconTapped(context, streamedUser);
+                      },
+                      child: const Icon(
+                        Icons.info_outline_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await onExitIconTapped(
+                            context, streamedUser, groupData["name"]);
+                      },
+                      child: const Icon(
+                        Icons.exit_to_app,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          )),
+    );
+  }
+
+  DocumentReference groupDocument() {
+    DocumentReference documentReference =
+        MessageDatabase().messagesCollection.doc(groupData["nadi_id"]);
+    return documentReference;
+  }
+
+  Future<void> onMessageIconTapped(
+      BuildContext context, UserAuth streamedUser) async {
+    // This will get the Group DocumentReference from the [Groups] collection
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ChatPage(
+        groupDocument: groupDocument(),
+        nadiDocument: groupData["nadiReference"],
+        streamedUser: streamedUser,
+      );
+    }));
+  }
+
+  Future<void> onInfoIconTapped(
+      BuildContext context, UserAuth streamedUser) async {
+    QuerySnapshot groupmembersCollection = await DataBaseService()
+        .messagesCollection
+        .doc(groupDocument().id)
+        .collection("members")
+        .get();
+
+    Map groupData = {
+      "nadi_data":
+          await DataBaseService().nadiCollection.doc(groupDocument().id).get()
+    };
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return NadiDetails(
+        streamUser: streamedUser,
+        groupDocument: groupDocument(),
+        membersCollection: groupmembersCollection,
+        groupData: groupData,
+      );
+    }));
+  }
+
+  Future<void> onExitIconTapped(
+      BuildContext context, UserAuth streamedUser, String groupName) async {
+    Future<void> onLeavePressed() async {
+      print(groupData);
+
+      NadiData _groupData = NadiData.parse(groupData);
+
+      await DataBaseService()
+          .removeUserFromGroup(streamedUser: streamedUser, nadi: _groupData);
+
+      Navigator.pop(context);
+
+      return;
+    }
+
+    showCustomAlertDialog(
+        context, "Are you sure you want to leave", '"$groupName"?', "Leave",
+        () {
+      onLeavePressed();
+    });
+  }
+}
+
+Future<void> showCustomAlertDialog(
+    BuildContext context,
+    String topText,
+    String bottomText,
+    String rightButtonText,
+    FutureOr rightButtonFunction) async {
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              Text(topText, textAlign: TextAlign.center),
+              Text(
+                bottomText,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          alignment: Alignment.center,
+          actions: [
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 17),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () async {
+                await rightButtonFunction!!();
+              },
+              child: Text(
+                rightButtonText,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 17),
+              ),
+            ),
+          ],
+        );
+      });
+}
+
+double calculateAutoscaleFontSize(String text, TextStyle style,
+    double startFontSize, double maxFontSize, double maxWidth) {
+  final textPainter = TextPainter(
+    textDirection: text.characters.any((element) =>
+            arabicLetters.any((arabicLetter) => arabicLetter == element))
+        ? TextDirection.rtl
+        : TextDirection.ltr,
+  );
+
+  var currentFontSize = startFontSize;
+
+  for (var i = 0; i < maxFontSize; i++) {
+    // limit max iterations to 100
+    final nextFontSize = currentFontSize + 1;
+    final nextTextStyle = style.copyWith(fontSize: nextFontSize);
+    textPainter.text = TextSpan(text: text, style: nextTextStyle);
+    textPainter.layout();
+    if (textPainter.width >= maxWidth) {
+      break;
+    } else {
+      currentFontSize = nextFontSize;
+      // continue iteration
+    }
+  }
+
+  return currentFontSize;
+}
+
+class LanguageTypeText extends StatelessWidget {
+  final String data;
+  final TextStyle? style;
+  final StrutStyle? strutStyle;
+  final Locale? locale;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+  final double? textScaleFactor;
+  final int? maxLines;
+  final String? semanticsLabel;
+  final TextWidthBasis? textWidthBasis;
+  final TextHeightBehavior? textHeightBehavior;
+  final Color? selectionColor;
+  const LanguageTypeText(
+    this.data, {
+    Key? key,
+    this.style,
+    this.strutStyle,
+    this.locale,
+    this.softWrap,
+    this.overflow,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+    this.textWidthBasis,
+    this.textHeightBehavior,
+    this.selectionColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      data,
+      textDirection: data.characters.any((element) =>
+              arabicLetters.any((arabicLetter) => arabicLetter == element))
+          ? TextDirection.rtl
+          : TextDirection.ltr,
+      textAlign: data.characters.any((element) =>
+              arabicLetters.any((arabicLetter) => arabicLetter == element))
+          ? TextAlign.right
+          : TextAlign.left,
+      style: style,
+      strutStyle: strutStyle,
+      locale: locale,
+      softWrap: softWrap,
+      overflow: overflow,
+      textScaleFactor: textScaleFactor,
+      maxLines: maxLines,
+      semanticsLabel: semanticsLabel,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+      selectionColor: selectionColor,
     );
   }
 }

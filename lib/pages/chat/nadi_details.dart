@@ -22,119 +22,139 @@ class _NadiDetailsState extends State<NadiDetails> {
   @override
   Widget build(BuildContext context) {
     final Map groupData = widget.groupData;
+    //?? The data of the nadis group document in the groups collection
+
     final streamedUser = widget.streamUser;
     final Size screenSize = MediaQuery.of(context).size;
 
+    Future<QuerySnapshot> getMembersCollection(
+        DocumentReference groupDocument) async {
+      return await groupDocument.collection("members").get();
+    }
+
+    Future<QuerySnapshot> getAdminsCollection(
+        DocumentReference groupDocument) async {
+      return await groupDocument.collection("admins").get();
+    }
+
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: screenSize.height / 20,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                vertical: screenSize.height / 20,
-                horizontal: screenSize.width / 5),
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage:
-                      Image.asset("assets/new_nadi_profile_pic.jpg").image,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  groupData["nadi_data"]["name"],
-                  style: const TextStyle(fontSize: 30, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-            height: screenSize.height / 1.9089,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade500,
-                  blurRadius: 2.0,
-                  spreadRadius: 1.0,
-                  offset: const Offset(0, -1),
-                )
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 40, 0),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SpecificDetail(
-                          specification: "Name",
-                          value: groupData["nadi_data"]["name"]),
-                      SpecificDetail(
-                          specification: "Email",
-                          value: groupData["nadi_data"]["email"]),
-                      SpecificDetail(
-                          specification: "Location",
-                          value: groupData["nadi_data"]["location"]),
-                      SpecificDetail(
-                          specification: "Phone Number",
-                          value: groupData["nadi_data"]["phoneNum"]),
-                    ],
+        appBar: AppBar(),
+        body: FutureBuilder(
+            future: Future.wait([
+              getMembersCollection(widget.groupDocument),
+              getAdminsCollection(widget.groupDocument)
+            ]),
+            builder: (context, snapshot) {
+              late List<QuerySnapshot>? data;
+
+              if (snapshot.hasData) {
+                data = snapshot.data as List<QuerySnapshot>;
+              } else {
+                data = null;
+              }
+
+              return Column(
+                children: [
+                  Container(
+                    width: screenSize.width,
+                    height: screenSize.height / 3.2,
+                    decoration: const BoxDecoration(color: Colors.grey),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 48,
+                            backgroundImage: Image.asset(
+                              "assets/new_nadi_profile_pic.jpg",
+                            ).image,
+                          ),
+                          Container(
+                            color: Colors.white,
+                            child: Text(groupData["nadi_data"]["name"]),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomLeft: Radius.circular(20))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  //?? TODO: add a discription tab
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       const SizedBox(
-                        height: 10,
+                        width: 10,
                       ),
-                      Text(
-                        "Members: ${widget.membersCollection.docs.length.toString()}",
-                        style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(groupData["nadi_data"]["name"]),
+                              Text(groupData["nadi_data"]["email"]),
+                              Text(groupData["nadi_data"]["location"]),
+                            ],
+                          )),
                       const SizedBox(
-                        height: 8,
+                        width: 10,
                       ),
-                      MembersList(
-                        membersCollection: widget.membersCollection,
-                        groupData: groupData,
-                        streamedUser: streamedUser,
-                      )
+                      Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(groupData["nadi_data"]["phoneNum"]),
+                              Text(data != null
+                                  ? data[0].docs.length.toString() + " Members"
+                                  : "..."),
+                              Text(data != null
+                                  ? data[1].docs.length.toString() + " Admins"
+                                  : "...")
+                            ],
+                          ))
                     ],
                   ),
-                )
-              ],
-            ),
-          )
-        ],
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 3,
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Wrap(
+                        direction: Axis.vertical,
+                        children: data != null
+                            ? data[0]
+                                .docs
+                                .map((memberDocument) => GroupMemberCard(
+                                    memberDocumentData: memberDocument))
+                                .toList()
+                            : [],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }));
+  }
+}
+
+class GroupMemberCard extends StatelessWidget {
+  final DocumentSnapshot memberDocumentData;
+  const GroupMemberCard({Key? key, required this.memberDocumentData})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 2,
+      child: ListTile(
+        leading: CircleAvatar(
+            radius: 24,
+            backgroundImage: Image.asset(
+              "assets/new_nadi_profile_pic.jpg",
+            ).image),
+        title: Text(
+          memberDocumentData.get("name"),
+          style: TextStyle(fontSize: 14),
+        ),
       ),
     );
   }

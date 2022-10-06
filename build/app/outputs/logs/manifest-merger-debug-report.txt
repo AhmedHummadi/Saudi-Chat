@@ -15,6 +15,7 @@ MERGED from [:gallery_saver] /Users/ahmedhummadi/AppDev/saudi_chat/build/gallery
 MERGED from [:geolocator_android] /Users/ahmedhummadi/AppDev/saudi_chat/build/geolocator_android/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
 MERGED from [:just_audio] /Users/ahmedhummadi/AppDev/saudi_chat/build/just_audio/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_session/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:video_thumbnail] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_thumbnail/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-15:12
 MERGED from [:emoji_picker_flutter] /Users/ahmedhummadi/AppDev/saudi_chat/build/emoji_picker_flutter/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_storage] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-15:12
@@ -326,6 +327,8 @@ MERGED from [:just_audio] /Users/ahmedhummadi/AppDev/saudi_chat/build/just_audio
 MERGED from [:just_audio] /Users/ahmedhummadi/AppDev/saudi_chat/build/just_audio/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_session/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:audio_session] /Users/ahmedhummadi/AppDev/saudi_chat/build/audio_session/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:video_thumbnail] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_thumbnail/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:video_thumbnail] /Users/ahmedhummadi/AppDev/saudi_chat/build/video_thumbnail/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] /Users/ahmedhummadi/AppDev/saudi_chat/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:emoji_picker_flutter] /Users/ahmedhummadi/AppDev/saudi_chat/build/emoji_picker_flutter/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44

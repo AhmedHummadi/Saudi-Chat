@@ -366,11 +366,11 @@ class _BuildHomeItem extends StatelessWidget {
 }
 
 onItemTap(BuildContext context, dynamic streamedUser, DocumentReference doc,
-    DocumentReference bussinessDoc) {
+    DocumentReference nadiDocument) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return ChatPage(
         groupDocument: doc,
-        bussinessDoc: bussinessDoc,
+        nadiDocument: nadiDocument,
         streamedUser: streamedUser);
   }));
 }

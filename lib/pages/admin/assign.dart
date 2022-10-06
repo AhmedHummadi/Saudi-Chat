@@ -233,7 +233,6 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                           );
                         } else {
                           // should be an error
-                          print(data);
                           return const Text("an unknown error has occured");
                         }
                       }
@@ -370,7 +369,6 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                                       child: SingleChildScrollView(
                                         child: Column(
                                             children: data.map((e) {
-                                          print(e);
                                           Map nadi = e.get("nadi_data");
                                           return GestureDetector(
                                             onTap: () => onGroupTapped(e),
@@ -391,7 +389,6 @@ class _AssignPageState extends State<AssignPage> with TickerProviderStateMixin {
                                   );
                                 } else {
                                   // should be an error
-                                  print(data);
                                   return const Text(
                                       "an unknown error has occured");
                                 }

@@ -244,7 +244,7 @@ class _SearchNadisState extends State<SearchNadis> {
             return ChatPage(
                 streamedUser: streamedUser,
                 groupDocument: groupDocument,
-                bussinessDoc: search.reference);
+                nadiDocument: search.reference);
           }));
           widget.onPop();
         }
@@ -256,7 +256,7 @@ class _SearchNadisState extends State<SearchNadis> {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ChatPage(
             groupDocument: documentReference,
-            bussinessDoc: search.reference,
+            nadiDocument: search.reference,
             streamedUser: streamedUser,
           );
         }));

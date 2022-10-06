@@ -1,4 +1,4 @@
-#Sat Jul 23 11:03:48 AEST 2022
+#Thu Oct 06 23:15:32 AEDT 2022
 base.10=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_14.dex
 base.9=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_13.dex
 base.8=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_12.dex
@@ -10,6 +10,7 @@ base.3=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/m
 base.2=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeExtDexDebug/classes2.dex
 base.1=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeProjectDexDebug/classes.dex
 base.0=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+path.28=classes_24.dex
 path.27=classes_23.dex
 path.26=classes_22.dex
 path.25=classes_21.dex
@@ -48,6 +49,7 @@ path.13=classes_17.dex
 path.12=classes_16.dex
 path.11=classes_15.dex
 path.10=classes_14.dex
+renamed.28=classes29.dex
 renamed.27=classes28.dex
 renamed.26=classes27.dex
 renamed.25=classes26.dex
@@ -66,6 +68,7 @@ renamed.13=classes14.dex
 renamed.12=classes13.dex
 renamed.11=classes12.dex
 renamed.10=classes11.dex
+base.28=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_24.dex
 base.27=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_23.dex
 base.26=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_22.dex
 base.25=/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/dex/debug/mergeLibDexDebug/classes_21.dex

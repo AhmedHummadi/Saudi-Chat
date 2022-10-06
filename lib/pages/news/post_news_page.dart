@@ -278,7 +278,6 @@ class _AddNewsPageState extends State<AddNewsPage> {
       for (var item in groups) {
         names.add(await getGroupName(item));
       }
-      print(names);
       return names;
     }
 
@@ -401,7 +400,6 @@ class _AddNewsPageState extends State<AddNewsPage> {
         return;
       }
     } catch (e) {
-      print(e);
       Fluttertoast.showToast(msg: "an unknown error has occured");
     }
   }

@@ -21,7 +21,7 @@ class NadiData {
 
   static NadiData parse(Map map) {
     return NadiData(
-        id: map["id"],
+        id: map["id"] ?? map["nadi_id"],
         location: map["location"],
         nadiName: map["name"],
         news: map["news"],
@@ -31,18 +31,20 @@ class NadiData {
 }
 
 class GroupData {
-  late final Map? nadiData;
+  late final NadiData? nadiData;
+  late final String? id;
   late final List? messages;
   late final List? time_of_messages;
   late final List? users_doc_references;
   late final List? users_name;
-  late List<DocumentReference>? blockedUsers;
+  late List? blockedUsers;
   late final DocumentReference? reference;
 
   GroupData(
       {this.messages,
       this.nadiData,
       this.reference,
+      this.id,
       this.blockedUsers,
       this.time_of_messages,
       this.users_doc_references,
@@ -52,9 +54,10 @@ class GroupData {
     return GroupData(
         messages: map["messages"],
         blockedUsers: map["blockedUsers"],
+        id: map["id"] ?? map["nadi_id"],
         time_of_messages: map["time_of_messages"],
         users_doc_references: map["users_doc_reference"],
         users_name: map["users_name"],
-        nadiData: map["nadiData"]);
+        nadiData: NadiData.parse(map["nadi_data"]));
   }
 }

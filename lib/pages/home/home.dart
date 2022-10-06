@@ -1,3 +1,4 @@
+import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/control_panel.dart';
 import 'package:saudi_chat/pages/chat/chat_list.dart';
@@ -36,11 +37,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
+    List<Widget> _pages = [
       HomePage(
         toggleSearch: toggleSearch,
       ),
-      ChatPage(toggleSearch: toggleSearch),
+      ChatTab(toggleSearch: toggleSearch),
       const GroupsPage(),
     ];
 
@@ -55,6 +56,7 @@ class _HomeState extends State<Home> {
           Scaffold(
             bottomNavigationBar: BottomNavigationBar(
                 unselectedItemColor: Colors.grey[600],
+                selectedItemColor: Theme.of(context).colorScheme.secondary,
                 type: BottomNavigationBarType.shifting,
                 currentIndex: _currentIndex,
                 onTap: (index) {
@@ -79,9 +81,21 @@ class _HomeState extends State<Home> {
                       : streamedUser.userClass == UserClass.admin
                           ? _pages + [const AdminPanelPage()]
                           : _pages)
-                  .map((e) => SingleChildScrollView(
-                        child: Column(
-                          children: [AppBar(), e],
+                  .map((e) => ScrollConfiguration(
+                        behavior: NoGlowScrollBehaviour(),
+                        child: RefreshIndicator(
+                          edgeOffset: 260,
+                          color: Theme.of(context).colorScheme.secondary,
+                          onRefresh: () async {
+                            setState(() {});
+                            await Future.delayed(
+                                const Duration(milliseconds: 400));
+                          },
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [AppBar(), e],
+                            ),
+                          ),
                         ),
                       ))
                   .toList(),
@@ -239,8 +253,12 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> onSignoutTapped() async {
-    Navigator.pop(context);
-    await AuthService().signOut();
+    showCustomAlertDialog(
+        context, "Are you sure you want to Sign out?", "", "Sign out",
+        () async {
+      Navigator.pop(context);
+      await AuthService().signOut();
+    });
   }
 
   Future<void> onSettingsTapped() async {}
@@ -254,18 +272,59 @@ class GroupsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final dynamic streamedUser = Provider.of<UserAuth>(context);
-    return Container();
+    return ListView.builder(
+        itemCount: streamedUser.groups.length,
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          Map groupData = streamedUser.groups[index];
+          return GroupInfoCard(
+            groupData: groupData,
+          );
+        });
   }
 }
 
-class ChatPage extends StatelessWidget {
+class ChatTab extends StatelessWidget {
   final Function? toggleSearch;
-  const ChatPage({Key? key, this.toggleSearch}) : super(key: key);
+  const ChatTab({Key? key, this.toggleSearch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ChatList(
-      onAddGroupTapped: toggleSearch!,
+    return ConstrainedBox(
+      constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height -
+              MediaQuery.of(context).size.height / 4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(
+            "No Direct Messages",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontSize: 22),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Text(
+            "Direct messages will appear here!",
+            style: TextStyle(
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                fontSize: 16),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Icon(
+            Icons.message_rounded,
+            size: 48,
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+          )
+        ],
+      ),
     );
   }
 }

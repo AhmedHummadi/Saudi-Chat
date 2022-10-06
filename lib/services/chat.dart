@@ -52,7 +52,6 @@ class MessageDatabase {
 
               messageData.add(message.message);
               userNamesData.add(message.userName);
-              print(message.userName);
               timeData.add(message.getTime);
               docsData.add(DataBaseService()
                   .authUsersCollection
@@ -91,7 +90,6 @@ class MessageDatabase {
 
               messageData.add(message.message);
               userNamesData.add(message.userName);
-              print(message.userName);
               timeData.add(message.getTime);
               docsData.add(DataBaseService()
                   .authUsersCollection

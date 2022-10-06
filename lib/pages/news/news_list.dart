@@ -24,9 +24,16 @@ class _NewsListState extends State<NewsList> {
 
   int _kColumnChildrenViewLength = 60;
 
+  late UserAuth streamedUser;
+
   @override
   void initState() {
+    streamedUser = widget.streamedUser;
+
     findNews();
+
+    // this makes it so that it shows 6 news at a time and
+    // keep showing 6 the more you scroll
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
         setState(() {
@@ -52,8 +59,8 @@ class _NewsListState extends State<NewsList> {
     /// nadis that the user is subscribed to and put them in a list that will show
     /// them all in a news card from date added first
 
-    UserAuth streamedUser = widget.streamedUser;
     List<NewsForm> _news = [];
+
     // all the nadis to then get the news from each one and put them in a list
     List<DocumentReference> nadis = streamedUser.groups!
         .map((e) => e["nadiReference"] as DocumentReference)
@@ -68,6 +75,10 @@ class _NewsListState extends State<NewsList> {
           .toList();
 
       _news.addAll(finalNews);
+    }
+
+    if (news.length == _news.length) {
+      return;
     }
 
     for (var _new in news) {
@@ -93,33 +104,30 @@ class _NewsListState extends State<NewsList> {
       return FutureBuilder(
           future: findNews(), builder: (context, snapshot) => Container());
     } else {
-      return RefreshIndicator(
-        displacement: 30,
-        onRefresh: () async => await findNews(),
-        child: ScrollConfiguration(
-          behavior: NoGlowScrollBehaviour(),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                Column(
-                  children: news
-                      .map((e) => NewsCard(
-                            news: e,
-                          ))
-                      .toList()
-                      .getRange(
-                          news.length > 8
-                              ? news.length - _kColumnChildrenViewLength
-                              : 0,
-                          news.length)
-                      .toList(),
-                ),
-                const SizedBox(
-                  height: 20,
-                )
-              ],
-            ),
+      findNews();
+      return ScrollConfiguration(
+        behavior: NoGlowScrollBehaviour(),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Column(
+                children: news
+                    .map((e) => NewsCard(
+                          news: e,
+                        ))
+                    .toList()
+                    .getRange(
+                        news.length > 8
+                            ? news.length - _kColumnChildrenViewLength
+                            : 0,
+                        news.length)
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              )
+            ],
           ),
         ),
       );
@@ -130,6 +138,13 @@ class _NewsListState extends State<NewsList> {
 class NewsCard extends StatelessWidget {
   final NewsForm news;
   const NewsCard({required this.news, Key? key}) : super(key: key);
+
+  static Size overallDimensions(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width -
+        (MediaQuery.of(context).size.width / 20);
+    final double height = MediaQuery.of(context).size.height / 2.2 + 14;
+    return Size(width, height);
+  }
 
   String dateCreated() {
     DateTime now = DateTime.now();

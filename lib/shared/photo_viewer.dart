@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:saudi_chat/pages/chat/view_video.dart';
 import 'package:saudi_chat/services/storage.dart';
 
@@ -11,11 +13,13 @@ class DetailScreen extends StatefulWidget {
   final String? storagePath;
   final bool isVideo;
   final Duration? videoPosition;
+  final VideoPlayerController? videoController;
 
   // ignore: prefer_const_constructors_in_immutables
   const DetailScreen({
     Key? key,
     required this.isVideo,
+    this.videoController,
     this.videoPosition,
     this.storagePath,
     required this.imageUrl,
@@ -27,8 +31,36 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  ChewieController? chewieController;
+
+  @override
+  void dispose() {
+    if (widget.videoController != null && chewieController != null) {
+      widget.videoController!.dispose();
+      chewieController!.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    if (widget.videoController != null) {
+      chewieController = ChewieController(
+          videoPlayerController: widget.videoController!,
+          autoPlay: true,
+          looping: true);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    assert(widget.isVideo
+        ? widget.videoController != null &&
+            widget.videoPosition != null &&
+            widget.storagePath != null
+        : true);
+
     if (!widget.isVideo) {
       return Scaffold(
         body: Stack(children: <Widget>[
@@ -52,10 +84,7 @@ class _DetailScreenState extends State<DetailScreen> {
           color: Colors.black,
           child: GestureDetector(
             child: Center(
-              child: ViewVideo(
-                  url: widget.imageUrl!,
-                  storagePath: widget.storagePath!,
-                  videoPosition: widget.videoPosition),
+              child: Chewie(controller: chewieController!),
             ),
           ));
     }
@@ -92,7 +121,7 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
               : null,
           actions: [
             IconButton(
-                splashRadius: 12,
+                splashRadius: 24,
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
                 onPressed: () => onDownloadTapped(<dynamic, dynamic>{
                       "storage_path": widget.storagePath,
@@ -103,6 +132,7 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
                   size: 24,
                 )),
             IconButton(
+                splashRadius: 24,
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 2),
                 onPressed: () {},
                 icon: const Icon(
