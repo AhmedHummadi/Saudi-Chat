@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
+    <string-array name="exo_controls_playback_speeds">
+    <item>0,25x</item>
+    <item>0,5x</item>
+    <item>0,75x</item>
+    <item>Սովորական</item>
+    <item>1,25x</item>
+    <item>1,5x</item>
+    <item>2x</item>
+  </string-array>
     <plurals name="exo_controls_fastforward_by_amount_description">
     <item quantity="one">%d վայրկյան առաջ տալ</item>
     <item quantity="other">%d վայրկյան առաջ տալ</item>
@@ -8,25 +17,26 @@
     <item quantity="one">%d վայրկյան հետ տալ</item>
     <item quantity="other">%d վայրկյան հետ տալ</item>
   </plurals>
-    <string msgid="8585111718777012708" name="common_google_play_services_enable_button">"Միացնել"</string>
-    <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի մինչև չմիացնեք Google Play ծառայությունները:"</string>
-    <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"Միացնել Google Play ծառայությունները"</string>
-    <string msgid="9115728400623041681" name="common_google_play_services_install_button">"Տեղադրել"</string>
-    <string msgid="8179894293032530091" name="common_google_play_services_install_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք չկան ձեր սարքում:"</string>
-    <string msgid="7442193194585196676" name="common_google_play_services_install_title">"Տեղադրել Google Play ծառայությունները"</string>
-    <string msgid="4293541511340436975" name="common_google_play_services_notification_channel_name">"Google Play ծառայությունների հասանելիություն"</string>
-    <string msgid="180394615667698242" name="common_google_play_services_notification_ticker">"Google Play ծառայությունների սխալ կա"</string>
+    <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Միացնել</string>
+    <string msgid="227660514972886228" name="common_google_play_services_enable_text">%1$s հավելվածը չի աշխատի մինչև չմիացնեք Google Play ծառայությունները:</string>
+    <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Միացնել Google Play ծառայությունները</string>
+    <string msgid="7153882981874058840" name="common_google_play_services_install_button">Տեղադրել</string>
+    <string name="common_google_play_services_install_text">%1$s հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք չկան ձեր սարքում:</string>
+    <string msgid="7215213145546190223" name="common_google_play_services_install_title">Տեղադրել Google Play ծառայությունները</string>
+    <string name="common_google_play_services_notification_channel_name">Google Play ծառայությունների հասանելիություն</string>
+    <string name="common_google_play_services_notification_ticker">Google Play ծառայությունների սխալ կա</string>
     <string name="common_google_play_services_unknown_issue">%1$s հավելվածը Google Play ծառայությունների հետ կապված խնդիր ունի: Փորձեք նորից:</string>
-    <string msgid="5501187292256987189" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք ձեր սարքում չեն աջակցվում:"</string>
-    <string msgid="8172070149091615356" name="common_google_play_services_update_button">"Թարմացնել"</string>
-    <string msgid="7773943415006962566" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի մինչև չթարմացնեք Google Play ծառայությունները:"</string>
-    <string msgid="8706675115216073244" name="common_google_play_services_update_title">"Թարմացնել Google Play ծառայությունները"</string>
-    <string msgid="7894275749778928941" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք այս պահին թարմացվում են:"</string>
-    <string msgid="2804989272736383918" name="common_google_play_services_wear_update_text">"Անհրաժեշտ է Google Play ծառայությունների նոր տարբերակը: Այն շուտով կթարմացվի ավտոմատ կերպով:"</string>
-    <string msgid="5201977337835724196" name="common_open_on_phone">"Բացել հեռախոսով"</string>
-    <string msgid="3441753203274453993" name="common_signin_button_text">"Մուտք գործել"</string>
-    <string msgid="669893613918351210" name="common_signin_button_text_long">"Մուտք գործել Google-ով"</string>
-    <string msgid="6743534657295236036" name="default_notification_channel_name">"Նվագարկվում է"</string>
+    <string name="common_google_play_services_unsupported_text">%1$s հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք ձեր սարքում չեն աջակցվում:</string>
+    <string msgid="6556509956452265614" name="common_google_play_services_update_button">Թարմացնել</string>
+    <string msgid="9053896323427875356" name="common_google_play_services_update_text">%1$s հավելվածը չի աշխատի մինչև չթարմացնեք Google Play ծառայությունները:</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">Թարմացնել Google Play ծառայությունները</string>
+    <string name="common_google_play_services_updating_text">%1$s հավելվածը չի աշխատի առանց Google Play ծառայությունների, որոնք այս պահին թարմացվում են:</string>
+    <string name="common_google_play_services_wear_update_text">Անհրաժեշտ է Google Play ծառայությունների նոր տարբերակը: Այն շուտով կթարմացվի ավտոմատ կերպով:</string>
+    <string name="common_open_on_phone">Բացել հեռախոսով</string>
+    <string name="common_signin_button_text">Մուտք գործել</string>
+    <string name="common_signin_button_text_long">Մուտք գործել Google-ով</string>
+    <string msgid="3260749812566568062" name="copy_toast_msg">"Հղումը պատճենվեց սեղմատախտակին"</string>
+    <string msgid="7213672915724563695" name="default_notification_channel_name">"Այժմ հնչում է"</string>
     <string name="exo_controls_cc_disabled_description">Միացնել ենթագրերը</string>
     <string name="exo_controls_cc_enabled_description">Անջատել ենթագրերը</string>
     <string name="exo_controls_fastforward_description">Առաջ</string>
@@ -39,7 +49,6 @@
     <string name="exo_controls_pause_description">Դադարեցնել</string>
     <string name="exo_controls_play_description">Նվագարկել</string>
     <string name="exo_controls_playback_speed">Արագություն</string>
-    <string name="exo_controls_playback_speed_normal">Սովորական</string>
     <string name="exo_controls_previous_description">Հետ</string>
     <string name="exo_controls_repeat_all_description">Կրկնել բոլորը</string>
     <string name="exo_controls_repeat_off_description">Չկրկնել</string>
@@ -57,6 +66,9 @@
     <string name="exo_download_downloading">Ներբեռնում</string>
     <string name="exo_download_failed">Չհաջողվեց ներբեռնել</string>
     <string name="exo_download_notification_channel_name">Ներբեռնումներ</string>
+    <string name="exo_download_paused">Ներբեռնումները դադարեցված են</string>
+    <string name="exo_download_paused_for_network">Ցանցի որոնում</string>
+    <string name="exo_download_paused_for_wifi">Wi-Fi ցանցի որոնում</string>
     <string name="exo_download_removing">Ներբեռնումները հեռացվում են</string>
     <string name="exo_item_list">%1$s, %2$s</string>
     <string name="exo_media_action_repeat_all_description">Կրկնել բոլորը</string>
@@ -79,9 +91,12 @@
     <string name="exo_track_surround_5_point_1">5․1 ծավալային ձայն</string>
     <string name="exo_track_surround_7_point_1">7․1 ծավալային ձայն</string>
     <string name="exo_track_unknown">Անհայտ</string>
-    <string msgid="4221330012095125431" name="pause_button_content_description">"Դադար"</string>
-    <string msgid="6034272287948142298" name="play_button_content_description">"Նվագարկել"</string>
-    <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"Անցնել հաջորդ տարրին"</string>
-    <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"Անցնել նախորդ տարրին"</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Պատճենել հղումը"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Բացել դիտարկիչում"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Կիսվել հղումով"</string>
+    <string msgid="3510124037191104584" name="pause_button_content_description">"Դադարեցնել"</string>
+    <string msgid="963503759453979404" name="play_button_content_description">"Նվագարկել"</string>
+    <string msgid="6034072145387511457" name="skip_to_next_item_button_content_description">"Անցնել հաջորդ տարրին"</string>
+    <string msgid="4352480799561670760" name="skip_to_previous_item_button_content_description">"Անցնել նախորդ տարրին"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

@@ -1,6 +1,5 @@
 com.ahmedhummadi.saudi_chat
-array exo_playback_speeds
-array exo_speed_multiplied_by_100
+array exo_controls_playback_speeds
 attr activityAction
 attr activityName
 attr ad_marker_color
@@ -44,6 +43,7 @@ attr imageAspectRatio
 attr imageAspectRatioAdjust
 attr keep_content_on_player_reset
 attr keylines
+attr lStar
 attr layoutManager
 attr layout_anchor
 attr layout_anchorGravity
@@ -444,6 +444,10 @@ id icon_group
 id icon_only
 id info
 id italic
+id item1
+id item2
+id item3
+id item4
 id item_touch_helper_previous_elevation
 id left
 id light
@@ -530,9 +534,12 @@ layout notification_template_part_chronometer
 layout notification_template_part_time
 layout teclado_popup
 layout toast_custom
+menu example_menu
+menu example_menu2
 mipmap ic_launcher
 plurals exo_controls_fastforward_by_amount_description
 plurals exo_controls_rewind_by_amount_description
+raw keep
 string androidx_startup
 string common_google_play_services_enable_button
 string common_google_play_services_enable_text
@@ -552,6 +559,7 @@ string common_google_play_services_wear_update_text
 string common_open_on_phone
 string common_signin_button_text
 string common_signin_button_text_long
+string copy_toast_msg
 string default_notification_channel_name
 string default_web_client_id
 string exo_controls_cc_disabled_description
@@ -567,7 +575,6 @@ string exo_controls_overflow_show_description
 string exo_controls_pause_description
 string exo_controls_play_description
 string exo_controls_playback_speed
-string exo_controls_playback_speed_normal
 string exo_controls_previous_description
 string exo_controls_repeat_all_description
 string exo_controls_repeat_off_description
@@ -586,6 +593,9 @@ string exo_download_description
 string exo_download_downloading
 string exo_download_failed
 string exo_download_notification_channel_name
+string exo_download_paused
+string exo_download_paused_for_network
+string exo_download_paused_for_wifi
 string exo_download_removing
 string exo_item_list
 string exo_media_action_repeat_all_description
@@ -608,6 +618,9 @@ string exo_track_surround
 string exo_track_surround_5_point_1
 string exo_track_surround_7_point_1
 string exo_track_unknown
+string fallback_menu_item_copy_link
+string fallback_menu_item_open_in_browser
+string fallback_menu_item_share_link
 string gcm_defaultSenderId
 string google_api_key
 string google_app_id
@@ -646,7 +659,6 @@ style ExoStyledControls_Button_Center_Next
 style ExoStyledControls_Button_Center_PlayPause
 style ExoStyledControls_Button_Center_Previous
 style ExoStyledControls_Button_Center_RewWithAmount
-style ExoStyledControls_ButtonText
 style ExoStyledControls_TimeBar
 style ExoStyledControls_TimeText
 style ExoStyledControls_TimeText_Duration
@@ -671,7 +683,7 @@ styleable ActivityFilter activityAction activityName
 styleable ActivityRule alwaysExpand
 styleable AspectRatioFrameLayout resize_mode
 styleable Capability queryPatterns shortcutMatchRequired
-styleable ColorStateListItem android_color android_alpha alpha
+styleable ColorStateListItem android_color android_alpha android_lStar alpha lStar
 styleable CoordinatorLayout keylines statusBarBackground
 styleable CoordinatorLayout_Layout android_layout_gravity layout_anchor layout_anchorGravity layout_behavior layout_dodgeInsetEdges layout_insetEdge layout_keyline
 styleable DefaultTimeBar ad_marker_color ad_marker_width bar_gravity bar_height buffered_color played_ad_marker_color played_color scrubber_color scrubber_disabled_size scrubber_dragged_size scrubber_drawable scrubber_enabled_size touch_target_height unplayed_color
@@ -690,3 +702,4 @@ styleable SplitPlaceholderRule placeholderActivityName splitLayoutDirection spli
 styleable StyledPlayerControlView ad_marker_color ad_marker_width animation_enabled bar_gravity bar_height buffered_color controller_layout_id played_ad_marker_color played_color repeat_toggle_modes scrubber_color scrubber_disabled_size scrubber_dragged_size scrubber_drawable scrubber_enabled_size show_fastforward_button show_next_button show_previous_button show_rewind_button show_shuffle_button show_subtitle_button show_timeout show_vr_button time_bar_min_update_interval touch_target_height unplayed_color
 styleable StyledPlayerView ad_marker_color ad_marker_width animation_enabled auto_show bar_gravity bar_height buffered_color controller_layout_id default_artwork hide_during_ads hide_on_touch keep_content_on_player_reset played_ad_marker_color played_color player_layout_id repeat_toggle_modes resize_mode scrubber_color scrubber_disabled_size scrubber_dragged_size scrubber_drawable scrubber_enabled_size show_buffering show_shuffle_button show_subtitle_button show_timeout show_vr_button shutter_background_color surface_type time_bar_min_update_interval touch_target_height unplayed_color use_artwork use_controller
 xml flutter_image_picker_file_paths
+xml image_share_filepaths

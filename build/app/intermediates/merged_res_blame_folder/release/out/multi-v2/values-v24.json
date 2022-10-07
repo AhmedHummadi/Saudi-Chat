@@ -4,7 +4,7 @@
             "outputFile": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/incremental/mergeReleaseResources/merged.dir/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/857bc61be0897509a92147f15a578c5a/media-1.3.1/res/values-v24/values-v24.xml",
+                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/abf2909f1dc3a3509c7504851829f023/media-1.4.3/res/values-v24/values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

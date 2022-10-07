@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="exo_playback_speeds" translatable="false">
+    <string-array name="exo_controls_playback_speeds">
     <item>0.25x</item>
     <item>0.5x</item>
     <item>0.75x</item>
-    <item>@string/exo_controls_playback_speed_normal</item>
+    <item>Normal</item>
     <item>1.25x</item>
     <item>1.5x</item>
     <item>2x</item>
   </string-array>
-    <integer-array name="exo_speed_multiplied_by_100">
-    <item>25</item>
-    <item>50</item>
-    <item>75</item>
-    <item>100</item>
-    <item>125</item>
-    <item>150</item>
-    <item>200</item>
-  </integer-array>
     <attr format="color" name="ad_marker_color"/>
     <attr format="dimension" name="ad_marker_width"/>
     <attr format="boolean" name="animation_enabled"/>
@@ -363,6 +354,7 @@
     <string name="common_open_on_phone">Open on phone</string>
     <string name="common_signin_button_text">Sign in</string>
     <string name="common_signin_button_text_long">Sign in with Google</string>
+    <string name="copy_toast_msg">Link copied to clipboard</string>
     <string name="default_notification_channel_name">Now playing</string>
     <string name="default_web_client_id" translatable="false">3559824755-7o5kq82n9vlkf0posj1k7fe85mh1pmr5.apps.googleusercontent.com</string>
     <string name="exo_controls_cc_disabled_description">Enable subtitles</string>
@@ -378,17 +370,16 @@
     <string name="exo_controls_pause_description">Pause</string>
     <string name="exo_controls_play_description">Play</string>
     <string name="exo_controls_playback_speed">Speed</string>
-    <string name="exo_controls_playback_speed_normal">Normal</string>
     <string name="exo_controls_previous_description">Previous</string>
-    <string name="exo_controls_repeat_all_description">Repeat all</string>
-    <string name="exo_controls_repeat_off_description">Repeat none</string>
-    <string name="exo_controls_repeat_one_description">Repeat one</string>
+    <string name="exo_controls_repeat_all_description">Current mode: Repeat all. Toggle repeat mode.</string>
+    <string name="exo_controls_repeat_off_description">Current mode: Repeat none. Toggle repeat mode.</string>
+    <string name="exo_controls_repeat_one_description">Current mode: Repeat one. Toggle repeat mode.</string>
     <string name="exo_controls_rewind_description">Rewind</string>
     <string name="exo_controls_seek_bar_description">Playback progress</string>
     <string name="exo_controls_settings_description">Settings</string>
     <string name="exo_controls_show">Show player controls</string>
-    <string name="exo_controls_shuffle_off_description">Shuffle off</string>
-    <string name="exo_controls_shuffle_on_description">Shuffle on</string>
+    <string name="exo_controls_shuffle_off_description">Enable shuffle mode</string>
+    <string name="exo_controls_shuffle_on_description">Disable shuffle mode</string>
     <string name="exo_controls_stop_description">Stop</string>
     <string name="exo_controls_time_placeholder" translatable="false">00:00:00</string>
     <string name="exo_controls_vr_description">VR mode</string>
@@ -397,6 +388,9 @@
     <string name="exo_download_downloading">Downloading</string>
     <string name="exo_download_failed">Download failed</string>
     <string name="exo_download_notification_channel_name">Downloads</string>
+    <string name="exo_download_paused">Downloads paused</string>
+    <string name="exo_download_paused_for_network">Downloads waiting for network</string>
+    <string name="exo_download_paused_for_wifi">Downloads waiting for WiFi</string>
     <string name="exo_download_removing">Removing downloads</string>
     <string name="exo_item_list"><ns1:g example="apple, pear" id="list">%1$s</ns1:g>, <ns1:g example="banana" id="item">%2$s</ns1:g></string>
     <string name="exo_media_action_repeat_all_description">Repeat all</string>
@@ -419,6 +413,9 @@
     <string name="exo_track_surround_5_point_1">5.1 surround sound</string>
     <string name="exo_track_surround_7_point_1">7.1 surround sound</string>
     <string name="exo_track_unknown">Unknown</string>
+    <string name="fallback_menu_item_copy_link">Copy link</string>
+    <string name="fallback_menu_item_open_in_browser">Open in browser</string>
+    <string name="fallback_menu_item_share_link">Share link</string>
     <string name="gcm_defaultSenderId" translatable="false">3559824755</string>
     <string name="google_api_key" translatable="false">AIzaSyCuvoTV7rdMvl66XdlDanu9qbQrMCaNFp4</string>
     <string name="google_app_id" translatable="false">1:3559824755:android:391f933744f618ae97f906</string>
@@ -529,9 +526,11 @@
     <item name="android:foreground">@drawable/exo_styled_controls_fastforward</item>
     <item name="android:gravity">center|bottom</item>
     <item name="android:paddingBottom">@dimen/exo_icon_padding_bottom</item>
-    <item name="android:textAppearance">@style/ExoStyledControls.ButtonText</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">@dimen/exo_icon_text_size</item>
+    <item name="android:textColor">@color/exo_white</item>
     <!-- Needed for https://github.com/google/ExoPlayer/issues/7898 -->
-    <item name="backgroundTint">@android:color/white</item>
+    <item name="backgroundTint">@color/exo_white</item>
     <item name="android:insetBottom">0dp</item>
   </style>
     <style name="ExoStyledControls.Button.Center.Next">
@@ -553,15 +552,12 @@
     <item name="android:foreground">@drawable/exo_styled_controls_rewind</item>
     <item name="android:gravity">center|bottom</item>
     <item name="android:paddingBottom">@dimen/exo_icon_padding_bottom</item>
-    <item name="android:textAppearance">@style/ExoStyledControls.ButtonText</item>
-    <!-- Needed for https://github.com/google/ExoPlayer/issues/7898 -->
-    <item name="backgroundTint">@android:color/white</item>
-    <item name="android:insetBottom">0dp</item>
-  </style>
-    <style name="ExoStyledControls.ButtonText">
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">@dimen/exo_icon_text_size</item>
     <item name="android:textColor">@color/exo_white</item>
+    <!-- Needed for https://github.com/google/ExoPlayer/issues/7898 -->
+    <item name="backgroundTint">@color/exo_white</item>
+    <item name="android:insetBottom">0dp</item>
   </style>
     <style name="ExoStyledControls.TimeBar">
     <item name="bar_height">@dimen/exo_styled_progress_bar_height</item>
@@ -650,6 +646,9 @@
         <!-- Alpha multiplier applied to the base color. -->
         <attr format="float" name="alpha"/>
         <attr name="android:alpha"/>
+        <!-- Perceptual luminance applied to the base color. From 0 to 100. -->
+        <attr format="float" name="lStar"/>
+        <attr name="android:lStar"/>
     </declare-styleable>
     <declare-styleable name="CoordinatorLayout">
         <!-- A reference to an array of integers representing the
@@ -1091,7 +1090,7 @@
     <attr name="surface_type"/>
     <!-- AspectRatioFrameLayout attributes -->
     <attr name="resize_mode"/>
-    <!-- PlayerControlView attributes -->
+    <!-- StyledPlayerControlView attributes -->
     <attr name="show_timeout"/>
     <attr name="repeat_toggle_modes"/>
     <attr name="show_shuffle_button"/>

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="exo_controls_playback_speeds">
+    <item>0,25x</item>
+    <item>0,5x</item>
+    <item>0,75x</item>
+    <item>Normal</item>
+    <item>1,25x</item>
+    <item>1,5x</item>
+    <item>2x</item>
+  </string-array>
     <plurals name="exo_controls_fastforward_by_amount_description">
     <item quantity="one">Avançar %d segundo</item>
     <item quantity="other">Avançar %d segundos</item>
@@ -8,7 +17,8 @@
     <item quantity="one">Voltar %d segundo</item>
     <item quantity="other">Voltar %d segundos</item>
   </plurals>
-    <string msgid="6743534657295236036" name="default_notification_channel_name">"Tocando agora"</string>
+    <string msgid="3260749812566568062" name="copy_toast_msg">"Link copiado para a área de transferência"</string>
+    <string msgid="7213672915724563695" name="default_notification_channel_name">"Tocando agora"</string>
     <string name="exo_controls_cc_disabled_description">Ativar legendas</string>
     <string name="exo_controls_cc_enabled_description">Desativar legendas</string>
     <string name="exo_controls_fastforward_description">Avançar</string>
@@ -21,7 +31,6 @@
     <string name="exo_controls_pause_description">Pausar</string>
     <string name="exo_controls_play_description">Reproduzir</string>
     <string name="exo_controls_playback_speed">Velocidade</string>
-    <string name="exo_controls_playback_speed_normal">Normal</string>
     <string name="exo_controls_previous_description">Anterior</string>
     <string name="exo_controls_repeat_all_description">Repetir tudo</string>
     <string name="exo_controls_repeat_off_description">Não repetir</string>
@@ -39,6 +48,9 @@
     <string name="exo_download_downloading">Fazendo o download</string>
     <string name="exo_download_failed">Falha no download</string>
     <string name="exo_download_notification_channel_name">Downloads</string>
+    <string name="exo_download_paused">Downloads pausados</string>
+    <string name="exo_download_paused_for_network">Downloads aguardando uma conexão de rede</string>
+    <string name="exo_download_paused_for_wifi">Downloads aguardando uma rede Wi-Fi</string>
     <string name="exo_download_removing">Removendo downloads</string>
     <string name="exo_item_list">%1$s, %2$s</string>
     <string name="exo_media_action_repeat_all_description">Repetir tudo</string>
@@ -61,9 +73,12 @@
     <string name="exo_track_surround_5_point_1">Sistema surround 5.1</string>
     <string name="exo_track_surround_7_point_1">Sistema surround 7.1</string>
     <string name="exo_track_unknown">Desconhecido</string>
-    <string msgid="4221330012095125431" name="pause_button_content_description">"Pausar"</string>
-    <string msgid="6034272287948142298" name="play_button_content_description">"Reproduzir"</string>
-    <string msgid="17824442457643717" name="skip_to_next_item_button_content_description">"Pular para o próximo item"</string>
-    <string msgid="7233771088610629683" name="skip_to_previous_item_button_content_description">"Voltar para o item anterior"</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Copiar link"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Abrir no navegador"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Compartilhar link"</string>
+    <string msgid="3510124037191104584" name="pause_button_content_description">"Pausar"</string>
+    <string msgid="963503759453979404" name="play_button_content_description">"Iniciar"</string>
+    <string msgid="6034072145387511457" name="skip_to_next_item_button_content_description">"Pular para o próximo item"</string>
+    <string msgid="4352480799561670760" name="skip_to_previous_item_button_content_description">"Voltar para o item anterior"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>
