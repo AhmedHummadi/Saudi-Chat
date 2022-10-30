@@ -43,14 +43,16 @@ MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/ahmedhumma
 MERGED from [com.google.firebase:firebase-installations:17.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/572f16b303b8e22d875faa97b32e19d2/jetified-firebase-installations-17.0.1/AndroidManifest.xml:2:1-24:12
 MERGED from [com.google.firebase:firebase-common:20.1.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f74218fa9ee7c4d986dff5b695fb78ea/jetified-firebase-common-20.1.1/AndroidManifest.xml:15:1-40:12
 MERGED from [androidx.core:core-ktx:1.5.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c326dce4a935299738caa8db806de43e/jetified-core-ktx-1.5.0/AndroidManifest.xml:2:1-9:12
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:17:1-145:12
+MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:2:1-12:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/79a346cbde5bd18bcf6b8073cefd49c0/exifinterface-1.3.2/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-ui:2.17.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/48aa2488373427b498a900f9489f8421/jetified-exoplayer-ui-2.17.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:17:1-145:12
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.exoplayer:exoplayer-hls:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/403fb38fad7a1d174a7286448220f455/jetified-exoplayer-hls-2.18.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-dash:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a488695d76b88a5b32fd6b9e9b1d29e1/jetified-exoplayer-dash-2.18.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/74fffa19b644cb00e096db094124ad0c/jetified-exoplayer-smoothstreaming-2.18.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-core:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e9ca3335e0b6bbbf0004074900ccbca8/jetified-exoplayer-core-2.18.0/AndroidManifest.xml:17:1-26:12
-MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:2:1-12:12
 MERGED from [com.google.android.gms:play-services-location:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c690fe6b75076d343bdca9f805cdf656/jetified-play-services-location-17.0.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a04a9d5d68808fe0759ec5b8db7e674e/jetified-firebase-database-collection-18.0.1/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-auth-api-phone:17.4.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e5402c62fe04e96b6c7e115fe9e3e358/jetified-play-services-auth-api-phone-17.4.0/AndroidManifest.xml:2:1-7:12
@@ -88,9 +90,7 @@ MERGED from [androidx.customview:customview:1.0.0] /Users/ahmedhummadi/.gradle/c
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/d637664b63afec42c9fbc6d4704471c0/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/4e905873b823dfcc7275abede5560987/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.vectordrawable:vectordrawable:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/d0980aa84b0bf701673c20ea69beb981/vectordrawable-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:17:1-26:12
-MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/653b0edcc258f68f1ac4ccfdd86e565b/exifinterface-1.3.3/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:17:1-26:12
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/86c7cb46254bf45d5d55c08fdc6f7659/lifecycle-runtime-2.4.0-beta01/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a1d09ed04bbed8ff69e9eb40ee541b46/lifecycle-livedata-2.1.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/8824e66aac2583d510d0cfa52c220e94/lifecycle-livedata-core-2.1.0/AndroidManifest.xml:17:1-22:12
@@ -215,10 +215,10 @@ MERGED from [com.google.firebase:firebase-installations:17.0.1] /Users/ahmedhumm
 MERGED from [com.google.firebase:firebase-installations:17.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/572f16b303b8e22d875faa97b32e19d2/jetified-firebase-installations-17.0.1/AndroidManifest.xml:14:5-22:19
 MERGED from [com.google.firebase:firebase-common:20.1.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f74218fa9ee7c4d986dff5b695fb78ea/jetified-firebase-common-20.1.1/AndroidManifest.xml:25:5-38:19
 MERGED from [com.google.firebase:firebase-common:20.1.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f74218fa9ee7c4d986dff5b695fb78ea/jetified-firebase-common-20.1.1/AndroidManifest.xml:25:5-38:19
-MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:30:5-143:19
-MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:30:5-143:19
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:10:5-20
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:10:5-20
+MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:30:5-143:19
+MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:30:5-143:19
 MERGED from [com.google.android.gms:play-services-location:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c690fe6b75076d343bdca9f805cdf656/jetified-play-services-location-17.0.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-location:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c690fe6b75076d343bdca9f805cdf656/jetified-play-services-location-17.0.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-safetynet:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c81f9bba3a05d504942557eee24f8d29/jetified-play-services-safetynet-17.0.0/AndroidManifest.xml:22:5-20
@@ -245,8 +245,8 @@ MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/a
 MERGED from [com.google.firebase:firebase-measurement-connector:19.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/9539dca15f811da3f0909c9345975fff/jetified-firebase-measurement-connector-19.0.0/AndroidManifest.xml:22:5-23:19
 MERGED from [com.google.android.gms:play-services-basement:18.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/76b2bc49eaef537248ea6e206ac20a7b/jetified-play-services-basement-18.0.0/AndroidManifest.xml:20:5-24:19
 MERGED from [com.google.android.gms:play-services-basement:18.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/76b2bc49eaef537248ea6e206ac20a7b/jetified-play-services-basement-18.0.0/AndroidManifest.xml:20:5-24:19
-MERGED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:24:5-89
-MERGED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:24:5-89
 MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/9edf67105f774845d160e2098963aa8f/jetified-startup-runtime-1.0.0/AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/9edf67105f774845d160e2098963aa8f/jetified-startup-runtime-1.0.0/AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e48de0c769a76ea7513ed747cb96c78e/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
@@ -256,7 +256,7 @@ MERGED from [androidx.room:room-runtime:2.2.5] /Users/ahmedhummadi/.gradle/cache
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/40b1ddc1fc7881b801a7fde62433d90b/jetified-gifdecoder-4.11.0/AndroidManifest.xml:9:5-20
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/40b1ddc1fc7881b801a7fde62433d90b/jetified-gifdecoder-4.11.0/AndroidManifest.xml:9:5-20
 	android:appComponentFactory
-		ADDED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:24:18-86
+		ADDED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:24:18-86
 	android:label
 		ADDED from /Users/ahmedhummadi/AppDev/saudi_chat/android/app/src/main/AndroidManifest.xml:12:9-35
 	android:icon
@@ -383,12 +383,18 @@ MERGED from [com.google.firebase:firebase-common:20.1.1] /Users/ahmedhummadi/.gr
 MERGED from [com.google.firebase:firebase-common:20.1.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f74218fa9ee7c4d986dff5b695fb78ea/jetified-firebase-common-20.1.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core-ktx:1.5.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c326dce4a935299738caa8db806de43e/jetified-core-ktx-1.5.0/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.core:core-ktx:1.5.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c326dce4a935299738caa8db806de43e/jetified-core-ktx-1.5.0/AndroidManifest.xml:5:5-7:41
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:21:5-23:41
+MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
+MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/79a346cbde5bd18bcf6b8073cefd49c0/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/79a346cbde5bd18bcf6b8073cefd49c0/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-ui:2.17.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/48aa2488373427b498a900f9489f8421/jetified-exoplayer-ui-2.17.1/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-ui:2.17.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/48aa2488373427b498a900f9489f8421/jetified-exoplayer-ui-2.17.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.work:work-runtime:2.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/beda71a3ca924a89f240237e52ce0518/work-runtime-2.7.0/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/b675d55ff9c7e12267c2d288d62cc49b/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.exoplayer:exoplayer-hls:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/403fb38fad7a1d174a7286448220f455/jetified-exoplayer-hls-2.18.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-hls:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/403fb38fad7a1d174a7286448220f455/jetified-exoplayer-hls-2.18.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-dash:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a488695d76b88a5b32fd6b9e9b1d29e1/jetified-exoplayer-dash-2.18.0/AndroidManifest.xml:20:5-22:41
@@ -397,8 +403,6 @@ MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.0] /Use
 MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/74fffa19b644cb00e096db094124ad0c/jetified-exoplayer-smoothstreaming-2.18.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-core:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e9ca3335e0b6bbbf0004074900ccbca8/jetified-exoplayer-core-2.18.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-core:2.18.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e9ca3335e0b6bbbf0004074900ccbca8/jetified-exoplayer-core-2.18.0/AndroidManifest.xml:20:5-22:41
-MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/f3c3f12b16287edd49932dee1d49e573/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
 MERGED from [com.google.android.gms:play-services-location:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c690fe6b75076d343bdca9f805cdf656/jetified-play-services-location-17.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-location:17.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/c690fe6b75076d343bdca9f805cdf656/jetified-play-services-location-17.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a04a9d5d68808fe0759ec5b8db7e674e/jetified-firebase-database-collection-18.0.1/AndroidManifest.xml:5:5-7:41
@@ -473,12 +477,8 @@ MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ahme
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/4e905873b823dfcc7275abede5560987/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.vectordrawable:vectordrawable:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/d0980aa84b0bf701673c20ea69beb981/vectordrawable-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.vectordrawable:vectordrawable:1.0.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/d0980aa84b0bf701673c20ea69beb981/vectordrawable-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/653b0edcc258f68f1ac4ccfdd86e565b/exifinterface-1.3.3/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/653b0edcc258f68f1ac4ccfdd86e565b/exifinterface-1.3.3/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/521567cc83df06e0b8e0ae063f23d7aa/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/86c7cb46254bf45d5d55c08fdc6f7659/lifecycle-runtime-2.4.0-beta01/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0-beta01] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/86c7cb46254bf45d5d55c08fdc6f7659/lifecycle-runtime-2.4.0-beta01/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/a1d09ed04bbed8ff69e9eb40ee541b46/lifecycle-livedata-2.1.0/AndroidManifest.xml:20:5-44

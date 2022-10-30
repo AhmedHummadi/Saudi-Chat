@@ -1,3 +1,4 @@
+import 'package:line_icons/line_icon.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/control_panel.dart';
@@ -24,7 +25,7 @@ class _HomeState extends State<Home> {
 
   List<BottomNavigationBarItem> navigationBaritems = const [
     BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
-    BottomNavigationBarItem(label: "Chat", icon: Icon(Icons.chat)),
+    // BottomNavigationBarItem(label: "Chat", icon: Icon(Icons.chat)),
     BottomNavigationBarItem(
       label: "Groups",
       icon: Icon(
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
       HomePage(
         toggleSearch: toggleSearch,
       ),
-      ChatTab(toggleSearch: toggleSearch),
+      // ChatTab(toggleSearch: toggleSearch),
       const GroupsPage(),
     ];
 
@@ -68,9 +69,15 @@ class _HomeState extends State<Home> {
                         streamedUser.userClass == UserClass.admin
                     ? navigationBaritems +
                         [
-                          const BottomNavigationBarItem(
+                          BottomNavigationBarItem(
                               label: "Control Panel",
-                              icon: Icon(Icons.person_outline))
+                              icon: LineIcon.usersCog(
+                                size: 26,
+                                color: _currentIndex ==
+                                        navigationBaritems.length
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : Colors.grey[700],
+                              ))
                         ]
                     : navigationBaritems),
             drawer: buildDrawer(streamedUser),
@@ -254,7 +261,7 @@ class _HomeState extends State<Home> {
 
   Future<void> onSignoutTapped() async {
     showCustomAlertDialog(
-        context, "Are you sure you want to Sign out?", "", "Sign out",
+        context, "Are you sure you want to Sign out?", "", "Sign out", null,
         () async {
       Navigator.pop(context);
       await AuthService().signOut();

@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum UserClass { moderator, admin, coAdmin, user }
 
 class UserAuth {
+  // a user can only be admin or subadmin to 1 group
+
   late final String? uid;
   late final DateTime? creationTime;
   late final DateTime? lastSignInTime;
@@ -9,13 +13,13 @@ class UserAuth {
   UserClass? userClass = UserClass.user;
   late List? groups;
   late String? email;
-  late List? groupsAdmin;
+  late DocumentReference? groupAdmin;
   late bool? isAnonymous;
   late List? cities;
 
   UserAuth(
       {this.uid,
-      this.groupsAdmin,
+      this.groupAdmin,
       this.creationTime,
       this.lastSignInTime,
       this.isAnonymous,
@@ -54,5 +58,23 @@ class UserAuth {
       default:
         return UserClass.user;
     }
+  }
+
+  static UserAuth parseFromUserDocument(Map data) {
+    return UserAuth(
+        uid: data["id"],
+        phoneNum: data["phoneNum"],
+        email: data["email"],
+        displayName: data["name"],
+        groupAdmin: data["groupAdmin"],
+        groups: data["groups"],
+        creationTime: data["creationTime"] != null
+            ? (data["creationTime"] as Timestamp).toDate()
+            : null,
+        lastSignInTime: data["lastSignInTime"] != null
+            ? (data["lastSignInTime"] as Timestamp).toDate()
+            : null,
+        cities: data["cities"],
+        userClass: UserAuth.parseUserClass(data["userClass"]));
   }
 }

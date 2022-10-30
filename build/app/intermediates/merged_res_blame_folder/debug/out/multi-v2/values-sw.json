@@ -4,6 +4,23 @@
             "outputFile": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-sw/values-sw.xml",
             "map": [
                 {
+                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/res/values-sw/values-sw.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "100",
+                        "startColumns": "4",
+                        "startOffsets": "7908",
+                        "endColumns": "100",
+                        "endOffsets": "8004"
+                    }
+                },
+                {
                     "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/5606ce9caec8f62ac7e37b90b4e319c8/browser-1.4.0/res/values-sw/values-sw.xml",
                     "from": {
                         "startLines": "2,3,4,5",
@@ -122,23 +139,6 @@
                         "endLines": "10,14,18,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,72,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92",
                         "endColumns": "17,12,12,78,76,84,89,87,75,65,92,94,66,63,60,74,74,79,74,73,80,72,77,93,93,67,77,52,57,47,60,60,66,63,65,62,58,65,68,65,51,65,82,82,57",
                         "endOffsets": "284,501,701,3263,3340,3425,3515,3603,3679,3745,3838,3933,4000,4064,4125,4200,4275,4355,4430,4504,4585,4658,4736,4830,4924,4992,5070,5772,6072,6120,6181,6242,6309,6373,6439,6502,6561,6627,6696,6762,6814,6880,6963,7046,7104"
-                    }
-                },
-                {
-                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/res/values-sw/values-sw.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "100",
-                        "startColumns": "4",
-                        "startOffsets": "7908",
-                        "endColumns": "100",
-                        "endOffsets": "8004"
                     }
                 }
             ]

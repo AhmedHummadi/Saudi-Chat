@@ -763,23 +763,284 @@ class GroupInfoCard extends StatelessWidget {
   Future<void> onExitIconTapped(
       BuildContext context, UserAuth streamedUser, String groupName) async {
     Future<void> onLeavePressed() async {
-      print(groupData);
-
       NadiData _groupData = NadiData.parse(groupData);
 
       await DataBaseService()
-          .removeUserFromGroup(streamedUser: streamedUser, nadi: _groupData);
+          .removeUserFromGroup(user: streamedUser, nadi: _groupData);
 
       Navigator.pop(context);
 
       return;
     }
 
-    showCustomAlertDialog(
-        context, "Are you sure you want to leave", '"$groupName"?', "Leave",
-        () {
+    showCustomAlertDialog(context, "Are you sure you want to leave",
+        '"$groupName"?', "Leave", null, () {
       onLeavePressed();
     });
+  }
+}
+
+class UserInfoCard extends StatefulWidget {
+  final UserAuth userData;
+  final TextEditingController? searchFieldController;
+  // groupData is the group information map that is on the users groups list
+  const UserInfoCard(
+      {Key? key, required this.userData, this.searchFieldController})
+      : super(key: key);
+
+  @override
+  State<UserInfoCard> createState() => _UserInfoCardState();
+}
+
+class _UserInfoCardState extends State<UserInfoCard> {
+  @override
+  Widget build(BuildContext context) {
+    final _kOutsideContainerSize = Size(MediaQuery.of(context).size.width - 20,
+        MediaQuery.of(context).size.height / 10);
+
+    dynamic streamedUser = Provider.of<UserAuth>(context);
+
+    return Container(
+        height: _kOutsideContainerSize.height,
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                height: _kOutsideContainerSize.height,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      width: _kOutsideContainerSize.height / 3 * 2,
+                      child: CircleAvatar(
+                          radius: _kOutsideContainerSize.height / 3,
+                          backgroundImage: Image.asset(
+                            "assets/new_nadi_profile_pic.jpg",
+                          ).image),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.2,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Flexible(
+                              child: LanguageTypeText(
+                                widget.userData.displayName!,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.2,
+                                    fontSize: calculateAutoscaleFontSize(
+                                        widget.userData.displayName!,
+                                        const TextStyle(letterSpacing: 0.2),
+                                        18,
+                                        30,
+                                        MediaQuery.of(context).size.width /
+                                            2.4),
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            Flexible(
+                                child: Text(
+                              widget.userData.email!,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground
+                                      .withOpacity(0.8)),
+                            ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     await onMessageIconTapped(context, streamedUser);
+                  //   },
+                  //   child: const Icon(
+                  //     Icons.messenger_rounded,
+                  //     color: Colors.white,
+                  //     size: 24,
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   width: 8,
+                  // ),
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     await onInfoIconTapped(context, streamedUser);
+                  //   },
+                  //   child: const Icon(
+                  //     Icons.info_outline_rounded,
+                  //     color: Colors.white,
+                  //     size: 24,
+                  //   ),
+                  // ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await onBlockIconTapped(
+                          context, widget.userData, streamedUser);
+                    },
+                    child: const Icon(
+                      Icons.exit_to_app,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ));
+  }
+
+  // DocumentReference groupDocument() {
+  Future<void> onBlockIconTapped(
+      BuildContext context, UserAuth user, UserAuth streamedUser) async {
+    Future<void> onBlockPressedAdmin() async {
+      await DataBaseService().removeUserFromGroup(
+          user: user,
+          nadi: NadiData.parse(
+              (await streamedUser.groupAdmin!.get()).data() as Map));
+
+      Navigator.pop(context);
+
+      return;
+    }
+
+    Future<void> onBlockPressedModerator(NadiData nadiData) async {
+      await DataBaseService().removeUserFromGroup(user: user, nadi: nadiData);
+
+      Navigator.pop(context);
+
+      return;
+    }
+
+    if (streamedUser.userClass == UserClass.admin ||
+        streamedUser.userClass == UserClass.coAdmin) {
+      showCustomAlertDialog(
+          context,
+          "Are you sure you want to Kick",
+          '"${widget.userData.displayName}"?',
+          "Kick",
+          widget.searchFieldController, () async {
+        await onBlockPressedAdmin();
+      });
+      return;
+    }
+    if (streamedUser.userClass == UserClass.moderator) {
+      showUserKickModeratorDialog(
+          context,
+          'Choose a group to kick',
+          '"${user.displayName}" from.',
+          user.groups!.map((e) => NadiData.parse(e)).toList(),
+          "Group:",
+          "Kick", (nadiData) async {
+        await onBlockPressedModerator(nadiData);
+        return;
+      });
+    }
+  }
+
+  Future<void> showUserKickModeratorDialog(
+      BuildContext context,
+      String topText,
+      String bottomText,
+      List<NadiData> dropDownItemsList,
+      String dropDownText,
+      String rightButtonText,
+      Future Function(NadiData) rightButtonFunction) async {
+    late NadiData? group;
+
+    final _formKey = GlobalKey<FormState>();
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        useSafeArea: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Text(topText, textAlign: TextAlign.center),
+                  Text(bottomText, textAlign: TextAlign.center),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  MyDropdownField(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onBackground)),
+                    itemsList:
+                        dropDownItemsList.map((e) => e.nadiName).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        group = dropDownItemsList
+                            .where((element) => element.nadiName == val)
+                            .single;
+                      });
+                    },
+                    labelText: dropDownText,
+                    validatorText: "Choose a group to kick from",
+                  )
+                ],
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            alignment: Alignment.center,
+            actions: [
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 17),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    await rightButtonFunction(group!);
+                    if (widget.searchFieldController != null) {
+                      setState(() {
+                        widget.searchFieldController!.clear();
+                      });
+                    }
+                  }
+                },
+                child: Text(
+                  rightButtonText,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 17),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -788,6 +1049,7 @@ Future<void> showCustomAlertDialog(
     String topText,
     String bottomText,
     String rightButtonText,
+    TextEditingController? searchFieldController,
     FutureOr rightButtonFunction) async {
   return showDialog(
       context: context,
@@ -820,6 +1082,9 @@ Future<void> showCustomAlertDialog(
             SimpleDialogOption(
               onPressed: () async {
                 await rightButtonFunction!!();
+                if (searchFieldController != null) {
+                  searchFieldController.clear();
+                }
               },
               child: Text(
                 rightButtonText,

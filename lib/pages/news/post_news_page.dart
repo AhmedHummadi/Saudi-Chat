@@ -338,67 +338,30 @@ class _AddNewsPageState extends State<AddNewsPage> {
         return;
       }
 
-      if (streamedUser.groupsAdmin!.length > 1) {
-        List<DocumentSnapshot> groups = [];
-        for (var groupDoc in streamedUser.groupsAdmin!) {
-          groups.add(await groupDoc.get());
-        }
+      // upload the image first then get the url
+      String url = await FireStorage()
+          .uploadImageForNews(File(postImagePath!), streamedUser.groupAdmin!);
 
-        DocumentReference groupDoc = groups
-            .where((element) => element.get("nadi_data")["name"] == groupName)
-            .single
-            .reference;
+      // parse the nadi doc into a map for the details
 
-        // upload the image first then get the url
-        String url = await FireStorage()
-            .uploadImageForNews(File(postImagePath!), groupDoc);
+      DocumentReference nadiDoc =
+          DataBaseService().nadiCollection.doc(streamedUser.groupAdmin!.id);
 
-        // parse the nadi doc into a map for the details
+      Map nadiData = (await nadiDoc.get()).data() as Map;
 
-        DocumentReference nadiDoc =
-            DataBaseService().nadiCollection.doc(groupDoc.id);
+      // convert the details into a map then upload it to firestore
+      Map details = {
+        "dateCreated": Timestamp.now(),
+        "imageUrl": url,
+        "nadi": nadiData,
+        "created_by": streamedUser.displayName,
+        "nadiDoc": nadiDoc,
+        "description": postDescription,
+        "title": postTitle
+      };
 
-        Map nadiData = (await nadiDoc.get()).data() as Map;
-
-        // convert the details into a map then upload it to firestore
-        Map details = {
-          "dateCreated": Timestamp.now(),
-          "imageUrl": url,
-          "nadi": nadiData,
-          "nadiDoc": nadiDoc,
-          "description": postDescription,
-          "title": postTitle
-        };
-
-        await ControlsService().postNews(details);
-        return;
-      } else {
-        // upload the image first then get the url
-        String url = await FireStorage().uploadImageForNews(
-            File(postImagePath!), streamedUser.groupsAdmin![0]);
-
-        // parse the nadi doc into a map for the details
-
-        DocumentReference nadiDoc = DataBaseService()
-            .nadiCollection
-            .doc(streamedUser.groupsAdmin![0].id);
-
-        Map nadiData = (await nadiDoc.get()).data() as Map;
-
-        // convert the details into a map then upload it to firestore
-        Map details = {
-          "dateCreated": Timestamp.now(),
-          "imageUrl": url,
-          "nadi": nadiData,
-          "created_by": streamedUser.displayName,
-          "nadiDoc": nadiDoc,
-          "description": postDescription,
-          "title": postTitle
-        };
-
-        await ControlsService().postNews(details);
-        return;
-      }
+      await ControlsService().postNews(details);
+      return;
     } catch (e) {
       Fluttertoast.showToast(msg: "an unknown error has occured");
     }

@@ -32,26 +32,29 @@ class ControlsService {
     try {
       // we will get first go into the groupDoc's Admin collection
       // and add the userDoc there with any additional info
-      // then we will go to the usersDoc and then add the group
-      // document reference in the groupAdmins list
+      // then we will go to the usersDoc and change the
+      // groupAdmin to the group document
 
       // if he is already an admin/moderator
-      if (((userDoc.get("groupsAdmin") as List).contains(groupDoc.reference))) {
-        Fluttertoast.showToast(msg: "User is already admin");
+      if (userDoc.get("groupAdmin") != null) {
+        Fluttertoast.showToast(msg: "User is already Admin");
         return false;
       }
 
       // if he is not a member in the group yet
-      if (!(await groupDoc.reference.collection("members").get())
+      if ((await groupDoc.reference
+              .collection("members")
+              .where("doc_reference", isEqualTo: userDoc.reference)
+              .get())
           .docs
-          .any((element) => element.id == userDoc.id)) {
+          .isEmpty) {
         Fluttertoast.showToast(msg: "User is not a member in the group");
         return false;
       }
 
       // if he is a moderator and can't be admin
       if (userDoc.get("userClass") == "moderator") {
-        Fluttertoast.showToast(msg: "User is an moderator and can't be admin");
+        Fluttertoast.showToast(msg: "User is a moderator and can't be admin");
         return false;
       }
 
@@ -73,11 +76,9 @@ class ControlsService {
       }
 
       userDocInGroup.update({"userClass": "admin"});
-      List groupsAdmin = userDoc.get("groupsAdmin") as List;
-      groupsAdmin.add(groupDoc.reference);
 
       userDoc.reference
-          .update({"groupsAdmin": groupsAdmin, "userClass": "admin"});
+          .update({"groupAdmin": groupDoc.reference, "userClass": "admin"});
       return true;
     } catch (e) {
       rethrow;
@@ -86,13 +87,13 @@ class ControlsService {
 
   Future<bool> assignModerator(DocumentSnapshot userDoc) async {
     try {
-      if ((userDoc.get("groupsAdmin") as List).isNotEmpty) {
-        Fluttertoast.showToast(msg: "User is an Admin and can't be moderator");
+      if (userDoc.get("groupAdmin") != null) {
+        Fluttertoast.showToast(msg: "User is an Admin and can't be Moderator");
         return false;
       }
 
       if (userDoc.get("userClass") == "moderator") {
-        Fluttertoast.showToast(msg: "User is already a moderator");
+        Fluttertoast.showToast(msg: "User is already a Moderator");
         return false;
       }
 

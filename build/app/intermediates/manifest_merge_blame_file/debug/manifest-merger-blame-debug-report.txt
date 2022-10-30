@@ -90,7 +90,7 @@
 47    <application
 47-->/Users/ahmedhummadi/AppDev/saudi_chat/android/app/src/main/AndroidManifest.xml:11:5-48:19
 48        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-48-->[androidx.core:core:1.8.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/AndroidManifest.xml:24:18-86
+48-->[androidx.core:core:1.7.0] /Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/AndroidManifest.xml:24:18-86
 49        android:debuggable="true"
 50        android:icon="@mipmap/ic_launcher"
 50-->/Users/ahmedhummadi/AppDev/saudi_chat/android/app/src/main/AndroidManifest.xml:13:9-43

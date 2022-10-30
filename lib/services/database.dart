@@ -40,7 +40,7 @@ class DataBaseService {
         uid: uid ?? snapshot.id,
         cities: snapshot.get("cities"),
         groups: snapshot.get("groups"),
-        groupsAdmin: snapshot.get("groupsAdmin"),
+        groupAdmin: snapshot.get("groupAdmin"),
         userClass: UserAuth.parseUserClass(snapshot.get("userClass")),
         email: snapshot.get("email"),
         isAnonymous: snapshot.get("isAnonymous"),
@@ -184,41 +184,39 @@ class DataBaseService {
   }
 
   Future<bool> removeUserFromGroup(
-      {required UserAuth streamedUser, required NadiData nadi}) async {
-    DocumentReference usersDocument = authUsersCollection.doc(streamedUser.uid);
+      {required UserAuth user, required NadiData nadi}) async {
+    DocumentReference usersDocument = authUsersCollection.doc(user.uid);
 
     DocumentReference groupDocument = messagesCollection.doc(nadi.id);
-    try {
-      /// We want to first remove the group from the users groups
-      /// list so that it updates everything that the viewer sees
-      /// in the app. [removeGroupFromUsersJoinedGroups()]
-      /// Then we want to delete the users document from the members
-      /// collection in the groups document
 
-      Future removeGroupFromUsersJoinedGroups() async {
-        // First we will get the groups list
-        List updatedGroupList = streamedUser.groups!
-          ..removeWhere((item) => item["nadi_id"] == nadi.id);
+    /// We want to first remove the group from the users groups
+    /// list so that it updates everything that the viewer sees
+    /// in the app. [removeGroupFromUsersJoinedGroups()]
+    /// Then we want to delete the users document from the members
+    /// collection in the groups document
 
-        // Then we will update the user document
-        return await usersDocument.update({"groups": updatedGroupList});
-      }
+    Future removeGroupFromUsersJoinedGroups() async {
+      // First we will get the groups list
+      List updatedGroupList = user.groups!
+        ..removeWhere((item) => item["nadi_id"] == nadi.id);
 
-      Future kickUserFromGroupsMembersList() async {
-        //?? This will not remove the users messages from the group
-
-        // We will simply get a reference to the users document in the members collection then delete it
-        CollectionReference membersCollectionReference =
-            groupDocument.collection("members");
-
-        return await membersCollectionReference.doc(streamedUser.uid).delete();
-      }
-
-      await removeGroupFromUsersJoinedGroups();
-      await kickUserFromGroupsMembersList();
-    } catch (e) {
-      print(e);
+      // Then we will update the user document
+      return await usersDocument.update({"groups": updatedGroupList});
     }
+
+    Future kickUserFromGroupsMembersList() async {
+      //?? This will not remove the users messages from the group
+
+      // We will simply get a reference to the users document in the members collection then delete it
+      CollectionReference membersCollectionReference =
+          groupDocument.collection("members");
+
+      return await membersCollectionReference.doc(user.uid).delete();
+    }
+
+    await removeGroupFromUsersJoinedGroups();
+    await kickUserFromGroupsMembersList();
+
     if ((await groupDocument
             .collection("members")
             .where("doc_reference", isEqualTo: usersDocument)
@@ -245,7 +243,7 @@ class DataBaseService {
         "groups": [],
         "cities": userAuth.cities,
         "phoneNum": userAuth.phoneNum,
-        "groupsAdmin": [],
+        "groupAdmin": null,
         "creationTime": userAuth.creationTime,
         "lastSignInTime": userAuth.lastSignInTime
       });

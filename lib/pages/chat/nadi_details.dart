@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -53,84 +54,158 @@ class _NadiDetailsState extends State<NadiDetails> {
                 data = null;
               }
 
-              return Column(
-                children: [
-                  Container(
-                    width: screenSize.width,
-                    height: screenSize.height / 3.2,
-                    decoration: const BoxDecoration(color: Colors.grey),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 48,
-                            backgroundImage: Image.asset(
-                              "assets/new_nadi_profile_pic.jpg",
-                            ).image,
-                          ),
-                          Container(
-                            color: Colors.white,
-                            child: Text(groupData["nadi_data"]["name"]),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  //?? TODO: add a discription tab
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
+              return Container(
+                height: screenSize.height,
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer
+                    .withOpacity(0.2),
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      const SizedBox(
-                        width: 10,
+                      Material(
+                        elevation: 1,
+                        child: SizedBox(
+                          width: screenSize.width,
+                          height: screenSize.height / 3.2,
+                          child: Stack(alignment: Alignment.center, children: [
+                            CachedNetworkImage(
+                                width: screenSize.width,
+                                fit: BoxFit.cover,
+                                imageUrl:
+                                    "https://img.freepik.com/free-photo/black-monstera-leaves-background-wallpaper_53876-102420.jpg"),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey.shade500,
+                                            spreadRadius: 0,
+                                            blurRadius: 4)
+                                      ],
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 48,
+                                      backgroundImage: Image.asset(
+                                        "assets/new_nadi_profile_pic.jpg",
+                                      ).image,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    groupData["nadi_data"]["name"],
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500,
+                                        shadows: [
+                                          Shadow(
+                                              offset: const Offset(0, 1.5),
+                                              color: Colors.grey.shade500,
+                                              blurRadius: 5)
+                                        ]),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ]),
+                        ),
                       ),
-                      Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(groupData["nadi_data"]["name"]),
-                              Text(groupData["nadi_data"]["email"]),
-                              Text(groupData["nadi_data"]["location"]),
-                            ],
-                          )),
                       const SizedBox(
-                        width: 10,
+                        height: 12,
                       ),
-                      Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(groupData["nadi_data"]["phoneNum"]),
-                              Text(data != null
-                                  ? data[0].docs.length.toString() + " Members"
-                                  : "..."),
-                              Text(data != null
-                                  ? data[1].docs.length.toString() + " Admins"
-                                  : "...")
-                            ],
-                          ))
+                      //?? TODO: add a discription tab
+
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.background,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                                flex: 1,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SpecificDetail(
+                                        specification: "Name",
+                                        value: groupData["nadi_data"]["name"]),
+                                    SpecificDetail(
+                                        specification: "Email",
+                                        value: groupData["nadi_data"]["email"]),
+                                    SpecificDetail(
+                                        specification: "Location",
+                                        value: groupData["nadi_data"]
+                                            ["location"])
+                                  ],
+                                )),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                                flex: 1,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SpecificDetail(
+                                        specification: "Phone Number",
+                                        value: groupData["nadi_data"]
+                                            ["phoneNum"]),
+                                    SpecificDetail(
+                                        specification: "Members",
+                                        value: data != null
+                                            ? data[0].docs.length.toString()
+                                            : "..."),
+                                    SpecificDetail(
+                                        specification: "Admins",
+                                        value: data != null
+                                            ? data[1].docs.length.toString()
+                                            : "...")
+                                  ],
+                                ))
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.background,
+                            borderRadius: BorderRadius.circular(12)),
+                        constraints: BoxConstraints.loose(
+                            Size.fromHeight(screenSize.height / 3.5)),
+                        width: screenSize.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Wrap(
+                            direction: Axis.vertical,
+                            children: data != null
+                                ? data[0]
+                                    .docs
+                                    .map((memberDocument) => GroupMemberCard(
+                                        memberDocumentData: memberDocument))
+                                    .toList()
+                                : [],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      )
                     ],
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        children: data != null
-                            ? data[0]
-                                .docs
-                                .map((memberDocument) => GroupMemberCard(
-                                    memberDocumentData: memberDocument))
-                                .toList()
-                            : [],
-                      ),
-                    ),
-                  )
-                ],
+                ),
               );
             }));
   }
@@ -153,7 +228,7 @@ class GroupMemberCard extends StatelessWidget {
             ).image),
         title: Text(
           memberDocumentData.get("name"),
-          style: TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 14),
         ),
       ),
     );
@@ -169,26 +244,26 @@ class SpecificDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 0, 0, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$specification:",
-            style: TextStyle(color: Colors.grey[500], fontSize: 16),
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          Text(value,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColorDark, fontSize: 18)),
-          const SizedBox(
-            height: 20,
-          )
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$specification:",
+          style: TextStyle(
+              color:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.75),
+              fontSize: 14),
+        ),
+        const SizedBox(
+          height: 2,
+        ),
+        Text(value,
+            style: TextStyle(
+                color: Theme.of(context).primaryColorDark, fontSize: 16)),
+        const SizedBox(
+          height: 20,
+        )
+      ],
     );
   }
 }
