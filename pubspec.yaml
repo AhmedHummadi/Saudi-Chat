@@ -87,7 +87,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dependency_overrides:
-  image_picker_android: 0.8.4+13
+  image_picker_android: 0.8.5+3
 
 
 dev_dependencies:
@@ -137,6 +137,13 @@ flutter:
       fonts:
         - asset: fonts/Roboto/Roboto-Regular.ttf
         - asset: fonts/Roboto/Roboto-Bold.ttf
+    - family: Ubuntu
+      fonts:
+        - asset: fonts/Ubuntu/Ubuntu-Regular.ttf
+        - asset: fonts/Ubuntu/Ubuntu-Light.ttf
+        - asset: fonts/Ubuntu/Ubuntu-Medium.ttf
+        - asset: fonts/Ubuntu/Ubuntu-Bold.ttf
+        - asset: fonts/Ubuntu/Ubuntu-Italic.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

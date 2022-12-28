@@ -46,6 +46,28 @@ class _HomeState extends State<Home> {
       const GroupsPage(),
     ];
 
+    final List<Widget> appBarButtons = [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+        child: GestureDetector(
+          child: Stack(alignment: Alignment.center, children: [
+            Container(
+              width: 42,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                  borderRadius: BorderRadius.circular(12)),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+            ),
+            Icon(
+              Icons.person_rounded,
+              size: 32,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ]),
+        ),
+      )
+    ];
+
     final dynamic streamUser = Provider.of<UserAuth>(context);
 
     final UserAuth streamedUser = streamUser;
@@ -57,7 +79,7 @@ class _HomeState extends State<Home> {
           Scaffold(
             bottomNavigationBar: BottomNavigationBar(
                 unselectedItemColor: Colors.grey[600],
-                selectedItemColor: Theme.of(context).colorScheme.secondary,
+                selectedItemColor: Theme.of(context).colorScheme.primary,
                 type: BottomNavigationBarType.shifting,
                 currentIndex: _currentIndex,
                 onTap: (index) {
@@ -73,21 +95,22 @@ class _HomeState extends State<Home> {
                               label: "Control Panel",
                               icon: LineIcon.usersCog(
                                 size: 26,
-                                color: _currentIndex ==
-                                        navigationBaritems.length
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : Colors.grey[700],
+                                color:
+                                    _currentIndex == navigationBaritems.length
+                                        ? Theme.of(context).primaryColorLight
+                                        : Colors.grey[700],
                               ))
                         ]
                     : navigationBaritems),
-            drawer: buildDrawer(streamedUser),
             body: IndexedStack(
               index: _currentIndex,
               children: (streamedUser.userClass == UserClass.moderator
                       ? _pages + [const ModeratorPanelPage()]
                       : streamedUser.userClass == UserClass.admin
                           ? _pages + [const AdminPanelPage()]
-                          : _pages)
+                          : streamUser.userClass == UserClass.coAdmin
+                              ? _pages + [const CoAdminPanelPage()]
+                              : _pages)
                   .map((e) => ScrollConfiguration(
                         behavior: NoGlowScrollBehaviour(),
                         child: RefreshIndicator(
@@ -100,7 +123,21 @@ class _HomeState extends State<Home> {
                           },
                           child: SingleChildScrollView(
                             child: Column(
-                              children: [AppBar(), e],
+                              children: [
+                                AppBar(
+                                  elevation: 1,
+                                  actions: appBarButtons,
+                                  shadowColor: Colors.white,
+                                  iconTheme: IconThemeData(
+                                      size: 30,
+                                      color: Theme.of(context).primaryColor),
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.background,
+                                  foregroundColor:
+                                      Theme.of(context).primaryColor,
+                                ),
+                                e
+                              ],
                             ),
                           ),
                         ),
@@ -147,117 +184,117 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Drawer buildDrawer(UserAuth streamedUser) {
-    return Drawer(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            0, MediaQuery.of(context).size.height / 11, 0, 0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 44,
-                backgroundImage: Image.asset(
-                  "assets/new_nadi_profile_pic.jpg",
-                ).image,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                    child: Column(
-                  children: [
-                    Text(
-                      streamedUser.displayName!,
-                      style: TextStyle(color: Colors.grey[800], fontSize: 20),
-                    ),
-                    Text(
-                      streamedUser.email!,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                    ),
-                  ],
-                )),
-              ),
-              const Divider(
-                color: Colors.grey,
-                indent: 20,
-                endIndent: 20,
-                height: 20,
-              ),
-              InkWell(
-                splashColor: Colors.grey[100],
-                onTap: () async => await onProfileTapped(),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                  child: Row(
-                    children: [
-                      Icon(Icons.person,
-                          color: Theme.of(context).colorScheme.onBackground),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.onBackground),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                splashColor: Colors.grey[100],
-                onTap: () async => await onSettingsTapped(),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings_rounded,
-                          color: Theme.of(context).colorScheme.onBackground),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        "Settings",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.onBackground),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                splashColor: Colors.grey[100],
-                onTap: () async => await onSignoutTapped(),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout,
-                          color: Theme.of(context).colorScheme.onBackground),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        "Sign Out",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.onBackground),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Drawer buildDrawer(UserAuth streamedUser) {
+  //   return Drawer(
+  //     child: Padding(
+  //       padding: EdgeInsets.fromLTRB(
+  //           0, MediaQuery.of(context).size.height / 11, 0, 0),
+  //       child: SingleChildScrollView(
+  //         child: Column(
+  //           children: [
+  //             CircleAvatar(
+  //               radius: 44,
+  //               backgroundImage: Image.asset(
+  //                 "assets/new_nadi_profile_pic.jpg",
+  //               ).image,
+  //             ),
+  //             const SizedBox(
+  //               height: 10,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Center(
+  //                   child: Column(
+  //                 children: [
+  //                   Text(
+  //                     streamedUser.displayName!,
+  //                     style: TextStyle(color: Colors.grey[800], fontSize: 20),
+  //                   ),
+  //                   Text(
+  //                     streamedUser.email!,
+  //                     style: TextStyle(color: Colors.grey[600], fontSize: 14),
+  //                   ),
+  //                 ],
+  //               )),
+  //             ),
+  //             const Divider(
+  //               color: Colors.grey,
+  //               indent: 20,
+  //               endIndent: 20,
+  //               height: 20,
+  //             ),
+  //             InkWell(
+  //               splashColor: Colors.grey[100],
+  //               onTap: () async => await onProfileTapped(),
+  //               child: Padding(
+  //                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+  //                 child: Row(
+  //                   children: [
+  //                     Icon(Icons.person,
+  //                         color: Theme.of(context).colorScheme.onBackground),
+  //                     const SizedBox(
+  //                       width: 20,
+  //                     ),
+  //                     Text(
+  //                       "Profile",
+  //                       style: TextStyle(
+  //                           fontSize: 18,
+  //                           color: Theme.of(context).colorScheme.onBackground),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             InkWell(
+  //               splashColor: Colors.grey[100],
+  //               onTap: () async => await onSettingsTapped(),
+  //               child: Padding(
+  //                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+  //                 child: Row(
+  //                   children: [
+  //                     Icon(Icons.settings_rounded,
+  //                         color: Theme.of(context).colorScheme.onBackground),
+  //                     const SizedBox(
+  //                       width: 20,
+  //                     ),
+  //                     Text(
+  //                       "Settings",
+  //                       style: TextStyle(
+  //                           fontSize: 18,
+  //                           color: Theme.of(context).colorScheme.onBackground),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             InkWell(
+  //               splashColor: Colors.grey[100],
+  //               onTap: () async => await onSignoutTapped(),
+  //               child: Padding(
+  //                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+  //                 child: Row(
+  //                   children: [
+  //                     Icon(Icons.logout,
+  //                         color: Theme.of(context).colorScheme.onBackground),
+  //                     const SizedBox(
+  //                       width: 20,
+  //                     ),
+  //                     Text(
+  //                       "Sign Out",
+  //                       style: TextStyle(
+  //                           fontSize: 18,
+  //                           color: Theme.of(context).colorScheme.onBackground),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<void> onSignoutTapped() async {
     showCustomAlertDialog(

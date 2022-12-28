@@ -60,28 +60,23 @@ class _AddNewsPageState extends State<AddNewsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Visibility(
-                              visible:
-                                  widget.streamedUser.groupsAdmin.length > 1,
+                              visible: widget.streamedUser.groupAdmin != null,
                               child: Text(
-                                "Group :",
+                                "Group:",
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.grey[200]),
                               ),
                             ),
                             Visibility(
-                              visible:
-                                  widget.streamedUser.groupsAdmin.length > 1 ||
-                                      widget.streamedUser.userClass ==
-                                          UserClass.moderator,
+                              visible: widget.streamedUser.userClass ==
+                                  UserClass.moderator,
                               child: const SizedBox(
                                 height: 10,
                               ),
                             ),
                             Visibility(
-                              visible:
-                                  widget.streamedUser.groupsAdmin.length > 1 ||
-                                      widget.streamedUser.userClass ==
-                                          UserClass.moderator,
+                              visible: widget.streamedUser.userClass ==
+                                  UserClass.moderator,
                               child: FutureBuilder(
                                   future: getGroupsAdminNames(),
                                   builder: (context, snapshot) {
@@ -93,10 +88,8 @@ class _AddNewsPageState extends State<AddNewsPage> {
                                   }),
                             ),
                             Visibility(
-                              visible:
-                                  widget.streamedUser.groupsAdmin.length > 1 ||
-                                      widget.streamedUser.userClass ==
-                                          UserClass.moderator,
+                              visible: widget.streamedUser.userClass ==
+                                  UserClass.moderator,
                               child: const SizedBox(
                                 height: 16,
                               ),
@@ -181,10 +174,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
         Visibility(
             visible: postTitle!.isNotEmpty &&
                 postImage != null &&
-                postDescription!.isNotEmpty &&
-                (widget.streamedUser.groupsAdmin.length > 1
-                    ? groupName != null
-                    : true),
+                postDescription!.isNotEmpty,
             child: Material(
               elevation: 5,
               color: Colors.transparent,
@@ -267,31 +257,17 @@ class _AddNewsPageState extends State<AddNewsPage> {
     // ignore: avoid_single_cascade_in_expression_statements
     List<String> names = [];
 
-    if (widget.streamedUser.userClass == UserClass.moderator) {
-      Future<String> getGroupName(DocumentSnapshot snapshot) async {
-        return snapshot.get("name");
-      }
-
-      List<DocumentSnapshot> groups =
-          (await DataBaseService().nadiCollection.get()).docs;
-
-      for (var item in groups) {
-        names.add(await getGroupName(item));
-      }
-      return names;
+    Future<String> getGroupName(DocumentSnapshot snapshot) async {
+      return snapshot.get("name");
     }
 
-    Future<String> getGroupName(DocumentReference ref) async {
-      var snapshot = await ref.get();
-      return snapshot.get("nadi_data")["name"];
-    }
-
-    List groups = widget.streamedUser.groupsAdmin;
+    List<DocumentSnapshot> groups =
+        (await DataBaseService().nadiCollection.get()).docs;
 
     for (var item in groups) {
       names.add(await getGroupName(item));
     }
-    return names.length != groups.length ? [] : names;
+    return names;
   }
 
   Future<void> onPostTapped(UserAuth streamedUser) async {

@@ -613,108 +613,124 @@ class GroupInfoCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 18, 10, 0),
-      child: Container(
-          height: _kOutsideContainerSize.height,
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(12)),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: _kOutsideContainerSize.height,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        width: _kOutsideContainerSize.height / 3 * 2,
-                        child: CircleAvatar(
-                            radius: _kOutsideContainerSize.height / 3,
-                            backgroundImage: Image.asset(
-                              "assets/new_nadi_profile_pic.jpg",
-                            ).image),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.2,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Flexible(
-                                child: LanguageTypeText(
-                                  groupData["name"],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      letterSpacing: 0.2,
-                                      fontSize: calculateAutoscaleFontSize(
-                                          groupData["name"],
-                                          const TextStyle(letterSpacing: 0.2),
-                                          18,
-                                          30,
-                                          MediaQuery.of(context).size.width /
-                                              2.4),
-                                      fontWeight: FontWeight.w400),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+            height: _kOutsideContainerSize.height,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceTint,
+                borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: _kOutsideContainerSize.height,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          width: _kOutsideContainerSize.height / 3 * 2,
+                          decoration:
+                              BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 0,
+                                blurRadius: 5,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onBackground
+                                    .withOpacity(0.4))
+                          ]),
+                          child: CircleAvatar(
+                              radius: _kOutsideContainerSize.height / 3,
+                              backgroundImage: Image.asset(
+                                "assets/new_nadi_profile_pic.jpg",
+                              ).image),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 2.2,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Flexible(
+                                  child: LanguageTypeText(
+                                    groupData["name"],
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                        letterSpacing: 0.2,
+                                        fontSize: calculateAutoscaleFontSize(
+                                            groupData["name"],
+                                            const TextStyle(letterSpacing: 0.2),
+                                            18,
+                                            30,
+                                            MediaQuery.of(context).size.width /
+                                                2.4),
+                                        fontWeight: FontWeight.w400),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          await onMessageIconTapped(context, streamedUser);
+                        },
+                        child: Icon(
+                          Icons.messenger_rounded,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          await onInfoIconTapped(context, streamedUser);
+                        },
+                        child: Icon(
+                          Icons.info_outline_rounded,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          await onExitIconTapped(
+                              context, streamedUser, groupData["name"]);
+                        },
+                        child: Icon(
+                          Icons.exit_to_app,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          size: 24,
                         ),
                       ),
                     ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await onMessageIconTapped(context, streamedUser);
-                      },
-                      child: const Icon(
-                        Icons.messenger_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await onInfoIconTapped(context, streamedUser);
-                      },
-                      child: const Icon(
-                        Icons.info_outline_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await onExitIconTapped(
-                            context, streamedUser, groupData["name"]);
-                      },
-                      child: const Icon(
-                        Icons.exit_to_app,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )),
+                  )
+                ],
+              ),
+            )),
+      ),
     );
   }
 

@@ -27,6 +27,66 @@ class ControlsService {
     }
   }
 
+  Future<bool> assignCoAdmin(
+      DocumentSnapshot userDoc, DocumentSnapshot groupDoc) async {
+    try {
+      // we will get first go into the groupDoc's Admin collection
+      // and add the userDoc there with any additional info
+      // then we will go to the usersDoc and change the
+      // groupAdmin to the group document
+
+      // if he is already an admin/moderator
+      if (userDoc.get("groupAdmin") != null) {
+        Fluttertoast.showToast(msg: "User is already Admin/Co-Admin");
+        return false;
+      }
+
+      // if he is not a member in the group yet
+      if ((await groupDoc.reference
+              .collection("members")
+              .where("doc_reference", isEqualTo: userDoc.reference)
+              .get())
+          .docs
+          .isEmpty) {
+        Fluttertoast.showToast(msg: "User is not a member in the group");
+        return false;
+      }
+
+      // if he is a moderator and can't be admin
+      if (userDoc.get("userClass") == "moderator") {
+        Fluttertoast.showToast(
+            msg: "User is a Moderator and can't be Co-Admin");
+        return false;
+      }
+
+      // update the userClass in the user doc in the members collection
+
+      DocumentReference userDocInGroup =
+          groupDoc.reference.collection("members").doc(userDoc.id);
+
+      DocumentSnapshot userGroupDocumentSnapshot = await userDocInGroup.get();
+
+      if (userGroupDocumentSnapshot.get("userClass") == "moderator") {
+        Fluttertoast.showToast(
+            msg: "User is a moderator and can't be Co-Admin");
+        return false;
+      }
+
+      userDocInGroup.update({"userClass": "Co-Admin"});
+
+      userDoc.reference
+          .update({"groupAdmin": groupDoc.reference, "userClass": "Co-Admin"});
+
+      // add the doc into the admins collection
+      await groupDoc.reference.collection("admins").doc(userDoc.id).set(
+          userDoc.data() as Map<String, dynamic>
+            ..addAll({"doc_reference": userDoc.reference}));
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<bool> assignAdmin(
       DocumentSnapshot userDoc, DocumentSnapshot groupDoc) async {
     try {
@@ -58,11 +118,6 @@ class ControlsService {
         return false;
       }
 
-      // add the doc into the admins collection
-      await groupDoc.reference.collection("admins").doc(userDoc.id).set(
-          userDoc.data() as Map<String, dynamic>
-            ..addAll({"doc_reference": userDoc.reference}));
-
       // update the userClass in the user doc in the members collection
 
       DocumentReference userDocInGroup =
@@ -79,6 +134,11 @@ class ControlsService {
 
       userDoc.reference
           .update({"groupAdmin": groupDoc.reference, "userClass": "admin"});
+
+      // add the doc into the admins collection
+      await groupDoc.reference.collection("admins").doc(userDoc.id).set(
+          userDoc.data() as Map<String, dynamic>
+            ..addAll({"doc_reference": userDoc.reference}));
       return true;
     } catch (e) {
       rethrow;

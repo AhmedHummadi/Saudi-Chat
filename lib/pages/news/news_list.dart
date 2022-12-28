@@ -190,9 +190,7 @@ class NewsCard extends StatelessWidget {
           height: MediaQuery.of(context).size.height / 2.2 + 4,
           child: Card(
             elevation: 2,
-            color: Theme.of(context).brightness == Brightness.light
-                ? const Color(0xffECF0F0)
-                : Colors.grey[800],
+            color: Theme.of(context).colorScheme.surfaceTint,
             child: InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/assign_admin.dart';
+import 'package:saudi_chat/pages/admin/assign_coAdmin.dart';
 import 'package:saudi_chat/pages/admin/assign_mod.dart';
 import 'package:saudi_chat/pages/admin/demote_user.dart';
 import 'package:saudi_chat/pages/news/post_news_page.dart';
@@ -13,6 +14,7 @@ import 'package:saudi_chat/shared/widgets.dart';
 
 class _MainControlPanel extends StatefulWidget {
   final bool assignAdmin;
+  final bool assignCoAdmin;
   final bool assignModerator;
   final bool postNews;
   final bool demoteUser;
@@ -21,6 +23,7 @@ class _MainControlPanel extends StatefulWidget {
       {Key? key,
       required this.demoteUser,
       required this.userActionSearchtype,
+      required this.assignCoAdmin,
       required this.assignAdmin,
       required this.assignModerator,
       required this.postNews})
@@ -70,6 +73,42 @@ class _MainControlPanelState extends State<_MainControlPanel> {
                   ),
                   Text(
                     "Assign admin to group",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontSize: 20, color: Colors.grey[800]),
+                  )
+                ],
+              )),
+        ),
+        Visibility(
+          visible: widget.assignCoAdmin,
+          child: ScreenWidthCard(
+              splashColor: Colors.transparent,
+              highlightColor: const Color.fromARGB(172, 230, 230, 230),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return AssignCoAdmin(
+                    streamedUser: streamedUser,
+                  );
+                }));
+              },
+              height: 56,
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.person_add_alt_1,
+                    size: 38,
+                    color: Colors.grey[800],
+                  ),
+                  const SizedBox(
+                    width: 40,
+                  ),
+                  Text(
+                    "Assign Co-Admin to group",
                     style: Theme.of(context)
                         .textTheme
                         .headline1!
@@ -300,7 +339,7 @@ class _MainControlPanelState extends State<_MainControlPanel> {
 
             case UserClass.admin:
               return Padding(
-                padding: EdgeInsets.fromLTRB(12, 0, 12, 10),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
                 child: SingleChildScrollView(
                   child: FutureBuilder(
                       future:
@@ -334,7 +373,39 @@ class _MainControlPanelState extends State<_MainControlPanel> {
               );
 
             case UserClass.coAdmin:
-              return Container();
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                child: SingleChildScrollView(
+                  child: FutureBuilder(
+                      future:
+                          streamedUser.groupAdmin!.collection("members").get(),
+                      builder: (context, future) {
+                        if (future.hasData) {
+                          // data is not null
+
+                          List<DocumentSnapshot> membersDocuments =
+                              (future.data as QuerySnapshot).docs
+                                ..removeWhere((element) =>
+                                    element.get("name") ==
+                                    streamedUser.displayName);
+
+                          return Column(
+                            children: membersDocuments
+                                .map((memberDoc) => UserInfoCard(
+                                      userData: UserAuth.parseFromUserDocument(
+                                          memberDoc.data()
+                                              as Map<String, dynamic>
+                                            ..addAll({"id": memberDoc.id})),
+                                    ))
+                                .toList(),
+                          );
+                        } else {
+                          // data is null
+                          return Container();
+                        }
+                      }),
+                ),
+              );
             default:
               return Container();
           }
@@ -364,8 +435,24 @@ class ModeratorPanelPage extends StatelessWidget {
     return const _MainControlPanel(
         demoteUser: true,
         assignAdmin: true,
+        assignCoAdmin: true,
         assignModerator: true,
         userActionSearchtype: UserClass.moderator,
+        postNews: true);
+  }
+}
+
+class CoAdminPanelPage extends StatelessWidget {
+  const CoAdminPanelPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const _MainControlPanel(
+        demoteUser: false,
+        userActionSearchtype: UserClass.admin,
+        assignAdmin: false,
+        assignCoAdmin: true,
+        assignModerator: false,
         postNews: true);
   }
 }
@@ -378,7 +465,8 @@ class AdminPanelPage extends StatelessWidget {
     return const _MainControlPanel(
         demoteUser: false,
         userActionSearchtype: UserClass.admin,
-        assignAdmin: true,
+        assignAdmin: false,
+        assignCoAdmin: true,
         assignModerator: false,
         postNews: true);
   }

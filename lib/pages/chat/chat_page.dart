@@ -606,6 +606,7 @@ class MessageItem extends StatelessWidget {
       if (!isVideo) {
         if (isAudio) {
           image = AudioContainer(
+              elementcheck: elementCheck,
               duration: Duration(milliseconds: messages[i]["duration"]),
               audioUrl: messages[i]["url"],
               storagePath: messages[i]["storage_path"]);
@@ -754,6 +755,7 @@ class MessageItem extends StatelessWidget {
                     },
                     child: Text(
                       elementCheck ? "" : userNames[i],
+                      style: Theme.of(context).textTheme.bodyText2,
                       textAlign:
                           elementCheck ? myTextAlignment : theirTextAlignment,
                     ),
@@ -770,8 +772,8 @@ class MessageItem extends StatelessWidget {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: elementCheck
-                            ? Theme.of(context).colorScheme.surfaceVariant
-                            : Theme.of(context).colorScheme.onSurfaceVariant),
+                            ? Theme.of(context).primaryColorLight
+                            : Theme.of(context).colorScheme.surfaceTint),
                     // ignore: prefer_const_constructors
                     constraints: BoxConstraints.loose(Size.fromWidth(240)),
                     child: Padding(
@@ -796,7 +798,7 @@ class MessageItem extends StatelessWidget {
                                     Text(
                                       DateFormat.jm().format(times[i].toDate()),
                                       style:
-                                          Theme.of(context).textTheme.headline5,
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                   ]..insert(
                                       0,
@@ -848,9 +850,8 @@ class MessageItem extends StatelessWidget {
                                           : Text(
                                               messages[i],
                                               maxLines: null,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6,
+                                              style: getMessageTextStyle(
+                                                  elementCheck, context),
                                               textDirection: messages[i]
                                                       .toString()
                                                       .characters
@@ -888,7 +889,7 @@ class MessageItem extends StatelessWidget {
                                     Text(
                                       DateFormat.jm().format(times[i].toDate()),
                                       style:
-                                          Theme.of(context).textTheme.headline5,
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                   ]..insert(
                                       0,
@@ -940,9 +941,8 @@ class MessageItem extends StatelessWidget {
                                           : Text(
                                               messages[i],
                                               maxLines: null,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline6,
+                                              style: getMessageTextStyle(
+                                                  elementCheck, context),
                                               textDirection: messages[i]
                                                       .toString()
                                                       .characters
@@ -1031,9 +1031,8 @@ class MessageItem extends StatelessWidget {
                                                       )
                                             : Text(
                                                 messages[i],
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6!
+                                                style: getMessageTextStyle(
+                                                        elementCheck, context)!
                                                     .copyWith(
                                                         fontSize: messages[i]
                                                                 .toString()
@@ -1065,7 +1064,7 @@ class MessageItem extends StatelessWidget {
                                             .format(times[i].toDate()),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5,
+                                            .headline4,
                                       ),
                                     )),
                             ),
@@ -1079,6 +1078,15 @@ class MessageItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  TextStyle? getMessageTextStyle(bool elementCheck, BuildContext context) {
+    print(elementCheck
+        ? Theme.of(context).textTheme.headline6.toString()
+        : Theme.of(context).textTheme.headline5.toString());
+    return elementCheck
+        ? Theme.of(context).textTheme.headline6
+        : Theme.of(context).textTheme.headline5;
   }
 }
 
@@ -1327,8 +1335,9 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Theme.of(context).colorScheme.surface),
+                            color: Theme.of(context).colorScheme.surfaceTint,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -1340,7 +1349,9 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                         isEmojiVisible
                                             ? Icons.keyboard_rounded
                                             : Icons.emoji_emotions_outlined,
-                                        color: Colors.white),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
                                     onTap: toggleEmojiKeyboard,
                                   )),
                               Container(
@@ -1355,10 +1366,14 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                       const EdgeInsets.fromLTRB(8, 3, 0, 3),
                                   child: Theme(
                                     data: ThemeData(
-                                      primaryColor: Colors.white,
+                                      primaryColor: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
                                       colorScheme: ColorScheme.light(
                                           primary: Colors.grey.shade100,
-                                          secondary: Colors.white),
+                                          secondary: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
                                     ),
                                     child: TextField(
                                         textAlign:
@@ -1368,8 +1383,8 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                         textDirection: currentText
                                                 .toString()
                                                 .characters
-                                                .any((element) => arabicLetters
-                                                    .any((arabicLetter) =>
+                                                .any((element) => arabicLetters.any(
+                                                    (arabicLetter) =>
                                                         arabicLetter ==
                                                         element))
                                             ? TextDirection.rtl
@@ -1400,16 +1415,18 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                             }
                                           }
                                         },
-                                        style: const TextStyle(
-                                            color: Colors.white),
+                                        style: TextStyle(
+                                            fontFamily: "Roboto",
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
                                         showCursor: true,
                                         controller: controller,
                                         maxLines: null,
                                         decoration: textInputDecoration.copyWith(
                                             border: InputBorder.none,
                                             hintText: "Message",
-                                            hintStyle:
-                                                TextStyle(color: Colors.white.withOpacity(0.8)))),
+                                            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8)))),
                                   ),
                                 ),
                               ),
@@ -1417,7 +1434,7 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 0, 6),
                                   splashRadius: 20,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.primary,
                                   onPressed: () async {
                                     // ignore: unnecessary_null_comparison
                                     if (controller.text != null &&
@@ -1445,7 +1462,7 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                             width: 50,
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Theme.of(context).colorScheme.surface),
+                                color: Theme.of(context).colorScheme.primary),
                             child: IconButton(
                                 splashRadius: 26.3,
                                 color: Colors.white,

@@ -29,6 +29,15 @@ class _ViewVideoState extends State<ViewVideo> {
 
   final key = GlobalKey<_PausePlayVideoState>();
 
+  final List<PopupMenuEntry> videoExtraControls = [
+    PopupMenuItem(child: Text("Share"))
+  ];
+
+  // ↓ hold tap position, set during onTapDown, using getPosition() method
+  late Offset tapXY;
+  // ↓ hold screen size, using first line in build() method
+  late RenderBox overlay;
+
   // this will get the video's bytes from a http request
   // and use those bytes to create a video file in the cache
   // directory of this app, if the file path exists which means
@@ -72,6 +81,17 @@ class _ViewVideoState extends State<ViewVideo> {
 
     // all the controls for the video will be here
     chewieController = ChewieController(
+        materialProgressColors: ChewieProgressColors(handleColor: Colors.white),
+        optionsBuilder: (context, videoButtons) async {
+          final List<OptionItem> videoMainControls = [
+            OptionItem(onTap: () {}, iconData: Icons.share, title: ''),
+            OptionItem(onTap: () {}, iconData: Icons.share, title: '')
+          ];
+
+          for (var button in videoMainControls) {
+            videoButtons.add(button);
+          }
+        },
         aspectRatio: videoPlayerController!.value.size.width /
             videoPlayerController!.value.size.height,
         videoPlayerController: videoPlayerController!);
@@ -93,7 +113,9 @@ class _ViewVideoState extends State<ViewVideo> {
     return;
   }
 
-  Future initializeThumbnail() async {}
+  void chewieControllerListener() {
+    if (chewieController!.isFullScreen) {}
+  }
 
   @override
   void initState() {
@@ -106,6 +128,7 @@ class _ViewVideoState extends State<ViewVideo> {
     if (videoPlayerController != null) {
       videoPlayerController!.dispose();
     }
+
     super.dispose();
   }
 
@@ -154,6 +177,14 @@ class _ViewVideoState extends State<ViewVideo> {
       return const SizedBox(
           height: 80, width: 80, child: SpinKitCircle(color: Colors.white));
     }
+  }
+
+  RelativeRect get relRectSize =>
+      RelativeRect.fromSize(tapXY & const Size(40, 40), overlay.size);
+
+  // ↓ get the tap position Offset
+  void getPosition(TapDownDetails detail) {
+    tapXY = detail.globalPosition;
   }
 }
 

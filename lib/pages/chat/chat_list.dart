@@ -90,14 +90,17 @@ class _ChatListState extends State<ChatList> {
                                     radius: const Radius.circular(82),
                                     padding: EdgeInsets.zero,
                                     dashPattern: const [((82 * 3.14) / 7), 20],
-                                    color: Colors.grey.shade700,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     strokeCap: StrokeCap.round,
                                     child: Transform.rotate(
                                       angle: 12.3,
                                       child: Center(
                                         child: Icon(
                                           Icons.add,
-                                          color: Colors.grey.shade700,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           size: 36,
                                         ),
                                       ),

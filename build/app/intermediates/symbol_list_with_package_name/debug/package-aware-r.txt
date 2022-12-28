@@ -444,10 +444,6 @@ id icon_group
 id icon_only
 id info
 id italic
-id item1
-id item2
-id item3
-id item4
 id item_touch_helper_previous_elevation
 id left
 id light
@@ -534,8 +530,6 @@ layout notification_template_part_chronometer
 layout notification_template_part_time
 layout teclado_popup
 layout toast_custom
-menu example_menu
-menu example_menu2
 mipmap ic_launcher
 plurals exo_controls_fastforward_by_amount_description
 plurals exo_controls_rewind_by_amount_description

@@ -56,10 +56,7 @@ class _NadiDetailsState extends State<NadiDetails> {
 
               return Container(
                 height: screenSize.height,
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryContainer
-                    .withOpacity(0.2),
+                color: Theme.of(context).colorScheme.surfaceTint.withOpacity(1),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -69,11 +66,11 @@ class _NadiDetailsState extends State<NadiDetails> {
                           width: screenSize.width,
                           height: screenSize.height / 3.2,
                           child: Stack(alignment: Alignment.center, children: [
-                            CachedNetworkImage(
-                                width: screenSize.width,
-                                fit: BoxFit.cover,
-                                imageUrl:
-                                    "https://img.freepik.com/free-photo/black-monstera-leaves-background-wallpaper_53876-102420.jpg"),
+                            // CachedNetworkImage(
+                            //     width: screenSize.width,
+                            //     fit: BoxFit.cover,
+                            //     imageUrl:
+                            //         "https://img.freepik.com/free-photo/black-monstera-leaves-background-wallpaper_53876-102420.jpg"),
                             Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,6 +124,7 @@ class _NadiDetailsState extends State<NadiDetails> {
                             color: Theme.of(context).colorScheme.background,
                             borderRadius: BorderRadius.circular(12)),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             const SizedBox(
@@ -138,15 +136,16 @@ class _NadiDetailsState extends State<NadiDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SpecificDetail(
-                                        specification: "Name",
-                                        value: groupData["nadi_data"]["name"]),
-                                    SpecificDetail(
                                         specification: "Email",
                                         value: groupData["nadi_data"]["email"]),
                                     SpecificDetail(
+                                        specification: "Phone Number",
+                                        value: groupData["nadi_data"]
+                                            ["phoneNum"]),
+                                    SpecificDetail(
                                         specification: "Location",
                                         value: groupData["nadi_data"]
-                                            ["location"])
+                                            ["location"]),
                                   ],
                                 )),
                             const SizedBox(
@@ -157,10 +156,6 @@ class _NadiDetailsState extends State<NadiDetails> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SpecificDetail(
-                                        specification: "Phone Number",
-                                        value: groupData["nadi_data"]
-                                            ["phoneNum"]),
                                     SpecificDetail(
                                         specification: "Members",
                                         value: data != null

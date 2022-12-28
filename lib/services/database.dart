@@ -195,6 +195,17 @@ class DataBaseService {
     /// Then we want to delete the users document from the members
     /// collection in the groups document
 
+    if (user.userClass == UserClass.moderator) {
+      Fluttertoast.showToast(msg: "Cannot kick a Moderator from a group");
+      return false;
+    }
+
+    if (user.userClass == UserClass.admin &&
+        user.groupAdmin!.id == groupDocument.id) {
+      Fluttertoast.showToast(msg: "Cannot kick an Admin from a group");
+      return false;
+    }
+
     Future removeGroupFromUsersJoinedGroups() async {
       // First we will get the groups list
       List updatedGroupList = user.groups!

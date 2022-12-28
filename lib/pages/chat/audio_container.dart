@@ -9,9 +9,11 @@ import 'package:path_provider/path_provider.dart';
 class AudioContainer extends StatefulWidget {
   final String audioUrl;
   final String storagePath;
+  final bool elementcheck;
   final Duration duration;
   const AudioContainer(
       {Key? key,
+      required this.elementcheck,
       required this.duration,
       required this.audioUrl,
       required this.storagePath})
@@ -218,11 +220,14 @@ class _AudioContainerState extends State<AudioContainer>
 
   @override
   Widget build(BuildContext context) {
+    final elementCheck = widget.elementcheck;
+
     return Container(
         constraints: BoxConstraints.tight(const Size(240, 55)),
         child: Row(
           children: [
             SeekBarSlider(
+                elementCheck: elementCheck,
                 onEnd: () {
                   setState(() {
                     pauseAudio();
@@ -236,7 +241,9 @@ class _AudioContainerState extends State<AudioContainer>
                     _audio.seek(duration);
                   });
                 },
-                timerColor: Colors.grey.shade400),
+                timerColor: elementCheck
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurface),
             GestureDetector(
               onTap: () {
                 if (_audio.playing) {
@@ -254,14 +261,18 @@ class _AudioContainerState extends State<AudioContainer>
                 child: isInitialized == false
                     ? SpinKitRing(
                         lineWidth: 3.5,
-                        color: Colors.grey.shade500,
+                        color: elementCheck
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
                         size: 30,
                       )
                     : AnimatedIcon(
                         icon: AnimatedIcons.play_pause,
                         size: 36,
                         progress: _animationController,
-                        color: Colors.grey[500],
+                        color: elementCheck
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
               ),
             ),
@@ -272,6 +283,7 @@ class _AudioContainerState extends State<AudioContainer>
 
 class SeekBarSlider extends StatefulWidget {
   final Duration? total;
+  final bool elementCheck;
   final Duration progress;
   final Function(Duration) onChanged;
   final Color timerColor;
@@ -279,6 +291,7 @@ class SeekBarSlider extends StatefulWidget {
   final Function onEnd;
   const SeekBarSlider(
       {Key? key,
+      required this.elementCheck,
       required this.onEnd,
       required this.timerStyle,
       required this.total,
@@ -294,6 +307,7 @@ class SeekBarSlider extends StatefulWidget {
 class _SeekBarSliderState extends State<SeekBarSlider> {
   @override
   Widget build(BuildContext context) {
+    final elementCheck = widget.elementCheck;
     if (widget.total != null) {
       assert(widget.total!.inMilliseconds >= 100);
       return Column(
@@ -305,9 +319,15 @@ class _SeekBarSliderState extends State<SeekBarSlider> {
           ConstrainedBox(
             constraints: BoxConstraints.loose(const Size(180, 20)),
             child: Slider(
-              thumbColor: Colors.grey[600],
-              inactiveColor: Colors.grey.shade400.withOpacity(0.5),
-              activeColor: Colors.grey[400],
+              thumbColor: elementCheck
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSurface,
+              inactiveColor: elementCheck
+                  ? Theme.of(context).colorScheme.onPrimary.withOpacity(0.5)
+                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              activeColor: elementCheck
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSurface,
               min: 0.0,
               max: widget.total!.inMilliseconds.toDouble() + 1,
               onChanged: (duration) {

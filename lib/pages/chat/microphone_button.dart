@@ -73,7 +73,7 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
               Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.surface),
+                    color: Theme.of(context).colorScheme.primary),
                 child: const Padding(
                   padding: EdgeInsets.all(10.0),
                   child:
@@ -186,7 +186,7 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                             ]
                           : null,
                       shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.surface),
+                      color: Theme.of(context).colorScheme.primary),
                   child: const Icon(
                     Icons.mic,
                     color: Colors.white,

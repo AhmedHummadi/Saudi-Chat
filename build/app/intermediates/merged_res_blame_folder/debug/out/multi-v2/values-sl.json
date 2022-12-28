@@ -4,23 +4,6 @@
             "outputFile": "/Users/ahmedhummadi/AppDev/saudi_chat/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-sl/values-sl.xml",
             "map": [
                 {
-                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/44825f3ffd5e5b32ba75e7d21a506b6e/core-1.7.0/res/values-sl/values-sl.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "104",
-                        "startColumns": "4",
-                        "startOffsets": "8217",
-                        "endColumns": "100",
-                        "endOffsets": "8313"
-                    }
-                },
-                {
                     "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/e9ca3335e0b6bbbf0004074900ccbca8/jetified-exoplayer-core-2.18.0/res/values-sl/values-sl.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
@@ -35,6 +18,23 @@
                         "startOffsets": "5341,5409,5469,5533,5597,5672,5753,5852,5943",
                         "endColumns": "67,59,63,63,74,80,98,90,73",
                         "endOffsets": "5404,5464,5528,5592,5667,5748,5847,5938,6012"
+                    }
+                },
+                {
+                    "source": "/Users/ahmedhummadi/.gradle/caches/transforms-2/files-2.1/6f6752514bd4ba078c4c25d1fd3c436d/core-1.8.0/res/values-sl/values-sl.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "104",
+                        "startColumns": "4",
+                        "startOffsets": "8217",
+                        "endColumns": "100",
+                        "endOffsets": "8313"
                     }
                 },
                 {
