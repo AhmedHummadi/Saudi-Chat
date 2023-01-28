@@ -95,7 +95,6 @@ class _SearchNadisState extends State<SearchNadis> {
 
   @override
   void initState() {
-    findDeviceLocation();
     super.initState();
   }
 
@@ -126,8 +125,7 @@ class _SearchNadisState extends State<SearchNadis> {
                   searching = true;
                 });
                 List<DocumentSnapshot>? searchResults = await DataBaseService()
-                    .getSearchResultsFromBusinesses(
-                        userLocation: deviceLocation, queryText: input);
+                    .getSearchResultsFromBusinesses(queryText: input);
 
                 _currentQuerySearchResults.sink.add(searchResults!.length > 4
                     ? searchResults.getRange(0, 3).toList()

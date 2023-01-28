@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
         toggleSearch: toggleSearch,
       ),
       // ChatTab(toggleSearch: toggleSearch),
-      const GroupsPage(),
+      GroupsPage(toggleSearch: toggleSearch),
     ];
 
     final List<Widget> appBarButtons = [
@@ -310,7 +310,8 @@ class _HomeState extends State<Home> {
 }
 
 class GroupsPage extends StatelessWidget {
-  const GroupsPage({Key? key}) : super(key: key);
+  final Function? toggleSearch;
+  const GroupsPage({Key? key, required this.toggleSearch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -322,9 +323,10 @@ class GroupsPage extends StatelessWidget {
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           Map groupData = streamedUser.groups[index];
-          return GroupInfoCard(
-            groupData: groupData,
-          );
+          return ChatList(
+              onAddGroupTapped: toggleSearch!,
+              isHomeStyle: false,
+              groupInfoCardData: groupData);
         });
   }
 }

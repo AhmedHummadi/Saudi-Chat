@@ -601,8 +601,11 @@ class EmojiPickerWidget extends StatelessWidget {
 
 class GroupInfoCard extends StatelessWidget {
   final Map groupData;
+  final AsyncSnapshot unreadMessageSnapshot;
   // groupData is the group information map that is on the users groups list
-  const GroupInfoCard({Key? key, required this.groupData}) : super(key: key);
+  const GroupInfoCard(
+      {Key? key, required this.unreadMessageSnapshot, required this.groupData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -611,127 +614,117 @@ class GroupInfoCard extends StatelessWidget {
 
     dynamic streamedUser = Provider.of<UserAuth>(context);
 
+    const double kContainerRadius = 102;
+
+    const double kBorderThickness = 2;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 18, 10, 0),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(12),
-        child: Container(
-            height: _kOutsideContainerSize.height,
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceTint,
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: _kOutsideContainerSize.height,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          width: _kOutsideContainerSize.height / 3 * 2,
-                          decoration:
-                              BoxDecoration(shape: BoxShape.circle, boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 0,
-                                blurRadius: 5,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onBackground
-                                    .withOpacity(0.4))
-                          ]),
-                          child: CircleAvatar(
-                              radius: _kOutsideContainerSize.height / 3,
-                              backgroundImage: Image.asset(
-                                "assets/new_nadi_profile_pic.jpg",
-                              ).image),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 2.2,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Flexible(
-                                  child: LanguageTypeText(
-                                    groupData["name"],
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                        letterSpacing: 0.2,
-                                        fontSize: calculateAutoscaleFontSize(
-                                            groupData["name"],
-                                            const TextStyle(letterSpacing: 0.2),
-                                            18,
-                                            30,
-                                            MediaQuery.of(context).size.width /
-                                                2.4),
-                                        fontWeight: FontWeight.w400),
+        child: InkWell(
+          onTap: () => onItemTap(
+              context,
+              streamedUser,
+              DataBaseService().messagesCollection.doc(groupData["nadi_id"]),
+              groupData["nadiReference"]),
+          child: Container(
+              height: _kOutsideContainerSize.height,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceTint,
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: _kOutsideContainerSize.height,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          NewMessageCircleAvatar(
+                              snapshot: unreadMessageSnapshot,
+                              radius: kContainerRadius,
+                              borderThickness: kBorderThickness),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2.2,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Flexible(
+                                    child: LanguageTypeText(
+                                      groupData["name"],
+                                      style: TextStyle(
+                                          fontFamily: "Ubuntu",
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                          letterSpacing: 0.2,
+                                          fontSize: calculateAutoscaleFontSize(
+                                              groupData["name"],
+                                              const TextStyle(
+                                                  letterSpacing: 0.2),
+                                              18,
+                                              30,
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2.4),
+                                          fontWeight: FontWeight.w400),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            await onInfoIconTapped(context, streamedUser);
+                          },
+                          child: Icon(
+                            Icons.info_outline_rounded,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
                         ),
                       ],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          await onMessageIconTapped(context, streamedUser);
-                        },
-                        child: Icon(
-                          Icons.messenger_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await onInfoIconTapped(context, streamedUser);
-                        },
-                        child: Icon(
-                          Icons.info_outline_rounded,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await onExitIconTapped(
-                              context, streamedUser, groupData["name"]);
-                        },
-                        child: Icon(
-                          Icons.exit_to_app,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          size: 24,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            )),
+                    )
+                  ],
+                ),
+              )),
+        ),
       ),
     );
+  }
+
+  onItemTap(BuildContext context, dynamic streamedUser, DocumentReference doc,
+      DocumentReference nadiDocument) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ChatPage(
+          groupDocument: doc,
+          nadiDocument: nadiDocument,
+          streamedUser: streamedUser);
+    }));
   }
 
   DocumentReference groupDocument() {
@@ -784,14 +777,13 @@ class GroupInfoCard extends StatelessWidget {
       await DataBaseService()
           .removeUserFromGroup(user: streamedUser, nadi: _groupData);
 
-      Navigator.pop(context);
-
       return;
     }
 
     showCustomAlertDialog(context, "Are you sure you want to leave",
         '"$groupName"?', "Leave", null, () {
       onLeavePressed();
+      Navigator.pop(context);
     });
   }
 }
@@ -1192,7 +1184,49 @@ class LanguageTypeText extends StatelessWidget {
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,
       textHeightBehavior: textHeightBehavior,
-      selectionColor: selectionColor,
+    );
+  }
+}
+
+class NewMessageCircleAvatar extends StatelessWidget {
+  final AsyncSnapshot snapshot;
+  final double radius;
+  final double borderThickness;
+  const NewMessageCircleAvatar(
+      {Key? key,
+      required this.snapshot,
+      required this.radius,
+      required this.borderThickness})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      curve: Curves.easeIn,
+      duration: const Duration(milliseconds: 500),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: snapshot.data != null && snapshot.data == true
+                  ? [
+                      Theme.of(context).colorScheme.secondary,
+                      Theme.of(context).primaryColor
+                    ]
+                  : [Colors.grey.shade200, Colors.grey.shade400]),
+          shape: BoxShape.circle),
+      height: radius,
+      padding: EdgeInsets.all(borderThickness),
+      child: Container(
+        height: radius - (borderThickness + 2),
+        padding: const EdgeInsets.all(3),
+        decoration:
+            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: CircleAvatar(
+          radius: 32,
+          backgroundImage: Image.asset(
+            "assets/new_nadi_profile_pic.jpg",
+          ).image,
+        ),
+      ),
     );
   }
 }

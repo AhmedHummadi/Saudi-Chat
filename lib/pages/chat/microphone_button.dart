@@ -1,8 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_video_info/flutter_video_info.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:media_info/media_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:saudi_chat/models/message.dart';
@@ -34,7 +33,7 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
   double dragContainerForCancelPositioBottomPadding = 0;
   bool longPressed = false;
 
-  MediaInfo info = MediaInfo();
+  FlutterVideoInfo videoInfo = FlutterVideoInfo();
   Duration? infoDuration;
 
   // audio recorder var
@@ -147,7 +146,6 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
                     await deleteRecording();
                   } else {
                     // send recording
-                    widget.onLoadingStart();
                     final recordPath = await stopRecording();
                     if (recordPath is String) {
                       final File audioFile = File(recordPath);
@@ -225,17 +223,17 @@ class _MicrophoneButtonState extends State<MicrophoneButton> {
   Future stopRecording() async {
     try {
       if (await audioRecorder.isRecording()) {
-        final recordPath = await audioRecorder.stop();
-        final Map _info = await info.getMediaInfo(recordPath!);
+        final String? recordPath = await audioRecorder.stop();
+        final VideoData? _info = await videoInfo.getVideoInfo(recordPath!);
         setState(() {
-          infoDuration = Duration(milliseconds: _info["durationMs"]);
+          infoDuration = Duration(milliseconds: _info!.duration!.toInt());
         });
         return recordPath;
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
       Fluttertoast.showToast(
           msg: "Could not stop voice record, an error has occured");
-      print(e.toString());
+      print(stacktrace);
       //TODO: Test
     }
   }

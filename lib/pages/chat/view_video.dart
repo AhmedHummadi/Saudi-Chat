@@ -60,8 +60,6 @@ class _ViewVideoState extends State<ViewVideo> {
       // read the video as bytes and create the video
       // in the file at the caches directory
 
-      print(response.statusCode);
-
       final File videoMaker =
           await fileForVideo.writeAsBytes(response.bodyBytes);
       // TODO: Buffer the video on play, better space optimization

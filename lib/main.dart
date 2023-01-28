@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
                   headline5: TextStyle(
                       fontFamily: "Roboto",
                       color: Colors.grey[900],
-                      fontSize: 16), // for text messages (Other Users)
+                      fontSize: 16), // for text messages (Other Users)flutt
                   headline6: TextStyle(
                       fontFamily: "Roboto",
                       color: Colors.grey[100],
@@ -101,8 +101,8 @@ class MyApp extends StatelessWidget {
                       fontWeight: FontWeight.w500), // for chat list text
                   button: const TextStyle(color: Color(0xff0A6F65))),
               textSelectionTheme: TextSelectionThemeData(
-                  cursorColor: Colors.white,
-                  selectionColor: Colors.white.withOpacity(0.4),
+                  cursorColor: Color(0xff305A73),
+                  selectionColor: Color(0xff305A73).withOpacity(0.4),
                   selectionHandleColor: Colors.teal.shade200)),
           home: const Wrapper()),
     );

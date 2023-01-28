@@ -108,10 +108,10 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.imageUrl);
     return SizedBox(
         height: 50 + MediaQuery.of(context).padding.top,
         child: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
           bottom: isLoading
               ? const PreferredSize(
                   child: LinearProgressIndicator(
@@ -129,6 +129,7 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
                     }),
                 icon: const Icon(
                   Icons.download_sharp,
+                  color: Colors.white,
                   size: 24,
                 )),
             IconButton(
@@ -137,10 +138,12 @@ class _PhotoViewControlBarsState extends State<_PhotoViewControlBars> {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.share_rounded,
+                  color: Colors.white,
                   size: 21,
                 )),
           ],
           backgroundColor: Colors.black.withOpacity(0.6),
+          elevation: 0,
         ));
   }
 

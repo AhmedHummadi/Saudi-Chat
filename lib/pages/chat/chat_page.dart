@@ -165,7 +165,6 @@ class _ChatPageState extends State<ChatPage> {
                 userNames.contains(command.message.userName)) {
               // a brand new message
 
-              print(command.message is ImageMessage);
               widgetStream.sink.add(command);
             }
 
@@ -505,9 +504,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                             : columnChildren.any((element) {
                                 var elem = element as MessageItem;
                                 return nmc!.message.time == times[elem.i] &&
-                                    nmc.message.userName == userNames[elem.i] &&
-                                    nmc.message.documentId ==
-                                        userDocs[elem.i].id;
+                                    nmc.message.userName == userNames[elem.i];
                               })
                                 ? columnChildren
                                 : (columnChildren..add(nmc.widget))
@@ -519,9 +516,8 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                             : columnChildren.any((element) {
                                 var elem = element as MessageItem;
                                 return nmc!.message.time == times[elem.i] &&
-                                    nmc.message.userName == userNames[elem.i] &&
-                                    nmc.message.documentId ==
-                                        userDocs[elem.i].id;
+                                    nmc.message.userName == userNames[elem.i]
+                                    ;
                               })
                                 ? columnChildren
                                 : (columnChildren..add(nmc.widget)));
@@ -775,7 +771,8 @@ class MessageItem extends StatelessWidget {
                             ? Theme.of(context).primaryColorLight
                             : Theme.of(context).colorScheme.surfaceTint),
                     // ignore: prefer_const_constructors
-                    constraints: BoxConstraints.loose(Size.fromWidth(240)),
+                    constraints: BoxConstraints.loose(Size.fromWidth(
+                        MediaQuery.of(context).size.width / 1.5)),
                     child: Padding(
                       padding: isImage
                           ? isVideo
@@ -1081,9 +1078,6 @@ class MessageItem extends StatelessWidget {
   }
 
   TextStyle? getMessageTextStyle(bool elementCheck, BuildContext context) {
-    print(elementCheck
-        ? Theme.of(context).textTheme.headline6.toString()
-        : Theme.of(context).textTheme.headline5.toString());
     return elementCheck
         ? Theme.of(context).textTheme.headline6
         : Theme.of(context).textTheme.headline5;
@@ -1418,8 +1412,7 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                         style: TextStyle(
                                             fontFamily: "Roboto",
                                             color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
+                                                .primaryColorDark),
                                         showCursor: true,
                                         controller: controller,
                                         maxLines: null,

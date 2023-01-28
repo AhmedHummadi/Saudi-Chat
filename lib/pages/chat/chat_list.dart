@@ -10,11 +10,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saudi_chat/services/device_storage.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class ChatList extends StatefulWidget {
   final bool? isHomeStyle;
+  final Map? groupInfoCardData;
   final Function onAddGroupTapped;
-  const ChatList({Key? key, this.isHomeStyle, required this.onAddGroupTapped})
+  const ChatList(
+      {Key? key,
+      this.isHomeStyle,
+      this.groupInfoCardData,
+      required this.onAddGroupTapped})
       : super(key: key);
 
   @override
@@ -52,15 +58,23 @@ class _ChatListState extends State<ChatList> {
                 }).toList();
                 return groups.contains(element.id);
               }).toList();
-
               if (docs.length > widgetsList.length) {
-                findDocuments(
-                    docs, (snapshot.data as QuerySnapshot), streamedUser,
-                    (widgets) {
-                  setState(() {
-                    widgetsList = widgets;
+                if (widget.isHomeStyle == true) {
+                  findDocumentsHomeStyle(
+                      docs, (snapshot.data as QuerySnapshot), streamedUser,
+                      (widgets) {
+                    setState(() {
+                      widgetsList = widgets;
+                    });
                   });
-                });
+                } else {
+                  findDocumentsGroupCardStyleStyle(
+                      docs, widget.groupInfoCardData!, streamedUser, (widgets) {
+                    setState(() {
+                      widgetsList = widgets;
+                    });
+                  });
+                }
               }
             }
 
@@ -176,7 +190,7 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  void findDocuments(
+  void findDocumentsHomeStyle(
       List<DocumentSnapshot> docs,
       QuerySnapshot<Object?>? nadiMessageData,
       streamedUser,
@@ -191,40 +205,57 @@ class _ChatListState extends State<ChatList> {
         List groups =
             (streamedUser.groups as List).map((e) => e["nadi_id"]).toList();
         if (groups.contains(nadiMessageDoc.id)) {
-          String merchantId = nadiMessageDoc.id;
+          String nadiId = nadiMessageDoc.id;
           DocumentReference bussinessDoc =
-              DataBaseService().nadiCollection.doc(merchantId);
+              DataBaseService().nadiCollection.doc(nadiId);
           DocumentSnapshot doc = await bussinessDoc.get();
 
           NadiData docData =
               DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
 
-          widgets.add(widget.isHomeStyle == true
-              ? _BuildHomeItem(
-                  context: context,
-                  data: docData,
-                  streamedUser: streamedUser,
-                  nadiDoc: bussinessDoc,
-                  groupDoc: nadiMessageDoc.reference,
-                )
-              : buildItem(
-                  context: context,
-                  data: docData,
-                  streamedUser: streamedUser,
-                  bussinessDoc: bussinessDoc,
-                  documentReference: nadiMessageDoc.reference));
-
-          if (widget.isHomeStyle == false) {
-            widgets.insert(
-                0,
-                const SizedBox(
-                  height: 10,
-                ));
-          }
-
+          widgets.add(_BuildHomeItem(
+            isGroupInfoStyle: false,
+            context: context,
+            data: docData,
+            streamedUser: streamedUser,
+            nadiDoc: bussinessDoc,
+            groupDoc: nadiMessageDoc.reference,
+          ));
           fun(widgets);
         }
       });
+    }
+  }
+
+  void findDocumentsGroupCardStyleStyle(List<DocumentSnapshot> docs,
+      Map groupData, streamedUser, Function(List<Widget> widgets) fun) async {
+    List<Widget> widgets = [];
+
+    widgets = [];
+    // ignore: avoid_function_literals_in_foreach_calls
+
+    List groups =
+        (streamedUser.groups as List).map((e) => e["nadi_id"]).toList();
+    if (groups.contains(groupData["nadi_id"])) {
+      String nadiId = groupData["nadi_id"];
+      DocumentReference bussinessDoc =
+          DataBaseService().nadiCollection.doc(nadiId);
+      DocumentSnapshot doc = await bussinessDoc.get();
+
+      NadiData docData =
+          DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
+
+      widgets.add(_BuildHomeItem(
+        isGroupInfoStyle: true,
+        groupInfoCardData: widget.groupInfoCardData,
+        context: context,
+        data: docData,
+        streamedUser: streamedUser,
+        nadiDoc: bussinessDoc,
+        groupDoc:
+            DataBaseService().messagesCollection.doc(groupData["nadi_id"]),
+      ));
+      fun(widgets);
     }
   }
 
@@ -240,6 +271,8 @@ class _ChatListState extends State<ChatList> {
 
 class _BuildHomeItem extends StatelessWidget {
   final BuildContext context;
+  final bool isGroupInfoStyle;
+  final Map? groupInfoCardData;
   final NadiData data;
   final DocumentReference nadiDoc;
   final dynamic streamedUser;
@@ -247,6 +280,8 @@ class _BuildHomeItem extends StatelessWidget {
 
   _BuildHomeItem({
     Key? key,
+    this.groupInfoCardData,
+    required this.isGroupInfoStyle,
     required this.context,
     required this.data,
     required this.nadiDoc,
@@ -264,14 +299,14 @@ class _BuildHomeItem extends StatelessWidget {
 
     return StreamBuilder<DocumentSnapshot>(
       stream: groupDoc.snapshots(),
-      builder: (context, snapshot) {
+      builder: (context, groupDocSnapshot) {
         // this subscription will keep getting the latest message
         // from the group snapshots stream, if the latest message is not the last read message
         // then it will send the data down the unreadMessage sink and update what the user sees
 
-        if (snapshot.hasData) {
+        if (groupDocSnapshot.hasData) {
           final GroupData groupData =
-              GroupData.parse(snapshot.data!.data() as Map);
+              GroupData.parse(groupDocSnapshot.data!.data() as Map);
 
           final Message latestMessage = Message(
               time: groupData.time_of_messages!.isEmpty
@@ -301,67 +336,51 @@ class _BuildHomeItem extends StatelessWidget {
         return StreamBuilder(
             stream: unreadMessageBoolsController.stream,
             builder: (context, snapshot) {
-              return GestureDetector(
-                onTap: () {
-                  onItemTap(context, streamedUser, groupDoc, nadiDoc);
-                  unreadMessageBoolsController.sink.add(false);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 0, 0, 4),
-                  child: Column(
-                    children: [
-                      AnimatedContainer(
-                        curve: Curves.easeIn,
-                        duration: const Duration(milliseconds: 500),
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: snapshot.data != null &&
-                                        snapshot.data == true
-                                    ? [
-                                        Theme.of(context).colorScheme.secondary,
-                                        Theme.of(context).primaryColor
-                                      ]
-                                    : [
-                                        Colors.grey.shade200,
-                                        Colors.grey.shade400
-                                      ]),
-                            shape: BoxShape.circle),
-                        height: kContainerRadius,
-                        padding: const EdgeInsets.all(kBorderThickness),
-                        child: Container(
-                          height: kContainerRadius - (kBorderThickness + 2),
-                          padding: const EdgeInsets.all(3),
-                          decoration: const BoxDecoration(
-                              color: Colors.white, shape: BoxShape.circle),
-                          child: CircleAvatar(
-                            radius: 32,
-                            backgroundImage: Image.asset(
-                              "assets/new_nadi_profile_pic.jpg",
-                            ).image,
+              // if the style is for the homeopage so it will make a normal
+              // looking one
+
+              if (isGroupInfoStyle == false) {
+                return GestureDetector(
+                  onTap: () {
+                    onItemTap(context, streamedUser, groupDoc, nadiDoc);
+                    unreadMessageBoolsController.sink.add(false);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 0, 0, 4),
+                    child: Column(
+                      children: [
+                        NewMessageCircleAvatar(
+                            snapshot: snapshot,
+                            radius: kContainerRadius,
+                            borderThickness: kBorderThickness),
+                        SizedBox(
+                          width: kContainerRadius,
+                          child: Center(
+                            child: Text(
+                              data.nadiName!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
+                            ),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: kContainerRadius,
-                        child: Center(
-                          child: Text(
-                            data.nadiName!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal),
-                          ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                // if the style is for the groups page so it will make in the the
+                // form of a group info card
+                return GroupInfoCard(
+                    unreadMessageSnapshot: snapshot,
+                    groupData: groupInfoCardData!);
+              }
             });
       },
     );
