@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "3559824755",
+    "project_id": "saudi-chat-2aeaf",
+    "storage_bucket": "saudi-chat-2aeaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3559824755:android:391f933744f618ae97f906",
+        "android_client_info": {
+          "package_name": "com.ahmedhummadi.saudi_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3559824755-7o5kq82n9vlkf0posj1k7fe85mh1pmr5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuvoTV7rdMvl66XdlDanu9qbQrMCaNFp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3559824755-7o5kq82n9vlkf0posj1k7fe85mh1pmr5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "3559824755-ucv8pljbbros5lqi27f8m736uka5sujq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ahmedhummadi.saudiChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
