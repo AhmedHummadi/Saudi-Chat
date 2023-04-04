@@ -41,7 +41,7 @@ OverlayEntry? _overlayEntry = OverlayEntry(builder: (context) {
 });
 
 void createLoadingOverlay(BuildContext context) {
-  return Overlay.of(context)!.insert(_overlayEntry!);
+  return Overlay.of(context).insert(_overlayEntry!);
 }
 
 void removeOverlayEntry(BuildContext context) {
@@ -56,7 +56,7 @@ OverlayEntry? _overlayBottomloadingEntry = OverlayEntry(builder: (context) {
 });
 
 void createBottomLoadingOverlay(BuildContext context) {
-  return Overlay.of(context)!.insert(_overlayBottomloadingEntry!);
+  return Overlay.of(context).insert(_overlayBottomloadingEntry!);
 }
 
 void removeBottomOverlayEntry(BuildContext context) {

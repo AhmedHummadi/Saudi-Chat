@@ -251,12 +251,12 @@ class PendingOutlinedScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               duration: const Duration(milliseconds: 500),
               height: height,
-              child: PlayAnimation<double?>(
+              child: PlayAnimationBuilder<double?>(
                 tween: Tween(begin: 240, end: 700),
                 duration: const Duration(seconds: 60),
                 fps: 60,
                 curve: Curves.linear,
-                builder: (context, child, value) => CustomPaint(
+                builder: (context, value, child) => CustomPaint(
                   painter: GradientPainter(
                       strokeWidth: strokeWidth,
                       radius: radius,
@@ -334,12 +334,12 @@ class PendingBar extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: 14,
               duration: const Duration(milliseconds: 500),
-              child: PlayAnimation<double?>(
+              child: PlayAnimationBuilder<double?>(
                 tween: Tween(begin: 50, end: 240),
                 duration: const Duration(seconds: 60),
                 fps: 60,
                 curve: Curves.linear,
-                builder: (context, child, value) => CustomPaint(
+                builder: (context, value, child) => CustomPaint(
                   painter: GradientPainter(
                       strokeWidth: strokeWidth,
                       radius: radius,
@@ -422,7 +422,7 @@ void showCenterScreenMenu(BuildContext context, CenterScreenOptionsMenu menu) {
       child: menu,
     );
   });
-  Overlay.of(context)!.insert(_showCenterScreenMenuOverlayEntry!);
+  Overlay.of(context).insert(_showCenterScreenMenuOverlayEntry!);
 }
 
 class CenterScreenOptionsMenu extends StatelessWidget {
@@ -437,19 +437,19 @@ class CenterScreenOptionsMenu extends StatelessWidget {
     return Stack(children: [
       GestureDetector(
         onTap: () => _showCenterScreenMenuOverlayEntry!.remove(),
-        child: PlayAnimation<double>(
+        child: PlayAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: 0.5),
           duration: const Duration(milliseconds: 130),
-          builder: (context, child, value) => Container(
+          builder: (context, value, child) => Container(
             color: Colors.black.withOpacity(value),
           ),
         ),
       ),
       Center(
-        child: PlayAnimation<double>(
+        child: PlayAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: 1.0),
           duration: const Duration(milliseconds: 130),
-          builder: (context, child, value) => Container(
+          builder: (context, value, child) => Container(
             constraints: BoxConstraints.tightFor(
                 width: MediaQuery.of(context).size.width / 2.2,
                 height: items.length * items.first.height! + 28),

@@ -149,10 +149,10 @@ class _HomeState extends State<Home> {
               visible: showSearch,
               child: GestureDetector(
                 onTap: () => toggleSearch(),
-                child: PlayAnimation<double>(
+                child: PlayAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 150),
                   tween: Tween(begin: 0.0, end: 0.4),
-                  builder: (context, child, value) => Container(
+                  builder: (context, value, child) => Container(
                     color: Colors.black.withOpacity(value),
                   ),
                 ),
