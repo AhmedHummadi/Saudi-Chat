@@ -99,7 +99,6 @@ class ProfilePage extends StatelessWidget {
                 ]))),
             GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
                   AuthService().signOut();
                 },
                 child: SizedBox(
