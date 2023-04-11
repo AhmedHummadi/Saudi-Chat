@@ -3,6 +3,7 @@ import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/admin/control_panel.dart';
 import 'package:saudi_chat/pages/chat/chat_list.dart';
+import 'package:saudi_chat/pages/home/profile_page.dart';
 import 'package:saudi_chat/pages/home/search/search_widget.dart';
 import 'package:saudi_chat/pages/news/news_list.dart';
 import 'package:saudi_chat/services/auth.dart';
@@ -46,10 +47,22 @@ class _HomeState extends State<Home> {
       GroupsPage(toggleSearch: toggleSearch),
     ];
 
+    final dynamic streamUser = Provider.of<UserAuth>(context);
+
+    final UserAuth streamedUser = streamUser;
     final List<Widget> appBarButtons = [
       Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
         child: GestureDetector(
+          onTap: () {
+            if (mounted) {
+              print(Navigator.of(context).context);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ProfilePage(streamedUser: streamedUser);
+              }));
+              print(Navigator.of(context).context);
+            }
+          },
           child: Stack(alignment: Alignment.center, children: [
             Container(
               width: 42,
@@ -67,10 +80,6 @@ class _HomeState extends State<Home> {
         ),
       )
     ];
-
-    final dynamic streamUser = Provider.of<UserAuth>(context);
-
-    final UserAuth streamedUser = streamUser;
 
     if (streamedUser.groups != null && streamUser.displayName! != null) {
       return Material(
@@ -407,6 +416,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
+            ProfileIconButton(streamedUser: streamedUser),
             const SizedBox(
               height: 4,
             ),
@@ -428,6 +438,40 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ProfileIconButton extends StatelessWidget {
+  final UserAuth streamedUser;
+  const ProfileIconButton({Key? key, required this.streamedUser})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return ProfilePage(streamedUser: streamedUser);
+          }));
+        },
+        child: Stack(alignment: Alignment.center, children: [
+          Container(
+            width: 42,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.background,
+                borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.symmetric(vertical: 8),
+          ),
+          Icon(
+            Icons.person_rounded,
+            size: 32,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+        ]),
       ),
     );
   }

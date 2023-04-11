@@ -60,20 +60,25 @@ class _ChatListState extends State<ChatList> {
               }).toList();
               if (docs.length > widgetsList.length) {
                 if (widget.isHomeStyle == true) {
-                  findDocumentsHomeStyle(
-                      docs, (snapshot.data as QuerySnapshot), streamedUser,
-                      (widgets) {
-                    setState(() {
-                      widgetsList = widgets;
+                  if (context.mounted) {
+                    findDocumentsHomeStyle(
+                        docs, (snapshot.data as QuerySnapshot), streamedUser,
+                        (widgets) {
+                      setState(() {
+                        widgetsList = widgets;
+                      });
                     });
-                  });
+                  }
                 } else {
-                  findDocumentsGroupCardStyleStyle(
-                      docs, widget.groupInfoCardData!, streamedUser, (widgets) {
-                    setState(() {
-                      widgetsList = widgets;
+                  if (context.mounted) {
+                    findDocumentsGroupCardStyleStyle(
+                        docs, widget.groupInfoCardData!, streamedUser,
+                        (widgets) {
+                      setState(() {
+                        widgetsList = widgets;
+                      });
                     });
-                  });
+                  }
                 }
               }
             }
@@ -213,14 +218,16 @@ class _ChatListState extends State<ChatList> {
           NadiData docData =
               DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
 
-          widgets.add(_BuildHomeItem(
-            isGroupInfoStyle: false,
-            context: context,
-            data: docData,
-            streamedUser: streamedUser,
-            nadiDoc: bussinessDoc,
-            groupDoc: nadiMessageDoc.reference,
-          ));
+          if (context.mounted) {
+            widgets.add(_BuildHomeItem(
+              isGroupInfoStyle: false,
+              context: context,
+              data: docData,
+              streamedUser: streamedUser,
+              nadiDoc: bussinessDoc,
+              groupDoc: nadiMessageDoc.reference,
+            ));
+          }
           fun(widgets);
         }
       });
@@ -245,16 +252,18 @@ class _ChatListState extends State<ChatList> {
       NadiData docData =
           DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
 
-      widgets.add(_BuildHomeItem(
-        isGroupInfoStyle: true,
-        groupInfoCardData: widget.groupInfoCardData,
-        context: context,
-        data: docData,
-        streamedUser: streamedUser,
-        nadiDoc: bussinessDoc,
-        groupDoc:
-            DataBaseService().messagesCollection.doc(groupData["nadi_id"]),
-      ));
+      if (context.mounted) {
+        widgets.add(_BuildHomeItem(
+          isGroupInfoStyle: true,
+          groupInfoCardData: widget.groupInfoCardData,
+          context: context,
+          data: docData,
+          streamedUser: streamedUser,
+          nadiDoc: bussinessDoc,
+          groupDoc:
+              DataBaseService().messagesCollection.doc(groupData["nadi_id"]),
+        ));
+      }
       fun(widgets);
     }
   }

@@ -255,7 +255,7 @@ class NewsCard extends StatelessWidget {
                             ? TextDirection.rtl
                             : TextDirection.ltr,
                         style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             color:
                                 Theme.of(context).brightness == Brightness.light
                                     ? Colors.grey[800]

@@ -516,8 +516,7 @@ class _ChatWidgetsState extends State<_ChatWidgets> {
                             : columnChildren.any((element) {
                                 var elem = element as MessageItem;
                                 return nmc!.message.time == times[elem.i] &&
-                                    nmc.message.userName == userNames[elem.i]
-                                    ;
+                                    nmc.message.userName == userNames[elem.i];
                               })
                                 ? columnChildren
                                 : (columnChildren..add(nmc.widget)));
@@ -792,11 +791,49 @@ class MessageItem extends StatelessWidget {
                                           ? Alignment.bottomRight
                                           : Alignment.bottomLeft,
                                   children: [
-                                    Text(
-                                      DateFormat.jm().format(times[i].toDate()),
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
+                                    isAudio
+                                        ? Column(
+                                            crossAxisAlignment: elementCheck
+                                                ? CrossAxisAlignment.end
+                                                : CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                DateFormat.Md()
+                                                    .format(times[i].toDate()),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4,
+                                              ),
+                                              Text(
+                                                DateFormat.jm()
+                                                    .format(times[i].toDate()),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4,
+                                              ),
+                                            ],
+                                          )
+                                        : Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.jm()
+                                                    .format(times[i].toDate()),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4,
+                                              ),
+                                              const SizedBox(
+                                                width: 6,
+                                              ),
+                                              Text(
+                                                DateFormat.Md()
+                                                    .format(times[i].toDate()),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4,
+                                              ),
+                                            ],
+                                          ),
                                   ]..insert(
                                       0,
                                       (isImage
@@ -883,10 +920,26 @@ class MessageItem extends StatelessWidget {
                                             messages[i].toString().length > 28
                                                 ? 6
                                                 : 0),
-                                    Text(
-                                      DateFormat.jm().format(times[i].toDate()),
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
+                                    Row(
+                                      children: [
+                                        Text(
+                                          DateFormat.jm()
+                                              .format(times[i].toDate()),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
+                                        const SizedBox(
+                                          width: 6,
+                                        ),
+                                        Text(
+                                          DateFormat.Md()
+                                              .format(times[i].toDate()),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
+                                      ],
                                     ),
                                   ]..insert(
                                       0,
@@ -1056,12 +1109,26 @@ class MessageItem extends StatelessWidget {
                                               )) as Widget)
                                     ..insert(
                                       elementCheck ? 2 : 0,
-                                      Text(
-                                        DateFormat.jm()
-                                            .format(times[i].toDate()),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4,
+                                      Column(
+                                        crossAxisAlignment: elementCheck
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            DateFormat.Md()
+                                                .format(times[i].toDate()),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4,
+                                          ),
+                                          Text(
+                                            DateFormat.jm()
+                                                .format(times[i].toDate()),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4,
+                                          ),
+                                        ],
                                       ),
                                     )),
                             ),
@@ -1476,6 +1543,10 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                               splashColor: Colors.transparent,
                                               onTap: () => Navigator.pop(
                                                   context, "image"),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  12,
                                               child: Row(children: [
                                                 const SizedBox(
                                                   width: 12,
@@ -1498,16 +1569,16 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                                       .caption!
                                                       .copyWith(fontSize: 18),
                                                 )
-                                              ]),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  12),
+                                              ])),
                                           ScreenWidthCard(
                                               highlightColor: Colors.grey[200],
                                               splashColor: Colors.transparent,
                                               onTap: () => Navigator.pop(
                                                   context, "video"),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  12,
                                               child: Row(children: [
                                                 const SizedBox(
                                                   width: 12,
@@ -1530,11 +1601,7 @@ class _BottomFieldBarState extends State<BottomFieldBar> {
                                                       .caption!
                                                       .copyWith(fontSize: 18),
                                                 )
-                                              ]),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  12),
+                                              ])),
                                           const SizedBox(
                                             height: 12,
                                           )
