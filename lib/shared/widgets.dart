@@ -1,11 +1,15 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:saudi_chat/models/image.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
@@ -1228,5 +1232,94 @@ class NewMessageCircleAvatar extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ProfileIcon extends StatelessWidget {
+  final bool? canEdit;
+  const ProfileIcon({
+    Key? key,
+    this.canEdit,
+    required this.streamedUser,
+  }) : super(key: key);
+
+  final UserAuth streamedUser;
+
+  @override
+  Widget build(BuildContext context) {
+    final double iconRadius = MediaQuery.of(context).size.width / 2.2;
+    return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
+      Center(
+          child: ClipRRect(
+        borderRadius: BorderRadius.circular(100000),
+        child: CachedNetworkImage(
+          imageUrl: streamedUser.iconImage!.url!,
+          fit: BoxFit.cover,
+          height: iconRadius,
+          width: iconRadius,
+        ),
+      )),
+      Center(
+        child: SizedBox(
+          width: iconRadius * 0.75,
+          height: iconRadius,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: GestureDetector(
+              onTap: () => onEditTapped(streamedUser),
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.tertiaryContainer),
+                child: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  void onEditTapped(UserAuth streamedUser) async {
+    try {
+      Future<void> pickFile(streamedUser) async {
+        try {
+          // promt to pick an image
+          final XFile? insertedFile =
+              await ImagePicker().pickImage(source: ImageSource.gallery);
+
+          // if an image is picked
+          if (insertedFile != null) {
+            // TODO: Loading
+            await Fluttertoast.showToast(msg: "Loading...");
+
+            final File storedImage = File(insertedFile.path);
+
+            ImageClass? imageClass = await DataBaseService()
+                .uploadUserProfileImage(storedImage, streamedUser);
+
+            // successfully uploaded and can turn off loading
+            if (imageClass != null) {
+              Fluttertoast.showToast(msg: "Profile Image Updated");
+            } else {
+              // something happened, prob an error
+            }
+          }
+        } catch (e) {
+          Fluttertoast.showToast(
+              msg: "Could not open gallery. An error has accured");
+          print(e.toString()); // TODO: Test
+        }
+      }
+
+      await pickFile(streamedUser);
+    } catch (e) {
+      print(e);
+    }
   }
 }

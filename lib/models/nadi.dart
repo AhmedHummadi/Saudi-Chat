@@ -1,13 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saudi_chat/models/image.dart';
 
 class NadiData {
   late final String? id;
   late final String? location;
   late String? nadiName;
   late List? news;
-
+  late ImageClass? iconImage;
   late String? phoneNum;
   late String? email;
 
@@ -15,6 +16,7 @@ class NadiData {
       {this.news,
       this.phoneNum,
       this.nadiName,
+      this.iconImage,
       this.email,
       this.id,
       this.location});
@@ -24,6 +26,7 @@ class NadiData {
         id: map["id"] ?? map["nadi_id"],
         location: map["location"],
         nadiName: map["name"],
+        iconImage: map["iconImage"],
         news: map["news"],
         phoneNum: map["phoneNum"],
         email: map["email"]);

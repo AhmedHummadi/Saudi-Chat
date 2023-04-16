@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:saudi_chat/models/image.dart';
 import 'package:uuid/uuid.dart';
 
 // ignore: constant_identifier_names
@@ -13,7 +15,28 @@ class FireStorage {
   final firebase_storage.FirebaseStorage firestorage =
       firebase_storage.FirebaseStorage.instance;
 
-  // static Future changeNadiProfilePic(String path, String )
+  Future<ImageClass?> changeUserProfileIcon(File image) async {
+    try {
+      // get the id that will be used as the name for the image
+      final String fileId = const Uuid().v4();
+
+      // get the reference to the storage
+      firebase_storage.Reference _storage =
+          firestorage.ref("profile_icons/$fileId.jpg");
+
+      // put the image in the reference path above
+      firebase_storage.TaskSnapshot uploadTask = await _storage.putFile(image);
+
+      // get the download url to be used in getting the image
+      String url = await uploadTask.ref.getDownloadURL();
+
+      // put the data together and send it back
+      return ImageClass(url: url, storagePath: uploadTask.ref.fullPath);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 
   Future<String> uploadImageForNews(
       File file, DocumentReference nadiDoc) async {

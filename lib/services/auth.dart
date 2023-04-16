@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:saudi_chat/models/image.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,6 +83,10 @@ class AuthService {
           userAuth: UserAuth(
         uid: createdUserEP.uid,
         cities: city,
+        iconImage: ImageClass(
+            storagePath: "profile_icons/new_user_profile_pic.jpg.jpg",
+            url:
+                "https://firebasestorage.googleapis.com/v0/b/saudi-chat-2aeaf.appspot.com/o/profile_icons%2Fnew_user_profile_pic.jpg?alt=media&token=55c40998-503e-4fb4-b525-8f62c7f078db"),
         isAnonymous: false,
         creationTime: createdUserEP.metadata.creationTime,
         lastSignInTime: createdUserEP.metadata.lastSignInTime,

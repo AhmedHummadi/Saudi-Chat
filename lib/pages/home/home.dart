@@ -416,7 +416,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            ProfileIconButton(streamedUser: streamedUser),
             const SizedBox(
               height: 4,
             ),

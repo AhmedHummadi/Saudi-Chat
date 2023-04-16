@@ -1,13 +1,16 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:saudi_chat/models/image.dart';
 import 'package:saudi_chat/models/location.dart';
 import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saudi_chat/services/storage.dart';
 
 enum DataBaseServiceException {
   create_user_data_exception,
@@ -44,7 +47,7 @@ class DataBaseService {
         userClass: UserAuth.parseUserClass(snapshot.get("userClass")),
         email: snapshot.get("email"),
         isAnonymous: snapshot.get("isAnonymous"),
-
+        iconImage: ImageClass.fromMap(snapshot.get("iconImage")),
         // creationTime: DateTime.parse(snapshot.get("creationTime").toString()),
         // lastSignInTime: DateTime.parse(snapshot.get("lastSignInTime").toString()),
         phoneNum: snapshot.get("phoneNum"),
@@ -250,6 +253,10 @@ class DataBaseService {
         "name": userAuth.displayName,
         "email": userAuth.email,
         "isAnonymous": userAuth.isAnonymous,
+        "iconImage": {
+          "url": userAuth.iconImage!.url,
+          "storagePath": userAuth.iconImage!.storagePath
+        },
         "userClass": "user",
         "groups": [],
         "cities": userAuth.cities,
@@ -559,6 +566,34 @@ class DataBaseService {
       print(e.toString());
       return Future.error(
           DataBaseServiceException.delete_user_document_exception);
+    }
+  }
+
+  Future<ImageClass?> uploadUserProfileImage(
+      File image, UserAuth streamedUser) async {
+    try {
+      // upload the image into firestorage and get the image class
+      ImageClass? imageClass = await FireStorage().changeUserProfileIcon(image);
+
+      // get the user doc reference
+      DocumentReference userDocReference =
+          DataBaseService().authUsersCollection.doc(streamedUser.uid);
+
+      if (imageClass != null) {
+        userDocReference.update({
+          "iconImage": {
+            "url": imageClass.url,
+            "storagePath": imageClass.storagePath
+          }
+        });
+        return imageClass;
+      } else {
+        // return to original function to deal with error
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

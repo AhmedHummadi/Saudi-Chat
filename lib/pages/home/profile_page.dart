@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/home/settings_page.dart';
 import 'package:saudi_chat/services/auth.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class _ButtonClass {
   late IconData icon;
@@ -46,12 +47,7 @@ class ProfilePage extends StatelessWidget {
               iconTheme: IconThemeData(size: 30),
               toolbarHeight: pageSize.height / 12,
             ),
-            CircleAvatar(
-              radius: 64,
-              backgroundImage: Image.asset(
-                "assets/new_nadi_profile_pic.jpg",
-              ).image,
-            ),
+            ProfileIcon(streamedUser: streamedUser),
             const SizedBox(
               height: 10,
             ),
@@ -81,6 +77,7 @@ class ProfilePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return SettingsPage();
+                    //TODO: settings page
                   }));
                 },
                 child: SizedBox(
@@ -99,7 +96,13 @@ class ProfilePage extends StatelessWidget {
                 ]))),
             GestureDetector(
                 onTap: () {
-                  AuthService().signOut();
+                  if (context.mounted) {
+                    AuthService().signOut();
+                    if (AuthService().auth.currentUser == null) {
+                      Navigator.pop(context);
+                      //TODO: Loading and error fixing
+                    }
+                  }
                 },
                 child: SizedBox(
                     child: Row(children: [

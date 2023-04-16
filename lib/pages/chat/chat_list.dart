@@ -37,6 +37,11 @@ class _ChatListState extends State<ChatList> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // the auth data about the user
     dynamic streamedUser = Provider.of<UserAuth>(context);
@@ -74,9 +79,11 @@ class _ChatListState extends State<ChatList> {
                     findDocumentsGroupCardStyleStyle(
                         docs, widget.groupInfoCardData!, streamedUser,
                         (widgets) {
-                      setState(() {
-                        widgetsList = widgets;
-                      });
+                      if (context.mounted) {
+                        setState(() {
+                          widgetsList = widgets;
+                        });
+                      }
                     });
                   }
                 }
@@ -252,7 +259,7 @@ class _ChatListState extends State<ChatList> {
       NadiData docData =
           DataBaseService().nadiDataFromDoc(documentSnapshot: doc);
 
-      if (context.mounted) {
+      if (mounted) {
         widgets.add(_BuildHomeItem(
           isGroupInfoStyle: true,
           groupInfoCardData: widget.groupInfoCardData,

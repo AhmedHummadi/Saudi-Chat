@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saudi_chat/models/image.dart';
 
 enum UserClass { moderator, admin, coAdmin, user }
 
@@ -9,6 +10,7 @@ class UserAuth {
   late final DateTime? creationTime;
   late final DateTime? lastSignInTime;
   late String? displayName;
+  late final ImageClass? iconImage;
   late String? phoneNum;
   UserClass? userClass = UserClass.user;
   late List? groups;
@@ -24,6 +26,7 @@ class UserAuth {
       this.lastSignInTime,
       this.isAnonymous,
       this.userClass,
+      this.iconImage,
       this.phoneNum,
       this.groups,
       this.cities,
