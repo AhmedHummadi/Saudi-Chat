@@ -176,11 +176,11 @@ class _ChatListState extends State<ChatList> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
               child: ListTile(
-                leading: CircleAvatar(
-                  radius: 28,
-                  backgroundImage: Image.asset(
-                    "assets/new_nadi_profile_pic.jpg",
-                  ).image,
+                leading: ProfileIconNadi(
+                  nadiData: data,
+                  iconRadius: 10,
+                  nadiDocument: documentReference,
+                  canEdit: false,
                 ),
                 title: Text(
                   data.nadiName!,
@@ -354,7 +354,6 @@ class _BuildHomeItem extends StatelessWidget {
             builder: (context, snapshot) {
               // if the style is for the homeopage so it will make a normal
               // looking one
-
               if (isGroupInfoStyle == false) {
                 return GestureDetector(
                   onTap: () {
@@ -367,7 +366,10 @@ class _BuildHomeItem extends StatelessWidget {
                       children: [
                         NewMessageCircleAvatar(
                             snapshot: snapshot,
+                            nadiData: data,
+                            nadiDocument: nadiDoc,
                             radius: kContainerRadius,
+                            streamedUser: streamedUser,
                             borderThickness: kBorderThickness),
                         SizedBox(
                           width: kContainerRadius,
@@ -395,6 +397,8 @@ class _BuildHomeItem extends StatelessWidget {
                 // form of a group info card
                 return GroupInfoCard(
                     unreadMessageSnapshot: snapshot,
+                    nadiData: data,
+                    nadiDocument: nadiDoc,
                     groupData: groupInfoCardData!);
               }
             });

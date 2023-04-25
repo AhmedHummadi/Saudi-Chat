@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:saudi_chat/models/nadi.dart';
+import 'package:saudi_chat/models/user.dart';
+import 'package:saudi_chat/services/database.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class NadiDetails extends StatefulWidget {
   final DocumentReference groupDocument;
@@ -24,6 +28,7 @@ class _NadiDetailsState extends State<NadiDetails> {
   Widget build(BuildContext context) {
     final Map groupData = widget.groupData;
     //?? The data of the nadis group document in the groups collection
+    print(groupData);
 
     final streamedUser = widget.streamUser;
     final Size screenSize = MediaQuery.of(context).size;
@@ -76,22 +81,36 @@ class _NadiDetailsState extends State<NadiDetails> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.shade500,
-                                            spreadRadius: 0,
-                                            blurRadius: 4)
-                                      ],
-                                    ),
-                                    child: CircleAvatar(
-                                      radius: 48,
-                                      backgroundImage: Image.asset(
-                                        "assets/new_nadi_profile_pic.jpg",
-                                      ).image,
-                                    ),
-                                  ),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.grey.shade500,
+                                              spreadRadius: 0,
+                                              blurRadius: 4)
+                                        ],
+                                      ),
+                                      child: ProfileIconNadi(
+                                        iconRadius:
+                                            MediaQuery.of(context).size.width /
+                                                2.8,
+                                        // is he a admin (not coAdmin) or a moderator
+                                        canEdit: (streamedUser.userClass ==
+                                                    UserClass.admin
+                                                ? (streamedUser as UserAuth)
+                                                        .groupAdmin!
+                                                        .id ==
+                                                    widget.groupDocument.id
+                                                : false) ||
+                                            (streamedUser as UserAuth)
+                                                    .userClass ==
+                                                UserClass.moderator,
+                                        nadiData: NadiData.parse(
+                                            groupData["nadi_data"]),
+                                        nadiDocument: DataBaseService()
+                                            .nadiCollection
+                                            .doc(widget.groupDocument.id),
+                                      )),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -189,6 +208,7 @@ class _NadiDetailsState extends State<NadiDetails> {
                                 ? data[0]
                                     .docs
                                     .map((memberDocument) => GroupMemberCard(
+                                        streamedUser: streamedUser,
                                         memberDocumentData: memberDocument))
                                     .toList()
                                 : [],
@@ -208,24 +228,40 @@ class _NadiDetailsState extends State<NadiDetails> {
 
 class GroupMemberCard extends StatelessWidget {
   final DocumentSnapshot memberDocumentData;
-  const GroupMemberCard({Key? key, required this.memberDocumentData})
+  final UserAuth streamedUser;
+  const GroupMemberCard(
+      {Key? key, required this.streamedUser, required this.memberDocumentData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 2,
-      child: ListTile(
-        leading: CircleAvatar(
-            radius: 24,
-            backgroundImage: Image.asset(
-              "assets/new_nadi_profile_pic.jpg",
-            ).image),
-        title: Text(
-          memberDocumentData.get("name"),
-          style: const TextStyle(fontSize: 14),
-        ),
-      ),
+    return FutureBuilder(
+      future: (memberDocumentData.data() as Map)["doc_reference"].get(),
+      builder: (context, snapshot) {
+        if (snapshot.data != null) {
+          print((snapshot.data as DocumentSnapshot).data());
+          UserAuth memberData = UserAuth.parseFromUserDocument(
+              (snapshot.data as DocumentSnapshot).data() as Map);
+
+          return SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 40,
+            child: Row(children: [
+              ProfileIcon(
+                streamedUser: memberData,
+                iconRadius: 40,
+              ),
+              Text(
+                memberDocumentData.get("name"),
+                style: const TextStyle(fontSize: 14),
+              ),
+            ]),
+          );
+        } else {
+          //TODO: Do a loading image icon and put the names in
+          return Container();
+        }
+      },
     );
   }
 }

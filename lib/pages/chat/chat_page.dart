@@ -83,6 +83,9 @@ class _ChatPageState extends State<ChatPage> {
 
   bool? _kBottomOffset;
 
+  double appbarHeight =
+      AppBar().preferredSize.height + (AppBar().preferredSize.height * 0.2);
+
   @override
   void dispose() {
     widgetStream.close();
@@ -172,7 +175,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
-                  toolbarHeight: 60,
+                  toolbarHeight: appbarHeight,
                   title: GestureDetector(
                     onTap: () async {
                       QuerySnapshot membersCollection = await widget
@@ -211,11 +214,10 @@ class _ChatPageState extends State<ChatPage> {
                     },
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundImage: Image.asset(
-                            "assets/new_nadi_profile_pic.jpg",
-                          ).image,
+                        ProfileIconNadi(
+                          nadiData: groupData.nadiData!,
+                          nadiDocument: widget.nadiDocument,
+                          iconRadius: appbarHeight - (appbarHeight * 0.15),
                         ),
                         const SizedBox(
                           width: 10,

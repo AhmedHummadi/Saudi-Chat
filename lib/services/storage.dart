@@ -15,7 +15,7 @@ class FireStorage {
   final firebase_storage.FirebaseStorage firestorage =
       firebase_storage.FirebaseStorage.instance;
 
-  Future<ImageClass?> changeUserProfileIcon(File image) async {
+  Future<ImageClass?> changeProfileIcon(File image) async {
     try {
       // get the id that will be used as the name for the image
       final String fileId = const Uuid().v4();

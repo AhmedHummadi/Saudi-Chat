@@ -26,7 +26,11 @@ class NadiData {
         id: map["id"] ?? map["nadi_id"],
         location: map["location"],
         nadiName: map["name"],
-        iconImage: map["iconImage"],
+        iconImage: map["iconImage"] != null
+            ? ImageClass(
+                storagePath: map["iconImage"]["storagePath"],
+                url: map["iconImage"]["url"])
+            : null,
         news: map["news"],
         phoneNum: map["phoneNum"],
         email: map["email"]);

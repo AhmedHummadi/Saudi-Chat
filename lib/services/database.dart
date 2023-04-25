@@ -62,6 +62,7 @@ class DataBaseService {
       return NadiData(
         phoneNum: snapshot.get("phoneNum"),
         location: snapshot.get("location"),
+        iconImage: ImageClass.fromMap(snapshot.get("iconImage")),
         nadiName: snapshot.get("name"),
         id: snapshot.id,
         email: snapshot.get("email"),
@@ -71,6 +72,7 @@ class DataBaseService {
         phoneNum: documentSnapshot!.get("phoneNum"),
         location: documentSnapshot.get("location"),
         nadiName: documentSnapshot.get("name"),
+        iconImage: ImageClass.fromMap(documentSnapshot.get("iconImage")),
         id: documentSnapshot.id,
         email: documentSnapshot.get("email"),
       );
@@ -573,7 +575,7 @@ class DataBaseService {
       File image, UserAuth streamedUser) async {
     try {
       // upload the image into firestorage and get the image class
-      ImageClass? imageClass = await FireStorage().changeUserProfileIcon(image);
+      ImageClass? imageClass = await FireStorage().changeProfileIcon(image);
 
       // get the user doc reference
       DocumentReference userDocReference =
@@ -586,6 +588,51 @@ class DataBaseService {
             "storagePath": imageClass.storagePath
           }
         });
+        return imageClass;
+      } else {
+        // return to original function to deal with error
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<ImageClass?> uploadNadiProfileImage(
+      File image, NadiData nadiData, DocumentReference nadiDocument) async {
+    try {
+      // upload the image into firestorage and get the image class
+      ImageClass? imageClass = await FireStorage().changeProfileIcon(image);
+
+      // get the group document for the nadi and then change both the values of
+      // the iconImage
+      DocumentReference groupDocument =
+          DataBaseService().messagesCollection.doc(nadiDocument.id);
+
+      if (imageClass != null) {
+        // update the nadi documents iconImage
+        nadiDocument.update({
+          "iconImage": {
+            "url": imageClass.url,
+            "storagePath": imageClass.storagePath
+          }
+        });
+
+        // update the group documents iconImage
+        groupDocument.update({
+          "nadi_data": {
+            "email": nadiData.email,
+            "location": nadiData.location,
+            "phoneNum": nadiData.phoneNum,
+            "name": nadiData.nadiName,
+            "iconImage": {
+              "url": imageClass.url,
+              "storagePath": imageClass.storagePath
+            }
+          }
+        });
+
         return imageClass;
       } else {
         // return to original function to deal with error

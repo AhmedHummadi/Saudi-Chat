@@ -4,6 +4,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 import 'package:saudi_chat/models/news_form.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
 import 'package:saudi_chat/shared/photo_viewer.dart';
+import 'package:saudi_chat/shared/widgets.dart';
 
 class NewsDetailsPage extends StatelessWidget {
   final NewsForm news;
@@ -49,12 +50,12 @@ class NewsDetailsPage extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: Image.asset(
-                          "assets/new_nadi_profile_pic.jpg",
-                        ).image,
-                      ),
+                      ProfileIconNadi(
+                        nadiData: news.nadi!,
+                        iconRadius: 80,
+                        canEdit: false,
+                        nadiDocument: news.nadiDoc!,
+                      )
                     ],
                   )
                 ],

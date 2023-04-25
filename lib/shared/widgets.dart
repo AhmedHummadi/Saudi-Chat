@@ -605,10 +605,16 @@ class EmojiPickerWidget extends StatelessWidget {
 
 class GroupInfoCard extends StatelessWidget {
   final Map groupData;
+  final NadiData nadiData;
+  final DocumentReference nadiDocument;
   final AsyncSnapshot unreadMessageSnapshot;
   // groupData is the group information map that is on the users groups list
   const GroupInfoCard(
-      {Key? key, required this.unreadMessageSnapshot, required this.groupData})
+      {Key? key,
+      required this.unreadMessageSnapshot,
+      required this.groupData,
+      required this.nadiData,
+      required this.nadiDocument})
       : super(key: key);
 
   @override
@@ -651,6 +657,9 @@ class GroupInfoCard extends StatelessWidget {
                           NewMessageCircleAvatar(
                               snapshot: unreadMessageSnapshot,
                               radius: kContainerRadius,
+                              nadiData: nadiData,
+                              nadiDocument: nadiDocument,
+                              streamedUser: streamedUser,
                               borderThickness: kBorderThickness),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 2.2,
@@ -1195,12 +1204,18 @@ class LanguageTypeText extends StatelessWidget {
 class NewMessageCircleAvatar extends StatelessWidget {
   final AsyncSnapshot snapshot;
   final double radius;
+  final NadiData nadiData;
+  final DocumentReference nadiDocument;
+  final UserAuth streamedUser;
   final double borderThickness;
   const NewMessageCircleAvatar(
       {Key? key,
       required this.snapshot,
+      required this.streamedUser,
       required this.radius,
-      required this.borderThickness})
+      required this.borderThickness,
+      required this.nadiData,
+      required this.nadiDocument})
       : super(key: key);
 
   @override
@@ -1220,34 +1235,32 @@ class NewMessageCircleAvatar extends StatelessWidget {
       height: radius,
       padding: EdgeInsets.all(borderThickness),
       child: Container(
-        height: radius - (borderThickness + 2),
-        padding: const EdgeInsets.all(3),
-        decoration:
-            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: CircleAvatar(
-          radius: 32,
-          backgroundImage: Image.asset(
-            "assets/new_nadi_profile_pic.jpg",
-          ).image,
-        ),
-      ),
+          height: radius - (borderThickness + 2),
+          padding: const EdgeInsets.all(3),
+          decoration:
+              const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+          child: ProfileIconNadi(
+            nadiData: nadiData,
+            iconRadius: 80,
+            nadiDocument: nadiDocument,
+          )),
     );
   }
 }
 
 class ProfileIcon extends StatelessWidget {
   final bool? canEdit;
+  final double iconRadius;
+  final UserAuth streamedUser;
   const ProfileIcon({
     Key? key,
     this.canEdit,
     required this.streamedUser,
+    required this.iconRadius,
   }) : super(key: key);
-
-  final UserAuth streamedUser;
 
   @override
   Widget build(BuildContext context) {
-    final double iconRadius = MediaQuery.of(context).size.width / 2.2;
     return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
       Center(
           child: ClipRRect(
@@ -1259,23 +1272,26 @@ class ProfileIcon extends StatelessWidget {
           width: iconRadius,
         ),
       )),
-      Center(
-        child: SizedBox(
-          width: iconRadius * 0.75,
-          height: iconRadius,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: GestureDetector(
-              onTap: () => onEditTapped(streamedUser),
-              child: Container(
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.tertiaryContainer),
-                child: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).colorScheme.onSecondary,
+      Visibility(
+        visible: canEdit ?? false,
+        child: Center(
+          child: SizedBox(
+            width: iconRadius * 0.75,
+            height: iconRadius,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                onTap: () => onEditTapped(streamedUser),
+                child: Container(
+                  height: 45,
+                  width: 45,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                  child: Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
                 ),
               ),
             ),
@@ -1318,6 +1334,102 @@ class ProfileIcon extends StatelessWidget {
       }
 
       await pickFile(streamedUser);
+    } catch (e) {
+      print(e);
+    }
+  }
+}
+
+class ProfileIconNadi extends StatelessWidget {
+  final bool? canEdit;
+  final NadiData nadiData;
+  final DocumentReference nadiDocument;
+  final double iconRadius;
+  const ProfileIconNadi(
+      {Key? key,
+      this.canEdit,
+      required this.nadiData,
+      required this.iconRadius,
+      required this.nadiDocument})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
+      Center(
+          child: ClipRRect(
+        borderRadius: BorderRadius.circular(100000),
+        child: CachedNetworkImage(
+          imageUrl: nadiData.iconImage!.url!,
+          fit: BoxFit.cover,
+          height: iconRadius,
+          width: iconRadius,
+        ),
+      )),
+      Visibility(
+        visible: canEdit ?? false,
+        child: Center(
+          child: SizedBox(
+            width: iconRadius * 0.8,
+            height: iconRadius,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                onTap: () => onEditTapped(nadiData, nadiDocument),
+                child: Container(
+                  height: iconRadius / 4,
+                  width: iconRadius / 4,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                  child: Icon(
+                    Icons.edit,
+                    size: iconRadius / 6,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  void onEditTapped(NadiData nadiData, DocumentReference nadiDocument) async {
+    try {
+      Future<void> pickFile(
+          NadiData nadiData, DocumentReference nadiDocument) async {
+        try {
+          // promt to pick an image
+          final XFile? insertedFile =
+              await ImagePicker().pickImage(source: ImageSource.gallery);
+
+          // if an image is picked
+          if (insertedFile != null) {
+            // TODO: Loading
+            await Fluttertoast.showToast(msg: "Loading...");
+
+            final File storedImage = File(insertedFile.path);
+
+            ImageClass? imageClass = await DataBaseService()
+                .uploadNadiProfileImage(storedImage, nadiData, nadiDocument);
+
+            // successfully uploaded and can turn off loading
+            if (imageClass != null) {
+              Fluttertoast.showToast(msg: "Profile Image Updated");
+            } else {
+              // something happened, prob an error
+            }
+          }
+        } catch (e) {
+          Fluttertoast.showToast(
+              msg: "Could not open gallery. An error has accured");
+          print(e.toString()); // TODO: Test
+        }
+      }
+
+      await pickFile(nadiData, nadiDocument);
     } catch (e) {
       print(e);
     }

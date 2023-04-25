@@ -69,6 +69,9 @@ class UserAuth {
         phoneNum: data["phoneNum"],
         email: data["email"],
         displayName: data["name"],
+        iconImage: ImageClass(
+            url: data["iconImage"]["url"],
+            storagePath: data["iconImage"]["storagePath"]),
         groupAdmin: data["groupAdmin"],
         groups: data["groups"],
         creationTime: data["creationTime"] != null

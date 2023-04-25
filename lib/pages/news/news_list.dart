@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:saudi_chat/models/image.dart';
+import 'package:saudi_chat/models/nadi.dart';
 import 'package:saudi_chat/models/news_form.dart';
 import 'package:saudi_chat/models/user.dart';
 import 'package:saudi_chat/pages/chat/chat_page.dart';
@@ -70,9 +72,9 @@ class _NewsListState extends State<NewsList> {
     for (var nadi in nadis) {
       final QuerySnapshot newsCollection = await nadi.collection("News").get();
 
-      final List<NewsForm> finalNews = newsCollection.docs
-          .map((newsDoc) => NewsForm.parse(newsDoc.data() as Map))
-          .toList();
+      final List<NewsForm> finalNews = newsCollection.docs.map((newsDoc) {
+        return NewsForm.parse(newsDoc.data() as Map);
+      }).toList();
 
       _news.addAll(finalNews);
     }
@@ -225,14 +227,31 @@ class NewsCard extends StatelessWidget {
                             const SizedBox(
                               width: 6,
                             ),
-                            CircleAvatar(
-                              radius:
-                                  (MediaQuery.of(context).size.height / 2.2) /
-                                      16,
-                              backgroundImage: Image.asset(
-                                "assets/new_nadi_profile_pic.jpg",
-                              ).image,
-                            ),
+                            FutureBuilder(
+                                future: news.nadiDoc!.get(),
+                                builder: (context, snapshot) =>
+                                    snapshot.data != null
+                                        ? ProfileIconNadi(
+                                            iconRadius: 10,
+                                            canEdit: false,
+                                            nadiData: NadiData(
+                                              phoneNum: news.nadi!.phoneNum,
+                                              email: news.nadi!.email,
+                                              location: news.nadi!.location,
+                                              nadiName: news.nadi!.nadiName,
+                                              iconImage: ImageClass(
+                                                  storagePath: ((snapshot.data
+                                                                  as DocumentSnapshot)
+                                                              .data()
+                                                          as Map)["iconImage"]
+                                                      ["storagePath"],
+                                                  url: ((snapshot.data
+                                                              as DocumentSnapshot)
+                                                          .data() as Map)[
+                                                      "iconImage"]["url"]),
+                                            ),
+                                            nadiDocument: news.nadiDoc!)
+                                        : Container())
                           ],
                         ),
                       ],

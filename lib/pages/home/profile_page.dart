@@ -47,7 +47,11 @@ class ProfilePage extends StatelessWidget {
               iconTheme: IconThemeData(size: 30),
               toolbarHeight: pageSize.height / 12,
             ),
-            ProfileIcon(streamedUser: streamedUser),
+            ProfileIcon(
+              streamedUser: streamedUser,
+              iconRadius: MediaQuery.of(context).size.width / 2.2,
+              canEdit: false,
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -71,53 +75,67 @@ class ProfilePage extends StatelessWidget {
               endIndent: dividerIndentSize,
               color: Colors.grey,
               thickness: 1,
-              height: pageSize.height / 12,
+              height: pageSize.height / 14,
             ),
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SettingsPage();
-                    //TODO: settings page
-                  }));
-                },
-                child: SizedBox(
-                    child: Row(children: [
-                  Icon(
-                    _buttonlist[0].icon,
-                    size: 34,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    _buttonlist[0].title,
-                    style: TextStyle(fontSize: 20),
-                  )
-                ]))),
-            GestureDetector(
-                onTap: () {
-                  if (context.mounted) {
-                    AuthService().signOut();
-                    if (AuthService().auth.currentUser == null) {
-                      Navigator.pop(context);
-                      //TODO: Loading and error fixing
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: dividerIndentSize - (dividerIndentSize / 3)),
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return SettingsPage();
+                      //TODO: settings page
+                    }));
+                  },
+                  child: SizedBox(
+                      child: Row(children: [
+                    Icon(
+                      _buttonlist[0].icon,
+                      size: 34,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      _buttonlist[0].title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    )
+                  ]))),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: dividerIndentSize - (dividerIndentSize / 3),
+                  vertical: 16),
+              child: GestureDetector(
+                  onTap: () {
+                    if (context.mounted) {
+                      AuthService().signOut();
+                      if (AuthService().auth.currentUser == null) {
+                        Navigator.pop(context);
+                        //TODO: Loading and error fixing
+                      }
                     }
-                  }
-                },
-                child: SizedBox(
-                    child: Row(children: [
-                  Icon(
-                    _buttonlist[1].icon,
-                    size: 34,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    _buttonlist[1].title,
-                    style: TextStyle(fontSize: 20),
-                  )
-                ]))),
+                  },
+                  child: SizedBox(
+                      child: Row(children: [
+                    Icon(
+                      _buttonlist[1].icon,
+                      size: 34,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      _buttonlist[1].title,
+                      style: TextStyle(fontSize: 20),
+                    )
+                  ]))),
+            ),
           ],
         ),
       ),
